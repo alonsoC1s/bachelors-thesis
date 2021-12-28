@@ -1,0 +1,207 @@
+\documentclass[11pt, oneside]{book}
+\usepackage[
+		paperwidth=17cm,
+		paperheight=22.5cm,
+		bottom=2.5cm,
+		right=2.5cm
+	]{geometry}
+
+% El borde inferior puede parecerles muy amplio a la vista. Les recomiendo hacer una prueba de impresión antes para ajustarlo
+
+\usepackage{
+		amssymb,
+		amsmath,
+		amsthm,
+		mathtools,
+		nccmath
+	}
+
+% \usepackage[spanish]{babel}
+% \usepackage[utf8]{inputenc} % Acentos y otros símbolos 
+\usepackage{enumerate}
+\usepackage{hyperref} % Hipervínculos en el índice
+\usepackage{graphicx}
+%\usepackage{subfig} % Subfiguras
+\graphicspath{{img/}} % En qué carpeta están las imágenes
+
+\DeclarePairedDelimiter{\nint}\lfloor\rceil %nearest integer
+\DeclarePairedDelimiter{\ceil}\lceil\rceil 
+\DeclarePairedDelimiter{\floor}\lfloor\rfloor 
+\DeclarePairedDelimiter{\abs}\lvert\rvert % absolute value
+
+% Para eliminar guiones y justificar texto
+% \tolerance=1
+% \emergencystretch=\maxdimen
+% \hyphenpenalty=10000
+% \hbadness=10000
+
+% \linespread{1.25} % Asemeja el interlineado 1.5 de Word
+
+\let\oldfootnote\footnote % Deja espacio entre el número del pie de página y el inicio del texto
+\renewcommand\footnote[1]{%
+\oldfootnote{\hspace{0.05mm}#1}}
+
+\renewcommand{\thefootnote} {\textcolor{Black}{\arabic{footnote}}} % Súperindice a color negro
+
+\setlength{\footnotesep}{0.75\baselineskip} % Espaciado entre notas al pie
+
+% \usepackage{fnpos} % Footnotes al final de pág.
+
+% \usepackage[justification=centering, font=bf, labelsep=period, skip=5pt]{caption} % Centrar captions de tablas y ponerlas en negritas
+
+% \newcommand{\imagesource}[1]{{\footnotesize Fuente: #1}}
+
+\usepackage{tabularx} % Big tables
+\usepackage{graphicx}
+\usepackage{adjustbox}
+\usepackage{longtable}
+
+\usepackage{float} % Float tables
+
+\usepackage[usenames,dvipsnames]{xcolor} % Color
+
+\usepackage{pgfplots} % Gráficas
+\pgfplotsset{compat=newest}
+\pgfplotsset{width=7.5cm}
+\pgfkeys{/pgf/number format/1000 sep={}}
+
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+% Cosas para algoritmos
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definición}[section]
+
+\begin{document}
+
+%----------------------------------------------------------------------------------------
+%	PORTADA
+%----------------------------------------------------------------------------------------
+
+% Estableciendo variables que luego se usan en title page
+\title{Markov Decision Processes and Applications to Reinforced Learning}
+\author{Alonso Martinez Cisneros}
+\date{2022}
+
+\makeatletter
+\begin{titlepage}
+\begin{center}
+
+\textsc{\Large Instituto Tecnológico Autónomo de México}\\[2em]
+
+% Logo ITAM
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.50]{logo-ITAM.pdf}
+\end{center}
+\end{figure}
+
+\textbf{\LARGE \@title }\\[2em]
+
+\textsc{\large Tesis}\\[1em]
+
+\textsc{\large que para obtener el título de}\\[1em]
+
+\textsc{\LARGE Licenciado en Matemáticas Aplicadas}\\[1em]
+
+\textsc{\large Presenta}\\[1em]
+
+\textsc{\LARGE \@author}\\[1em]
+
+\textsc{\large Asesor}\\[1em]
+
+\textsc{\LARGE Dr. Andreas Wachtel}\\[2em]
+
+\end{center}
+
+\vspace*{\fill}
+\textsc{Ciudad de México \hspace*{\fill} \@date}
+
+\end{titlepage}
+\makeatother
+
+%----------------------------------------------------------------------------------------
+%	DECLARACIÓN
+%----------------------------------------------------------------------------------------
+
+\thispagestyle{empty}
+
+\vspace*{\fill}
+\begingroup
+
+\noindent
+\makeatletter
+«Con fundamento en los artículos 21 y 27 de la Ley Federal del Derecho de Autor y como 
+titular de los derechos moral y patrimonial de la obra titulada ``\textbf{\@title}'', 
+otorgo de manera gratuita y permanente al Instituto Tecnológico Autónomo de México y a la 
+Biblioteca Raúl Bailléres Jr., la autorización para que fijen la obra en cualquier medio, 
+incluido el electrónico, y la divulguen entre sus usuarios, profesores, estudiantes o 
+terceras personas, sin que pueda percibir por tal divulgación una contraprestación.»
+
+% Asegúrense de cambiar el título de su tesis en el párrafo anterior
+
+\centering 
+
+\vspace{5em}
+
+\rule[1em]{20em}{0.5pt} % Línea para la fecha
+
+\textsc{Fecha}
+ 
+\vspace{8em}
+
+\rule[1em]{20em}{0.5pt} % Línea para la firma
+
+\textsc{\@author}
+
+\endgroup
+\vspace*{\fill}
+\makeatother
+
+%----------------------------------------------------------------------------------------
+%	DEDICATORIA
+%----------------------------------------------------------------------------------------
+
+\pagestyle{plain}
+\frontmatter
+
+\chapter*{}
+\begin{flushright}
+\textit{A mis padres,\\ por su incansable esfuerzo.}
+\end{flushright}
+
+%----------------------------------------------------------------------------------------
+%	AGRADECIMIENTOS
+%----------------------------------------------------------------------------------------
+
+\chapter*{Agradecimientos}
+
+\noindent Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+
+% Esta sección es lo único que la gente lee. True story :)
+
+%----------------------------------------------------------------------------------------
+%	TABLA DE CONTENIDOS
+%---------------------------------------------------------------------------------------
+
+% \renewcommand{\contentsname}{Tabla de contenido}
+\tableofcontents
+
+%----------------------------------------------------------------------------------------
+%	TESIS
+%----------------------------------------------------------------------------------------
+
+\mainmatter % Empieza la numeración de las páginas
+
+\pagestyle{plain}
+
+%----------------------------------------------------------------------------------------
+%	BIBLIOGRAFÍA
+%----------------------------------------------------------------------------------------
+
+
+
+\end{document}

@@ -1,0 +1,93 @@
+{
+  "main": {
+    "id": "a72faaaba6eeb0f8",
+    "type": "split",
+    "children": [
+      {
+        "id": "5145f44ebbe7854b",
+        "type": "leaf",
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "Objetivos.md",
+            "mode": "source"
+          }
+        }
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "63995a0648b5e95a",
+    "type": "split",
+    "children": [
+      {
+        "id": "650c4468c014438b",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "35bffc7f4767666e",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "9c101056194993b8",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 183
+  },
+  "right": {
+    "id": "a085eab362eb2ee2",
+    "type": "split",
+    "children": [
+      {
+        "id": "25e9e76dc4874d2f",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b77d873930f0ffef",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Objetivos.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "active": "5145f44ebbe7854b",
+  "lastOpenFiles": [
+    "Objetivos.md"
+  ]
+}
