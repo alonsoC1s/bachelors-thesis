@@ -31,7 +31,6 @@
 		% Required packages %
 		%===================%
 		\RequirePackage{xcolor}
-		\RequirePackage{mdframed}
 		\RequirePackage{gitinfo2}
 		\RequirePackage{amsmath}
 		\RequirePackage{mathtools} % coloneqq
@@ -39,18 +38,23 @@
 		\RequirePackage{enumerate}
 		\RequirePackage{tabularx}
 		\RequirePackage{pgfplots}
+		\RequirePackage{float}
+		\RequirePackage[many]{tcolorbox}
+		% \RequirePackage{mdframed}
 
-		% load ntheorem before newtxmath to avoid multiple definition of \openbox
-		\RequirePackage[
-				thmmarks,
-				amsmath,
-				amsthm,
-				hyperref
-			]{ntheorem}
+		% % load ntheorem before newtxmath to avoid multiple definition of \openbox
+		% \RequirePackage[
+		% 		thmmarks,
+		% 		amsmath,
+		% 		amsthm,
+		% 		hyperref
+		% 	]{ntheorem}
+
+
 
 		% redefine proof-end symbol; ntheorem's \openbox gives a hacek-C
 		% after a cases environment for some reason
-		\gdef\proofSymbol{\ensuremath{\Box}}
+		% \gdef\proofSymbol{\ensuremath{\Box}}
 
 
 		%=======%
@@ -67,6 +71,7 @@
 
 		% Chapter bar (?)
 		\setlength{\barwidth}{7pt}
+
 	}
 
 	\AtBeginDocument{
@@ -116,9 +121,7 @@
 }
 
 \newcommand{\makefrontmatter}{
-	\pagestyle{empty}
-	\noindent
-
+	\vfill
 	\noindent Typeset in Baskervald X and Nimbus Sans by
 	\LaTeX.
 

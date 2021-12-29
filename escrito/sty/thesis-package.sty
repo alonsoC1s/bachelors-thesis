@@ -1,0 +1,60 @@
+%=========================================================================================%
+% style sheet para poner entornos, colores y cosas que usualmente pondría en el preámbulo %
+%=========================================================================================%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{thesis-package}[2020/12/28 clase de tesis itam estilo open logic]
+%=======================%
+% Package configuration %
+%=======================%
+
+% Pgpflots config
+\pgfplotsset{compat=newest}
+\pgfplotsset{width=7.5cm}
+\pgfkeys{/pgf/number format/1000 sep={}}
+
+%=================================================%
+% Math Operators, Delimiters & Math-mode commands %
+%=================================================%
+
+%% Delimiters
+\DeclarePairedDelimiter{\nint}\lfloor\rceil %nearest integer
+\DeclarePairedDelimiter{\ceil}\lceil\rceil \DeclarePairedDelimiter{\floor}\lfloor\rfloor 
+\DeclarePairedDelimiter{\abs}\lvert\rvert % absolute value
+
+%% Operators
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+%% Commands
+\newcommand{\R}{\mathbb{R}}
+
+%%===========================%
+%% Theorem-like Environments %
+%%===========================%
+
+% \newmdtheoremenv[
+% 		frametitle = {
+% 			\tikz[sep=0pt]
+% 			\node{Hai}
+% 		},
+% 		linecolor=red,
+% 		backgroundcolor= yellow!20,
+% 		linewidth = 3pt,
+% 		roundcorner = 5pt,
+% 	]{theo}{Theorem}[chapter]
+
+\newtcbtheorem[number within=section]{mytheo}{My Theorem}%
+	{
+		colback=white,
+		colframe=blue!50,
+		fonttitle=\bfseries,
+		enhanced,
+		coltitle=blue!75!black,
+		attach boxed title to top left={
+			xshift=2ex,yshift=-2mm,yshifttext=-1mm
+			},
+		boxed title style={
+			colframe=blue!50, colback=blue!50
+			}
+	}{th}
