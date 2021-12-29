@@ -2,5 +2,5 @@
 .nvimlog
 temp/
 *.log
-*.synctex.gz
+escrito/*.synctex.gz
 papers/Reinforcement Learing - Sutton & Barto.pdf

@@ -2,8 +2,9 @@
 
 \usepackage{lipsum}
 
-\author{Alonso Martinez Cisneros}
-\title{Prueba De Titulo}
+
+\author{Alonso}
+\title{Titulo de prueba}
 \date{2022}
 
 \begin{document}
@@ -11,6 +12,8 @@
 \frontmatter
 \maketitle
 \makefrontmatter
+\makeacknowledgements{To...}{thanks}
+\tableofcontents*
 
 \mainmatter
 
@@ -22,9 +25,16 @@
 \section{probando}
 Hola hola
 
+\begin{equation}
+	\oint_\gamma f(z) \, dz = 2 \pi i \sum_{k=1}^{n} I(\gamma, a_k) \mathrm{Res}(f, a_k)
+\end{equation}
+
 \chapter{DOS}
 
 Adios
+
+\nocite{*}
+\printbibliography
 
 \end{document}
 

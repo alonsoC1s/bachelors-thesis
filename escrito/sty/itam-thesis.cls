@@ -4,14 +4,23 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{itam-thesis}[2020/12/28 Clase de Tesis ITAM estilo Open Logic]
 
+% Errors
+\ClassError{itam-thesis}{Algun error}{Ni idea}
+
 % Clases requeridas
 \RequirePackage{graphicx}
 % \RequirePackage{gitinfo2} % Poder añadir git revision hash
 
 % Dando las opciones
-\DeclareOption{debug}{
+\DeclareOption{colorful}{
 	\AtEndOfClass{
-		\usepackage[mark]{gitinfo2}
+		\RequirePackage{xcolor}
+		\RequirePackage{mdframed}
+		\RequirePackage{gitinfo2}
+		\RequirePackage{amsmath}
+		\RequirePackage[thmmarks,amsmath,amsthm,hyperref]{ntheorem}
+
+		% Geometry
 		\usepackage[
 				showframe,
 				paperwidth=17cm,
@@ -20,27 +29,26 @@
 				right=2.5cm
 			]{geometry}
 
-		% Bar lenght para barras junto a chapter name
-		\setlength{\barwidth}{7pt}
-	}
-}
+		% \usepackage[
+		% 		showframe,
+		% 		paperwidth=17cm,
+		% 		paperheight=22.5cm,
+		% 		nofoot=true,
+		% 		bindingoffset=1.1cm,
+		% 		inner=1.6cm,
+		% 		outer=1.8cm,
+		% 		top=2.5cm,
+		% 		bottom=1.5cm
+		% 	]{geometry}
 
-\DeclareOption{colorful}{
-	\AtEndOfClass{
-		\RequirePackage{xcolor}
-		\RequirePackage{mdframed}
-		\RequirePackage{gitinfo2}
-
-		% Geometry
-		\usepackage[
-				paperwidth=17cm,
-				paperheight=22.5cm,
-				bottom=2.5cm,
-				right=2.5cm
-			]{geometry}
 
 		% Usando los fonts
 		\usepackage[osf]{Baskervaldx}
+		% Nice math calligraphic font 
+		\usepackage[cal=boondoxo]{mathalpha}
+		\usepackage{amssymb}
+		% Math font to match
+		\usepackage[bigdelims,baskervaldx]{newtxmath}
 
 		% Chapter bar (?)
 		\setlength{\barwidth}{7pt}
@@ -54,7 +62,7 @@
 \ProcessOptions\relax
 
 % Extendiendo clase memoir
-\LoadClass[11pt,openany]{memoir}
+\LoadClass[11pt]{memoir}
 
 % Renovando comando de hacer titulo para hacerlo estilo tesis
 \renewcommand{\maketitle}{%
@@ -94,17 +102,65 @@
 
 \newcommand{\makefrontmatter}{
 	\pagestyle{empty}
-	\noindent
-
+	\vfill
 	\noindent Typeset in Baskervald X and Nimbus Sans by
 	\LaTeX.
 
 	\noindent This version is revision \gitAbbrevHash{} (\gitAuthorDate), with content generated
 
-	\vfill
+	\newpage
+
+	\thispagestyle{empty}
+
+	\vspace*{\fill}
+	\begingroup
+
+	\noindent
+	{
+	\fontfamily{lmr}\selectfont
+	<<Con fundamento en los artículos 21 y 27 de la Ley Federal del Derecho de Autor y 
+	como titular de los derechos moral y patrimonial de la obra titulada 
+	``\textbf{\@title}'', otorgo de manera gratuita y permanente al Instituto Tecnológico 
+	Autónomo de México y a la Biblioteca Raúl Bailléres Jr., la autorización para que 
+	fijen la obra en cualquier medio, incluido el electrónico, y la divulguen entre sus 
+	usuarios, profesores, estudiantes o terceras personas, sin que pueda percibir por tal 
+	divulgación una contraprestación.>>
+	\normalfont
+	}
+
+	\centering 
+
+	\vspace{5em}
+
+	\rule[1em]{20em}{0.5pt} % Línea para la fecha
+
+	\textsc{Fecha}
+	 
+	\vspace{8em}
+
+	\rule[1em]{20em}{0.5pt} % Línea para la firma
+
+	\textsc{\@author}
+
+	\endgroup
+	\vspace*{\fill}
 
 	\newpage
-	\tableofcontents*
+}
+
+\newcommand{\makeacknowledgements}[2]{
+	% \pagestyle{empty}
+	\begin{flushright}
+	\textit{#1}
+	\end{flushright}
+
+	\newpage
+
+	\chapter*{Acknowledgements}
+
+	\noindent #2
+
+	\newpage
 }
 
 % Chapter style
