@@ -1,46 +1,69 @@
-% Class File para reproducir un estilo similar a los textbooks del Open Logic Project en 
-% mi tesis
+ %===========================================================================================%
+ % Class File para reproducir un estilo similar a los textbooks del Open Logic Project en mi %
+ % tesis                                                                                     %
+ %===========================================================================================%
 
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{itam-thesis}[2020/12/28 Clase de Tesis ITAM estilo Open Logic]
 
-% Clases requeridas
-\RequirePackage{graphicx}
-% \RequirePackage{gitinfo2} % Poder añadir git revision hash
-
-% Dando las opciones
-\DeclareOption{debug}{
+%================================%
+% Declarando opciones de Paquete %
+%================================%
+\DeclareOption{colorful}{
 	\AtEndOfClass{
-		\usepackage[mark]{gitinfo2}
+		%=================%
+		% Page dimensions %
+		%=================%
 		\usepackage[
 				showframe,
 				paperwidth=17cm,
 				paperheight=22.5cm,
-				bottom=2.5cm,
-				right=2.5cm
+				nofoot=true,
+				bindingoffset=1.1cm,
+				inner=1.6cm,
+				outer=1.8cm,
+				top=2.5cm,
+				bottom=1.5cm
 			]{geometry}
 
-		% Bar lenght para barras junto a chapter name
-		\setlength{\barwidth}{7pt}
-	}
-}
 
-\DeclareOption{colorful}{
-	\AtEndOfClass{
+		%===================%
+		% Required packages %
+		%===================%
 		\RequirePackage{xcolor}
 		\RequirePackage{mdframed}
 		\RequirePackage{gitinfo2}
+		\RequirePackage{amsmath}
+		\RequirePackage{mathtools} % coloneqq
+		\RequirePackage{graphicx}
+		\RequirePackage{enumerate}
+		\RequirePackage{tabularx}
+		\RequirePackage{pgfplots}
 
-		% Geometry
-		\usepackage[
-				paperwidth=17cm,
-				paperheight=22.5cm,
-				bottom=2.5cm,
-				right=2.5cm
-			]{geometry}
+		% load ntheorem before newtxmath to avoid multiple definition of \openbox
+		\RequirePackage[
+				thmmarks,
+				amsmath,
+				amsthm,
+				hyperref
+			]{ntheorem}
 
-		% Usando los fonts
+		% redefine proof-end symbol; ntheorem's \openbox gives a hacek-C
+		% after a cases environment for some reason
+		\gdef\proofSymbol{\ensuremath{\Box}}
+
+
+		%=======%
+		% Fonts %
+		%=======%
+		% Baskervald X for roman, with oldstyle figure
 		\usepackage[osf]{Baskervaldx}
+		% load amssymb before newtxmath to avoid problem with \Bbbk
+		\usepackage{amssymb}
+		% Nice math calligraphic font 
+		\usepackage[cal=boondoxo]{mathalpha}
+		% Math font to match
+		\usepackage[bigdelims,baskervaldx]{newtxmath}
 
 		% Chapter bar (?)
 		\setlength{\barwidth}{7pt}
