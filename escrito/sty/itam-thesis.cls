@@ -6,13 +6,59 @@
 
 % Clases requeridas
 \RequirePackage{graphicx}
-% \RequirePackage[local]{gitinfo2} % Poder añadir git revision hash
+% \RequirePackage{gitinfo2} % Poder añadir git revision hash
+
+% Dando las opciones
+\DeclareOption{debug}{
+	\AtEndOfClass{
+		\usepackage[mark]{gitinfo2}
+		\usepackage[
+				showframe,
+				paperwidth=17cm,
+				paperheight=22.5cm,
+				bottom=2.5cm,
+				right=2.5cm
+			]{geometry}
+
+		% Bar lenght para barras junto a chapter name
+		\setlength{\barwidth}{7pt}
+	}
+}
+
+\DeclareOption{colorful}{
+	\AtEndOfClass{
+		\RequirePackage{xcolor}
+		\RequirePackage{mdframed}
+		\RequirePackage{gitinfo2}
+
+		% Geometry
+		\usepackage[
+				paperwidth=17cm,
+				paperheight=22.5cm,
+				bottom=2.5cm,
+				right=2.5cm
+			]{geometry}
+
+		% Usando los fonts
+		\usepackage[osf]{Baskervaldx}
+
+		% Chapter bar (?)
+		\setlength{\barwidth}{7pt}
+	}
+
+	\AtBeginDocument{
+		\def\figurename{Fig.}
+	}
+}
+
+\ProcessOptions\relax
 
 % Extendiendo clase memoir
 \LoadClass[11pt,openany]{memoir}
 
 % Renovando comando de hacer titulo para hacerlo estilo tesis
 \renewcommand{\maketitle}{%
+	\pagestyle{empty} % Suprime numero de página
 	\begin{center}
 	\textsc{\Large Instituto Tecnológico Autónomo de México}\\[2em]
 
@@ -53,7 +99,49 @@
 	\noindent Typeset in Baskervald X and Nimbus Sans by
 	\LaTeX.
 
-	% \noindent This version is revision \gitAbbrevHash{} (\gitAuthorDate), with content generated
+	\noindent This version is revision \gitAbbrevHash{} (\gitAuthorDate), with content generated
 
 	\vfill
+
+	\newpage
+	\tableofcontents*
 }
+
+% Chapter style
+
+% Define part and chapter styles
+
+\newlength{\barwidth}
+
+\makechapterstyle{OLPchapter}{%
+	\setlength{\afterchapskip}{40pt}
+	\setlength{\beforechapskip}{50pt}
+	\setlength{\midchapskip}{10pt}
+	\renewcommand*{\afterchapternum}{\par\nobreak\vskip 0pt}
+	\renewcommand*{\chapnamefont}{\fontsize{14pt}{0pt}\selectfont\scshape\bfseries}
+	\let\chapnumfont\chapnamefont
+	\renewcommand*{\chaptitlefont}{\normalfont\fontsize{44pt}{44pt}\selectfont\bfseries\itshape\color{red}}
+	\renewcommand*{\printchaptername}{%
+		\chapnamefont\@chapapp
+	}
+	\renewcommand*{\printchaptertitle}[1]{%
+		\chaptitlefont ##1\\[-\baselineskip]%
+		\hspace*{-20pt}%
+		\smash{\color{red}\rule{\barwidth}{350pt}}
+	}
+}
+
+\renewcommand*{\partnamefont}{\fontsize{24pt}{0pt}\selectfont\bfseries\scshape}
+\renewcommand*{\partnumfont}{\fontsize{24pt}{0pt}\selectfont\bfseries\sffamily}
+\renewcommand*{\parttitlefont}{\normalfont\fontsize{54pt}{54pt}\selectfont\bfseries\itshape\color{blue}}
+\renewcommand*{\printpartname}{%
+	\partnamefont Part
+}
+
+\chapterstyle{OLPchapter}
+
+\captionnamefont{\footnotesize\itshape\color{green}}
+\captiontitlefont{\footnotesize}
+
+\setlength{\cftbeforepartskip}{2em plus 0.5em minus 0.5em}
+\setlength{\cftbeforechapterskip}{1.0em plus 0.5em minus 0.25em}
