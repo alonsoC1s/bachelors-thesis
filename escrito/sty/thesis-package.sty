@@ -4,9 +4,28 @@
 
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{thesis-package}[2020/12/28 clase de tesis itam estilo open logic]
+
 %=======================%
 % Package configuration %
 %=======================%
+
+% Custom colors
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\definecolor{backcolour}{RGB}{229, 229, 229}
+\definecolor{dark}{RGB}{46, 52, 64}
+\definecolor{lightblue}{RGB}{94, 129, 172}
+\definecolor{lightgreen}{RGB}{163, 190, 140}
+\definecolor{lila}{RGB}{180, 142, 173}
+\definecolor{lightRed}{RGB}{191, 97, 106}
+
+% Hyperref setup
+\hypersetup{
+	colorlinks=true,
+	linkcolor=lightblue,
+	citecolor=lila,
+	pdftitle={Tesis Alonso Martinez},
+	pdfpagemode=FullScreen,
+}
 
 % Pgpflots config
 \pgfplotsset{compat=newest}

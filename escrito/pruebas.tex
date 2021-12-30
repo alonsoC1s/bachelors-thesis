@@ -14,12 +14,21 @@
 		bottom=1.5cm
 	]{geometry}
 
+% Bibliografía
+\usepackage{csquotes}
+\usepackage[
+	backend=biber,
+    citestyle=alphabetic,
+    style=alphabetic,
+    maxcitenames=2,
+    ]{biblatex}
+\addbibresource{refs.bib}
 
 % Paquete custom
 \usepackage{sty/thesis-package}
 
 \author{Alonso Martinez Cisneros}
-\title{om}
+\title{Titulo}
 \date{2022}
 
 \begin{document}
@@ -35,6 +44,9 @@
 
 \mainmatter
 
+%====================================================%
+% Start of the content proper ---------------------- %
+%====================================================%
 \part{Primera parte}
 \chapter{Hola}
 
@@ -55,9 +67,13 @@ Tete
 
 \section{hai}
 
-\begin{mytheo}{Label}{Perron-F}
-	Holis
-\end{mytheo}
+% \begin{mytheo}{Label}{Perron-F}
+% 	Holis
+% \end{mytheo}
+
+\lipsum[1-2]
+
+\nocite{*}
+\printbibliography
 
 \end{document}
-

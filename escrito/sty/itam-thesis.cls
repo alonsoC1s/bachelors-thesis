@@ -40,6 +40,9 @@
 		\RequirePackage{pgfplots}
 		\RequirePackage{float}
 		\RequirePackage[many]{tcolorbox}
+		% \RequirePackage{listings} % Code listings
+		% \RequirePackage{fontspec} % For custom ttfont
+		\RequirePackage{hyperref}
 		% \RequirePackage{mdframed}
 
 		% % load ntheorem before newtxmath to avoid multiple definition of \openbox
