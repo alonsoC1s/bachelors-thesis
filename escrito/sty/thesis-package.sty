@@ -32,6 +32,35 @@
 \pgfplotsset{width=7.5cm}
 \pgfkeys{/pgf/number format/1000 sep={}}
 
+% Language definitions and listings
+\lstdefinelanguage{julia}{
+		morekeywords= [0]{function, if, end, elseif, @constraint, return, module, 
+		export, using, =, copy, issparse, Matrix, isposdef, inv, 
+		zeros, size, findall, findmin, ones, else, length, I, trues,
+        isfinite., abs., abs, eps, Float64, julia>, julia, println, Bool, rand,
+		prinln, round, pkg},
+        morekeywords = [1]{1,2,3,40},
+		sensitive=false,
+		morestring=[s]{"}{"},
+		morecomment=[l]\#,
+		morecomment=[s]{"""}{"""},
+		otherkeywords={*, +, -, \\, ', :, .==, .<=, ./, .>, .!, .=, 
+		.^, .-,.,;},
+	}
+\lstset{language=julia,
+		basicstyle={\ttfamily\small \color{dark}},
+		numberstyle={\tiny \color{dark}},
+		backgroundcolor=\color{backcolour},
+		breaklines=true,
+		numbers=left,
+		keywordstyle= [0]\color{lightblue},
+		inputencoding=utf8,
+		commentstyle=\color{lightgreen},
+        keywordstyle = \itshape\color{lila},
+        escapeinside={{~}{~}},
+	}
+
+
 %=================================================%
 % Math Operators, Delimiters & Math-mode commands %
 %=================================================%

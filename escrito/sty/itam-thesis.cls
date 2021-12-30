@@ -40,7 +40,7 @@
 		\RequirePackage{pgfplots}
 		\RequirePackage{float}
 		\RequirePackage[many]{tcolorbox}
-		% \RequirePackage{listings} % Code listings
+		\RequirePackage{listings} % Code listings
 		% \RequirePackage{fontspec} % For custom ttfont
 		\RequirePackage{hyperref}
 		% \RequirePackage{mdframed}
