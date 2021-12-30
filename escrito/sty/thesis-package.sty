@@ -3,7 +3,119 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{thesis-package}[2020/12/28 Clase de Tesis ITAM estilo Open Logic]
 
+<<<<<<< Updated upstream
 \RequirePackage{xcolor}
 
 
 % Definiendo colores Nord
+=======
+%======================================%
+% Custom color palette - Based on Nord %
+%======================================%
+
+% % Custom colors
+% \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+% \definecolor{backcolour}{RGB}{229, 229, 229}
+% % Polar Night Palette
+% \definecolor{nightDarkest}{RGB}{46, 52, 64}
+% \definecolor{nightDark}{RGB}{59, 66, 82}
+% \definecolor{nightMid}{RGB}{67, 76, 94}
+% \definecolor{nightLight}{RGB}{76, 86, 106}
+% % Snow Storm Palette
+% \definecolor{snowDark}{RGB}{216, 222, 233}
+% \definecolor{snowMid}{RGB}{229, 233, 240}
+% \definecolor{snowLight}{RGB}{236, 239, 244}
+% % Frost Palette
+% \definecolor{frostTurqoise}{RGB}{143, 188, 187}
+% \definecolor{frostLightBlue}{RGB}{136, 192, 208}
+% \definecolor{frostMidBlue}{RGB}{129, 161, 193}
+% \definecolor{frostDarkBlue}{RGB}{94, 129, 172}
+% % Aurora Palette
+% \definecolor{auroraLila}{RGB}{180, 142, 173}
+% \definecolor{auroraRed}{RGB}{191, 97, 106}
+% \definecolor{auroraOrange}{RGB}{208, 135, 112}
+% \definecolor{auroraYellow}{RGB}{235, 203, 139}
+% \definecolor{auroraGreen}{RGB}{163, 190, 140}
+
+%=======================%
+% Package configuration %
+%=======================%
+
+% % Hyperref setup
+% \hypersetup{
+% 	colorlinks=true,
+% 	linkcolor=lightblue,
+% 	citecolor=lila,
+% 	pdftitle={Tesis Alonso Martinez},
+% 	pdfpagemode=FullScreen,
+% }
+
+% Pgpflots config
+\pgfplotsset{compat=newest}
+\pgfplotsset{width=7.5cm}
+\pgfkeys{/pgf/number format/1000 sep={}}
+
+% Language definitions and listings
+\lstdefinelanguage{julia}{
+		morekeywords= [0]{function, if, end, elseif, @constraint, return, module, 
+		export, using, =, copy, issparse, Matrix, isposdef, inv, 
+		zeros, size, findall, findmin, ones, else, length, I, trues,
+        isfinite., abs., abs, eps, Float64, julia>, julia, println, Bool, rand,
+		prinln, round, pkg},
+        morekeywords = [1]{1,2,3,40},
+		sensitive=false,
+		morestring=[s]{"}{"},
+		morecomment=[l]\#,
+		morecomment=[s]{"""}{"""},
+		otherkeywords={*, +, -, \\, ', :, .==, .<=, ./, .>, .!, .=, 
+		.^, .-,.,;},
+	}
+\lstset{language=julia,
+		basicstyle={\ttfamily\small \color{dark}},
+		numberstyle={\tiny \color{dark}},
+		backgroundcolor=\color{backcolour},
+		breaklines=true,
+		numbers=left,
+		keywordstyle= [0]\color{lightblue},
+		inputencoding=utf8,
+		commentstyle=\color{lightgreen},
+        keywordstyle = \itshape\color{lila},
+        escapeinside={{~}{~}},
+	}
+
+
+%=================================================%
+% Math Operators, Delimiters & Math-mode commands %
+%=================================================%
+
+%% Delimiters
+\DeclarePairedDelimiter{\nint}\lfloor\rceil %nearest integer
+\DeclarePairedDelimiter{\ceil}\lceil\rceil \DeclarePairedDelimiter{\floor}\lfloor\rfloor 
+\DeclarePairedDelimiter{\abs}\lvert\rvert % absolute value
+
+%% Operators
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+%% Commands
+\newcommand{\R}{\mathbb{R}}
+
+%%===========================%
+%% Theorem-like Environments %
+%%===========================%
+
+\newtcbtheorem[number within=section]{mytheo}{Theorem}%
+	{
+		colback=white,
+		colframe=blue!50,
+		fonttitle=\bfseries,
+		enhanced,
+		coltitle=blue!75!black,
+		attach boxed title to top left={
+			xshift=2ex,yshift=-2mm,yshifttext=-1mm
+			},
+		boxed title style={
+			colframe=blue!50, colback=blue!50
+			}
+	}{th}
+>>>>>>> Stashed changes

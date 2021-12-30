@@ -176,27 +176,29 @@
 	\renewcommand*{\afterchapternum}{\par\nobreak\vskip 0pt}
 	\renewcommand*{\chapnamefont}{\fontsize{14pt}{0pt}\selectfont\scshape\bfseries}
 	\let\chapnumfont\chapnamefont
-	\renewcommand*{\chaptitlefont}{\normalfont\fontsize{44pt}{44pt}\selectfont\bfseries\itshape\color{red}}
+	\renewcommand*{\chaptitlefont}{\normalfont\fontsize{44pt}{44pt}\selectfont\bfseries\itshape\color{auroraRed}}
 	\renewcommand*{\printchaptername}{%
 		\chapnamefont\@chapapp
 	}
 	\renewcommand*{\printchaptertitle}[1]{%
 		\chaptitlefont ##1\\[-\baselineskip]%
 		\hspace*{-20pt}%
-		\smash{\color{red}\rule{\barwidth}{350pt}}
+		\smash{\color{auroraLila}\rule{\barwidth}{350pt}}
 	}
 }
 
 \renewcommand*{\partnamefont}{\fontsize{24pt}{0pt}\selectfont\bfseries\scshape}
 \renewcommand*{\partnumfont}{\fontsize{24pt}{0pt}\selectfont\bfseries\sffamily}
-\renewcommand*{\parttitlefont}{\normalfont\fontsize{54pt}{54pt}\selectfont\bfseries\itshape\color{blue}}
+\renewcommand*{\parttitlefont}{\normalfont\fontsize{54pt}{54pt}\selectfont\bfseries\itshape\color{frostDarkBlue}}
+}}
 \renewcommand*{\printpartname}{%
 	\partnamefont Part
 }
 
 \chapterstyle{OLPchapter}
 
-\captionnamefont{\footnotesize\itshape\color{green}}
+% Caption styles
+\captionnamefont{\footnotesize\itshape\color{nightDark}}
 \captiontitlefont{\footnotesize}
 
 \setlength{\cftbeforepartskip}{2em plus 0.5em minus 0.5em}
