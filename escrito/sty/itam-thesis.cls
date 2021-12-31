@@ -119,7 +119,11 @@
 	\end{center}
 
 	\vspace*{\fill}
-	\textsc{Ciudad de México \hspace*{\fill} \@date}
+	{
+		\small
+		\noindent
+		\textsc{Ciudad de México \hspace*{\fill} \@date}
+	}
 	\newpage
 }
 
@@ -158,7 +162,7 @@
 
 	\textsc{Fecha}
 	 
-	\vspace{8em}
+	\vspace{5em}
 
 	\rule[1em]{20em}{0.5pt} % Línea para la firma
 

@@ -1,0 +1,60 @@
+%===============================================%
+% --- Dummy content for test-print purposes --- %
+%===============================================%
+\part{Primera parte}
+\chapter{Hola}
+
+\section{Sección Primera}
+\lipsum[1-2]
+
+\subsection{Subsección}
+Un poco de matemáticas:
+
+A \emph{policy} is a mapping from states to actions $\pi: S \to A$.
+
+A \emph{value function} from a policy, written $V^{\pi}: S \to \R$ gives the expected sum 
+of discounted rewards when acting under that policy
+\begin{equation}
+	V^{\pi} (s) = \E*{\sum_{t=0}^{\infty} \gamma^t R(s_t) \vertsep s_0 =s, a_t = \pi(s_t), 
+	s_{t+1} \mid s_t a_t \sim P}
+\end{equation}
+
+Ahora referenciamos a \cite{ths:RodZ} para probar el hightlighting de cita. Ahora pruebo 
+los theorem-like environments.
+
+\begin{thrm}{Borel--Carathéodory}{borel-cara}
+Let a function $f$ be analytic on a \emph{closed disc} of radius $R$ center origin.
+Suppose that $r < R$. Then, we have the following inequality:
+\begin{equation}
+\|f\|_r \le \frac{2r}{R-r} \sup_{|z| \le R} \operatorname{Re} f(z) + \frac{R+r}{R-r} 
+|f(0)|.
+\end{equation}
+\end{thrm}
+
+Ahora, un corolario del teorema \ref{thm:borel-cara} bien inventado.
+
+\begin{coro}{}{}
+	Corolario sin título ni label.
+\end{coro}
+
+\subsubsection{Prueba de código}
+Finalmente, un poco de código.
+
+\begin{lstlisting}[language=julia, caption=Aplicando algoritmo de cifrado]
+# Definiendo sistema de Lorenz
+function lorenz!(du, u, p, t, σ=10, β=8//3, ρ=28)
+    du[1] = σ * (u[2] - u[1])
+    du[2] = u[1] * (ρ - u[3]) - u[2]
+    du[3] = u[1] * u[2] - β * u[3]
+end
+\end{lstlisting}
+
+Ahi va un lema:
+
+\begin{lemma}{}{}
+	Lemazo.
+	\begin{equation}
+		\E*{\sum_{k=0}^{\infty} \vertsep \Pe{A} }
+	\end{equation}
+\end{lemma}
+
