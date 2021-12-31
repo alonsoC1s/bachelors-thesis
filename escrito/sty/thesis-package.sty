@@ -18,6 +18,30 @@
 \definecolor{lila}{RGB}{180, 142, 173}
 \definecolor{lightRed}{RGB}{191, 97, 106}
 
+% Custom colors
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\definecolor{backcolour}{RGB}{229, 229, 229}
+% Polar Night Palette
+\definecolor{nightDarkest}{RGB}{46, 52, 64}
+\definecolor{nightDark}{RGB}{59, 66, 82}
+\definecolor{nightMid}{RGB}{67, 76, 94}
+\definecolor{nightLight}{RGB}{76, 86, 106}
+% Snow Storm Palette
+\definecolor{snowDark}{RGB}{216, 222, 233}
+\definecolor{snowMid}{RGB}{229, 233, 240}
+\definecolor{snowLight}{RGB}{236, 239, 244}
+% Frost Palette
+\definecolor{frostTurqoise}{RGB}{143, 188, 187}
+\definecolor{frostLightBlue}{RGB}{136, 192, 208}
+\definecolor{frostMidBlue}{RGB}{129, 161, 193}
+\definecolor{frostDarkBlue}{RGB}{94, 129, 172}
+% Aurora Palette
+\definecolor{auroraLila}{RGB}{180, 142, 173}
+\definecolor{auroraRed}{RGB}{191, 97, 106}
+\definecolor{auroraOrange}{RGB}{208, 135, 112}
+\definecolor{auroraYellow}{RGB}{235, 203, 139}
+\definecolor{auroraGreen}{RGB}{163, 190, 140}
+
 % Hyperref setup
 \hypersetup{
 	colorlinks=true,
@@ -76,26 +100,17 @@
 
 %% Commands
 \newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
 
 %%===========================%
 %% Theorem-like Environments %
 %%===========================%
 
-% \newmdtheoremenv[
-% 		frametitle = {
-% 			\tikz[sep=0pt]
-% 			\node{Hai}
-% 		},
-% 		linecolor=red,
-% 		backgroundcolor= yellow!20,
-% 		linewidth = 3pt,
-% 		roundcorner = 5pt,
-% 	]{theo}{Theorem}[chapter]
-
-\newtcbtheorem[number within=section]{mytheo}{My Theorem}%
+% Theorem
+\newtcbtheorem[number within=chapter]{thrm}{Theorem}%
 	{
-		colback=white,
-		colframe=blue!50,
+		colback=white, % Inside color of content box
+		colframe=blue!50, % Outer box frame color
 		fonttitle=\bfseries,
 		enhanced,
 		coltitle=blue!75!black,
@@ -104,5 +119,21 @@
 			},
 		boxed title style={
 			colframe=blue!50, colback=blue!50
+			}
+	}{th}
+
+% Corollary
+\newtcbtheorem[number within=chapter]{coro}{Corollary}%
+	{
+		colback=white,
+		colframe=yellow!50,
+		fonttitle=\bfseries,
+		enhanced,
+		coltitle=yellow!75!black,
+		attach boxed title to top left={
+			xshift=2ex,yshift=-2mm,yshifttext=-1mm
+			},
+		boxed title style={
+			colframe=yellow!50, colback=yellow!50
 			}
 	}{th}

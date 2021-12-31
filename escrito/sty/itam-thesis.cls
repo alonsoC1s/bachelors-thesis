@@ -171,6 +171,8 @@
 }
 
 \newcommand{\makeacknowledgements}[2]{
+	% Dedictoria
+	% Vertical centering
 	\vspace*{\fill}
 	\begin{flushright}
 	\textit{#1}
@@ -187,40 +189,63 @@
 	\tableofcontents*
 }
 
-% Chapter style
+%=========================================================%
+% Part, Chapter and Sections styles---------------------- %
+%=========================================================%
 
-% Define part and chapter styles
-
+% Vertical bar length
 \newlength{\barwidth}
 
+%================%
+% Chapter styles %
+%================%
 \makechapterstyle{OLPchapter}{%
+	% Spacing
 	\setlength{\afterchapskip}{40pt}
 	\setlength{\beforechapskip}{50pt}
 	\setlength{\midchapskip}{10pt}
+	% Chapter Name (Chapter x)
 	\renewcommand*{\afterchapternum}{\par\nobreak\vskip 0pt}
-	\renewcommand*{\chapnamefont}{\fontsize{14pt}{0pt}\selectfont\scshape\bfseries}
+	\renewcommand*{\chapnamefont}{\fontsize{14pt}{0pt}\selectfont\scshape\bfseries\color{nightDarkest}}
 	\let\chapnumfont\chapnamefont
-	\renewcommand*{\chaptitlefont}{\normalfont\fontsize{44pt}{44pt}\selectfont\bfseries\itshape\color{red}}
+	% Chapter title - Fonts and color
+	\renewcommand*{\chaptitlefont}{\normalfont\fontsize{44pt}{44pt}\selectfont\bfseries\itshape\color{nightMid}}
 	\renewcommand*{\printchaptername}{%
 		\chapnamefont\@chapapp
 	}
+	% Chapter vertical bar
 	\renewcommand*{\printchaptertitle}[1]{%
 		\chaptitlefont ##1\\[-\baselineskip]%
 		\hspace*{-20pt}%
-		\smash{\color{red}\rule{\barwidth}{350pt}}
+		\smash{\color{frostDarkBlue}\rule{\barwidth}{350pt}}
 	}
 }
 
-\renewcommand*{\partnamefont}{\fontsize{24pt}{0pt}\selectfont\bfseries\scshape}
-\renewcommand*{\partnumfont}{\fontsize{24pt}{0pt}\selectfont\bfseries\sffamily}
-\renewcommand*{\parttitlefont}{\normalfont\fontsize{54pt}{54pt}\selectfont\bfseries\itshape\color{blue}}
+%=============%
+% Part styles %
+%=============%
+\renewcommand*{\partnamefont}{\fontsize{24pt}{0pt}\selectfont\bfseries\scshape\color{nightDarkest}}
+\renewcommand*{\partnumfont}{\fontsize{24pt}{0pt}\selectfont\bfseries\scshape\color{nightDarkest}}
+\renewcommand*{\parttitlefont}{\normalfont\fontsize{54pt}{54pt}\selectfont\bfseries\itshape\color{nightDark}}
 \renewcommand*{\printpartname}{%
 	\partnamefont Part
 }
 
 \chapterstyle{OLPchapter}
 
-\captionnamefont{\footnotesize\itshape\color{green}}
+%================%
+% Section styles %
+%================%
+% Changing section colors
+% Section
+\setsecheadstyle{\Large\bfseries\color{nightDarkest}}
+% Subsection
+\setsubsecheadstyle{\large\bfseries\color{nightDarkest}}
+% Subsubsection
+\setsubsubsecheadstyle{\bfseries\color{nightDark}}
+
+% Caption styles
+\captionnamefont{\footnotesize\itshape\color{nightLight}}
 \captiontitlefont{\footnotesize}
 
 \setlength{\cftbeforepartskip}{2em plus 0.5em minus 0.5em}

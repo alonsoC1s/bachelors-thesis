@@ -1,15 +1,15 @@
 [0] Config.pm:311> INFO - This is Biber 2.16
 [0] Config.pm:314> INFO - Logfile is 'pruebas.blg'
-[109] biber-darwin:340> INFO - === Thu Dec 30, 2021, 00:16:02
-[128] Biber.pm:415> INFO - Reading 'pruebas.bcf'
-[253] Biber.pm:949> INFO - Using all citekeys in bib section 0
-[272] Biber.pm:4340> INFO - Processing section 0
-[285] Biber.pm:4531> INFO - Looking for bibtex format file 'refs.bib' for section 0
-[286] bibtex.pm:1689> INFO - LaTeX decoding ...
-[296] bibtex.pm:1494> INFO - Found BibTeX data source 'refs.bib'
-[355] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
-[355] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[355] Biber.pm:4168> INFO - Sorting list 'anyt/global//global/global' of type 'entry' with template 'anyt' and locale 'en-US'
-[355] Biber.pm:4174> INFO - No sort tailoring available for locale 'en-US'
-[360] bbl.pm:654> INFO - Writing 'pruebas.bbl' with encoding 'UTF-8'
-[362] bbl.pm:757> INFO - Output to pruebas.bbl
+[110] biber-darwin:340> INFO - === Fri Dec 31, 2021, 14:20:40
+[130] Biber.pm:415> INFO - Reading 'pruebas.bcf'
+[260] Biber.pm:949> INFO - Using all citekeys in bib section 0
+[281] Biber.pm:4340> INFO - Processing section 0
+[295] Biber.pm:4531> INFO - Looking for bibtex format file 'refs.bib' for section 0
+[297] bibtex.pm:1689> INFO - LaTeX decoding ...
+[305] bibtex.pm:1494> INFO - Found BibTeX data source 'refs.bib'
+[372] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[372] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[372] Biber.pm:4168> INFO - Sorting list 'anyt/global//global/global' of type 'entry' with template 'anyt' and locale 'en-US'
+[372] Biber.pm:4174> INFO - No sort tailoring available for locale 'en-US'
+[378] bbl.pm:654> INFO - Writing 'pruebas.bbl' with encoding 'UTF-8'
+[380] bbl.pm:757> INFO - Output to pruebas.bbl
