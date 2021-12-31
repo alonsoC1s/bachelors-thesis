@@ -10,13 +10,11 @@
 %=======================%
 
 % Custom colors
-\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
-\definecolor{backcolour}{RGB}{229, 229, 229}
-\definecolor{dark}{RGB}{46, 52, 64}
-\definecolor{lightblue}{RGB}{94, 129, 172}
-\definecolor{lightgreen}{RGB}{163, 190, 140}
-\definecolor{lila}{RGB}{180, 142, 173}
-\definecolor{lightRed}{RGB}{191, 97, 106}
+% \definecolor{dark}{RGB}{46, 52, 64}
+% \definecolor{lightblue}{RGB}{94, 129, 172}
+% \definecolor{lightgreen}{RGB}{163, 190, 140}
+% \definecolor{lila}{RGB}{180, 142, 173}
+% \definecolor{lightRed}{RGB}{191, 97, 106}
 
 % Custom colors
 \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
@@ -45,8 +43,9 @@
 % Hyperref setup
 \hypersetup{
 	colorlinks=true,
-	linkcolor=lightblue,
-	citecolor=lila,
+	linkcolor=frostDarkBlue,
+	citecolor=auroraLila,
+	urlcolor=auroraRed,
 	pdftitle={Tesis Alonso Martinez},
 	pdfpagemode=FullScreen,
 }
@@ -55,6 +54,9 @@
 \pgfplotsset{compat=newest}
 \pgfplotsset{width=7.5cm}
 \pgfkeys{/pgf/number format/1000 sep={}}
+
+% JuliaMono font
+\newfontfamily\JuliaMono{JuliaMono}
 
 % Language definitions and listings
 \lstdefinelanguage{julia}{
@@ -72,15 +74,15 @@
 		.^, .-,.,;},
 	}
 \lstset{language=julia,
-		basicstyle={\ttfamily\small \color{dark}},
-		numberstyle={\tiny \color{dark}},
+		basicstyle={\JuliaMono\small \color{nightDarkest}},
+		numberstyle={\tiny\color{nightDarkest}},
 		backgroundcolor=\color{backcolour},
 		breaklines=true,
 		numbers=left,
-		keywordstyle= [0]\color{lightblue},
+		keywordstyle= [0]\color{frostDarkBlue},
 		inputencoding=utf8,
-		commentstyle=\color{lightgreen},
-        keywordstyle = \itshape\color{lila},
+		commentstyle=\color{auroraGreen},
+        keywordstyle = \itshape\color{auroraLila},
         escapeinside={{~}{~}},
 	}
 
@@ -116,7 +118,7 @@
 		colframe=frostMidBlue, % Outer box frame color
 		fonttitle=\bfseries\scshape, % font title style
 		enhanced,
-		coltitle=black, % Title font color
+		coltitle=snowLight, % Title font color
 		attach boxed title to top left={
 			xshift=2ex,yshift=-2mm,yshifttext=-1mm
 			},
@@ -133,7 +135,7 @@
 		colframe=auroraLila, % Outer box frame color
 		fonttitle=\bfseries\scshape, % font title style
 		enhanced,
-		coltitle=black, % Title font color
+		coltitle=snowLight, % Title font color
 		attach boxed title to top left={
 			xshift=2ex,yshift=-2mm,yshifttext=-1mm
 			},
@@ -150,7 +152,7 @@
 		colframe=auroraRed, % Outer box frame color
 		fonttitle=\bfseries\scshape, % font title style
 		enhanced,
-		coltitle=black, % Title font color
+		coltitle=snowLight, % Title font color
 		attach boxed title to top left={
 			xshift=2ex,yshift=-2mm,yshifttext=-1mm
 			},
