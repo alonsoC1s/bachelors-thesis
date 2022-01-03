@@ -36,11 +36,19 @@
 \frontmatter
 \maketitle
 \makefrontmatter
-\makeacknowledgements{
-	Thanks to
-}{
-	Acknowledgements to
-}
+
+% Something
+\cleardoublepage
+\pagestyle{plain}
+\pagenumbering{arabic}
+
+\include{FrontBackmatter/Dedication}
+\include{FrontBackmatter/Acknowledgments}
+\include{FrontBackmatter/Abstract}
+\include{FrontBackmatter/Foreword}
+% Foreword perhaps...
+
+\tableofcontents
 
 \mainmatter
 
@@ -48,7 +56,20 @@
 % Start of the content proper ---------------------- %
 %====================================================%
 
-\input{Chapters/printTest.tex}
+% \input{Chapters/printTest.tex}
+\chapter*{Introduction}
+\include{Chapters/0-Intro}
+
+\part{Foundations}
+
+\chapter{Setting the stage}
+\include{Chapters/Motivation}
+
+
+\chapter{Probability Theory}
+\chapter{Stochastic Processes \& Markov Decision Processes}
+\chapter{Optimization Theory}
+\chapter{Reinforcement Learning}
 
 \nocite{*}
 \printbibliography

@@ -174,25 +174,6 @@
 	\newpage
 }
 
-\newcommand{\makeacknowledgements}[2]{
-	% Dedictoria
-	% Vertical centering
-	\vspace*{\fill}
-	\begin{flushright}
-	\textit{#1}
-	\end{flushright}
-	\vspace*{\fill}
-
-	\newpage
-
-	\chapter*{Acknowledgements}
-
-	\noindent #2
-
-	\newpage
-	\tableofcontents*
-}
-
 %=========================================================%
 % Part, Chapter and Sections styles---------------------- %
 %=========================================================%
