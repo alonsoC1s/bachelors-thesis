@@ -4,3 +4,5 @@ temp/
 *.log
 escrito/*.synctex.gz
 papers/Reinforcement Learing - Sutton & Barto.pdf
+*.auxlock
+*.blg

@@ -14,6 +14,12 @@
 		bottom=1.5cm
 	]{geometry}
 
+\usepackage{tikz}
+\usetikzlibrary{pgfplots.external}
+\tikzexternalize[prefix=figures/]
+
+\usepackage{import}
+
 % Bibliografía
 \usepackage{csquotes}
 \usepackage[
@@ -34,6 +40,7 @@
 \begin{document}
 
 \frontmatter
+\pagenumbering{roman}
 \maketitle
 \makefrontmatter
 
@@ -58,6 +65,7 @@
 
 % \input{Chapters/printTest.tex}
 \chapter*{Introduction}
+\input{bachelors-thesis.pdf_tex}
 \include{Chapters/0-Intro}
 
 \part{Foundations}

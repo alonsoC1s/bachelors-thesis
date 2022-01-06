@@ -37,6 +37,7 @@
 		\RequirePackage{graphicx}
 		\RequirePackage{enumerate}
 		\RequirePackage{tabularx}
+		\RequirePackage{tikz}
 		\RequirePackage{pgfplots}
 		\RequirePackage{float}
 		\RequirePackage[many]{tcolorbox}

@@ -2,7 +2,7 @@
 % --- Dummy content for test-print purposes --- %
 %===============================================%
 \part{Primera parte}
-\chapter{Hola}
+\chapter{Primer capítulo}
 
 \section{Sección Primera}
 \lipsum[1-2]
@@ -15,8 +15,8 @@ A \emph{policy} is a mapping from states to actions $\pi: S \to A$.
 A \emph{value function} from a policy, written $V^{\pi}: S \to \R$ gives the expected sum 
 of discounted rewards when acting under that policy
 \begin{equation}
-	V^{\pi} (s) = \E*{\sum_{t=0}^{\infty} \gamma^t R(s_t) \vertsep s_0 =s, a_t = \pi(s_t), 
-	s_{t+1} \mid s_t a_t \sim P}
+	V^{\pi} (s) = \E*{\sum_{t=0}^{\infty} \gamma^t R(s_t) \vertsep s_0 =s, a_t 
+	= \pi(s_t), s_{t+1} \vertsep s_t a_t \sim P}
 \end{equation}
 
 Ahora referenciamos a \cite{ths:RodZ} para probar el hightlighting de cita. Ahora pruebo 
@@ -31,10 +31,23 @@ Suppose that $r < R$. Then, we have the following inequality:
 \end{equation}
 \end{thrm}
 
-Ahora, un corolario del teorema \ref{thm:borel-cara} bien inventado.
+\lipsum[2][2]
+
+\begin{thrm}{Liouville}{liouville}
+	Every holomorphic function $f$ for which there exists a positive 
+	number $M$ such that $|f(z)| \leq M$ for all $z$ in $\mathbb{C}$
+	is constant.
+\end{thrm}
+
 
 \begin{coro}{}{}
-	Corolario sin título ni label.
+	Non-constant holomorphic functions on $\mathbb{C}$  have unbounded 
+	images.
+\end{coro}
+
+\begin{coro}{}{}
+	Every non-constant single-variable polynomial with complex 
+	coefficients has at least one complex root.
 \end{coro}
 
 \subsubsection{Prueba de código}
@@ -49,12 +62,20 @@ function lorenz!(du, u, p, t, σ=10, β=8//3, ρ=28)
 end
 \end{lstlisting}
 
-Ahi va un lema:
+\lipsum[3][1-3]
 
 \begin{lemma}{}{}
-	Lemazo.
-	\begin{equation}
-		\E*{\sum_{k=0}^{\infty} \vertsep \Pe{A} }
-	\end{equation}
+	Let $\displaystyle \mathbf{A} \in \mathbb{R}^{m\times n}$ and 
+	$\displaystyle \mathbf{b} \in \mathbb {R}^{m}$. Then exactly one 
+	of the following two assertions is true:
+	\begin{enumerate}
+		\item There exists an $\displaystyle \mathbf{x} \in \mathbb 
+			{R} ^{n}$ such that $\mathbf{Ax} =\mathbf{b}$ and 
+			$\displaystyle \mathbf{x} \geq 0$.
+		\item There exists a $\displaystyle \mathbf{y} \in \mathbb
+			{R}^{m}$ such that $\displaystyle 
+			\mathbf{A}^{\top}\mathbf{y} \geq 0$ and $\displaystyle 
+			\mathbf{b}^{\top}\mathbf{y} <0$.
+	\end{enumerate}
 \end{lemma}
 
