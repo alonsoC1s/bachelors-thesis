@@ -1,0 +1,106 @@
+\documentclass[tikz,14pt,border=10pt]{standalone}
+\usepackage{textcomp}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows}
+\usepackage{xcolor}
+
+% Custom colors
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\definecolor{backcolour}{RGB}{229, 229, 229}
+% Polar Night Palette
+\definecolor{nightDarkest}{RGB}{46, 52, 64}
+\definecolor{nightDark}{RGB}{59, 66, 82}
+\definecolor{nightMid}{RGB}{67, 76, 94}
+\definecolor{nightLight}{RGB}{76, 86, 106}
+% Snow Storm Palette
+\definecolor{snowDark}{RGB}{216, 222, 233}
+\definecolor{snowMid}{RGB}{229, 233, 240}
+\definecolor{snowLight}{RGB}{236, 239, 244}
+% Frost Palette
+\definecolor{frostTurqoise}{RGB}{143, 188, 187}
+\definecolor{frostLightBlue}{RGB}{136, 192, 208}
+\definecolor{frostMidBlue}{RGB}{129, 161, 193}
+\definecolor{frostDarkBlue}{RGB}{94, 129, 172}
+% Aurora Palette
+\definecolor{auroraLila}{RGB}{180, 142, 173}
+\definecolor{auroraRed}{RGB}{191, 97, 106}
+\definecolor{auroraOrange}{RGB}{208, 135, 112}
+\definecolor{auroraYellow}{RGB}{235, 203, 139}
+\definecolor{auroraGreen}{RGB}{163, 190, 140}
+
+% Baskervald X for roman, with oldstyle figure
+\usepackage[osf]{Baskervaldx}
+% load amssymb before newtxmath to avoid problem with \Bbbk
+\usepackage{amssymb}
+% Nice math calligraphic font 
+\usepackage[cal=boondoxo]{mathalpha}
+% Math font to match
+\usepackage[bigdelims,baskervaldx]{newtxmath}
+
+\begin{document}
+
+
+\begin{tikzpicture}
+    [
+		node distance=1.75cm,
+        place/.style={
+			draw, circle, align=center, minimum size=0.75cm
+		}
+    ]
+
+% Nodes
+\node (RA) [place, align=center] {RA};
+\node (three) [place, right of=RA, fill=auroraRed] {3};
+\node (four) [place, right of=three, fill=auroraRed] {4};
+\node (five) [place, right of=four, fill=auroraGreen] {5};
+\node (start) [place, below of=RA] {\footnotesize Start};
+\node (GS) [place, right of=start] {GS};
+\node (one) [place, right of=GS, fill=frostDarkBlue] {1};
+\node (two) [place, right of=one, fill=frostDarkBlue] {2};
+
+% Transitions
+\draw [->, semithick, bend left]
+	(start) to node [auto]
+	{\tiny $p=\frac{1}{4}$} (RA) {};
+
+% \draw [->, , bend right] (start) to (GS) {};
+\draw [->, semithick, bend right]
+	(start) to node [sloped, auto, very near end]
+	{\tiny \color{frostDarkBlue}{$p=\frac{1}{4}$}} (one) {};
+
+\draw [->, semithick, bend right]
+	(start) to node [sloped, auto, very near end]
+	{\tiny \color{frostDarkBlue}{$p=\frac{1}{4}$}} (two) {};
+
+\draw [->, semithick, in=260]
+	(start) to node [sloped, auto]
+	{\color{auroraRed}{\tiny $p=\frac{1}{4}$}} (three);
+
+% \draw [->, semithick, in=225]
+% 	(start) to node [sloped, auto, near end]
+% 	{\tiny $p=\frac{1}{4}$} (four);
+
+% \draw [->, semithick, in=250]
+% 	(start) to node [sloped, auto, near end]
+% 	{\tiny $p=\frac{1}{4}$} (five);
+
+\draw [->, semithick, bend left]
+	(RA) to node [auto, sloped, swap]
+	{\color{auroraRed}{\tiny$p=\frac{1}{16}$}} (three) {};
+
+\draw [->, semithick, bend left]
+	(RA) to node [auto, sloped, very near end]
+	{\color{auroraRed}{\tiny$p=\frac{1}{16}$}} (four) {};
+
+\draw [->, semithick,bend left]
+	(RA) to node [auto, sloped, near end]
+	{\color{auroraGreen}{\tiny$p=\frac{1}{16}$}} (five) {};
+
+\draw [<->, semithick]
+	(start.east) to node [auto, sloped]
+	{\tiny$p=\frac{1}{4}$} (GS.west) {};
+
+\end{tikzpicture}
+
+\end{document}
