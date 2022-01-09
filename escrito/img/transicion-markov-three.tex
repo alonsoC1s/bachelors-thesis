@@ -52,62 +52,19 @@
 % Nodes
 \node (RA) [place, align=center] {RA};
 \node (three) [place, right of=RA, fill=auroraRed] {3};
-\node (four) [place, right of=three, fill=auroraRed] {4};
-\node (five) [place, right of=four, fill=auroraGreen] {5};
-\node (GS) [place, below of=RA] {GS};
-\node (start) [place, right of=GS] {\footnotesize Start};
-\node (one) [place, right of=start, fill=frostDarkBlue] {1};
-\node (two) [place, right of=one, fill=frostDarkBlue] {2};
-
-% Transitions
-% \draw [->, semithick, bend left]
-% 	(start) to node [auto]
-% 	{\tiny $p=\frac{1}{4}$} (RA) {};
-
-% \draw [->, , bend right] (start) to (GS) {};
-\draw [->, semithick, bend right]
-	(start) to node [sloped, auto]
-	{\tiny \color{frostDarkBlue}{$p=\frac{1}{4}$}} (one) {};
-
-\draw [->, semithick, bend right]
-	(start) to node [sloped, auto, very near end]
-	{\tiny \color{frostDarkBlue}{$p=\frac{1}{4}$}} (two) {};
+\node (start) [place, below of=three] {\footnotesize Start};
 
 \draw [->, semithick]
 	(start) to node [auto, swap]
 	{\color{auroraRed}{\tiny $p=\frac{1}{4}$}} (three);
 
-% \draw [->, semithick, in=225]
-% 	(start) to node [sloped, auto, near end]
-% 	{\tiny $p=\frac{1}{4}$} (four);
-
-% \draw [->, semithick, in=250]
-% 	(start) to node [sloped, auto, near end]
-% 	{\tiny $p=\frac{1}{4}$} (five);
-
 \draw [->, semithick, bend left]
-	(RA) to node [auto, sloped, swap]
+	(RA) to node [auto, sloped]
 	{\color{auroraRed}{\tiny$p=\frac{1}{16}$}} (three) {};
 
 \draw [->, semithick, bend left]
-	(RA) to node [auto, sloped, very near end]
-	{\color{auroraRed}{\tiny$p=\frac{1}{16}$}} (four) {};
-
-\draw [->, semithick,bend left]
-	(RA) to node [auto, sloped, near end]
-	{\color{auroraGreen}{\tiny$p=\frac{1}{16}$}} (five) {};
-
-\draw [->, semithick, bend right]
-	(start) to node [auto, sloped, swap]
+	(start) to node [auto]
 	{\tiny$p=\frac{1}{4}$} (RA) {};
-
-\draw [->, semithick, bend right]
-	(RA) to node [auto, swap]
-	{\tiny$p=\frac{1}{16}$} (GS) {};
-
-\draw [->, semithick, bend right]
-	(GS) to node [auto, swap]
-	{\tiny$p=1$} (start) {};
 
 \end{tikzpicture}
 
