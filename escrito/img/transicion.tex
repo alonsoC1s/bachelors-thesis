@@ -54,26 +54,21 @@
 \node (three) [place, right of=RA, fill=auroraRed] {3};
 \node (four) [place, right of=three, fill=auroraRed] {4};
 \node (five) [place, right of=four, fill=auroraGreen] {5};
-\node (start) [place, below of=RA] {\footnotesize Start};
-\node (GS) [place, right of=start] {GS};
-\node (one) [place, right of=GS, fill=frostDarkBlue] {1};
+\node (GS) [place, below of=RA] {GS};
+\node (start) [place, right of=GS] {\footnotesize Start};
+\node (one) [place, right of=start, fill=frostDarkBlue] {1};
 \node (two) [place, right of=one, fill=frostDarkBlue] {2};
 
 % Transitions
-\draw [->, semithick, bend left] (start) to (RA) {};
-% \draw [->, , bend right] (start) to (GS) {};
 \draw [->, semithick, bend right] (start) to (one) {};
 \draw [->, semithick, bend right] (start) to (two) {};
-
-\draw [->, semithick, in=200] (start) to (three) {};
-\draw [->, semithick, in=225] (start) to (four) {};
-\draw [->, semithick, in=250] (start) to (five) {};
-
+\draw [->, semithick] (start) to (three);
 \draw [->, semithick, bend left] (RA) to (three) {};
 \draw [->, semithick, bend left] (RA) to (four) {};
 \draw [->, semithick,bend left] (RA) to (five) {};
-
-\draw [<->, semithick] (start.east) to (GS.west);
+\draw [->, semithick, bend right] (start) to (RA) {};
+\draw [->, semithick, bend right] (RA) to (GS) {};
+\draw [->, semithick, bend right] (GS) to (start) {};
 
 \end{tikzpicture}
 
