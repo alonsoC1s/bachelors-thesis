@@ -17,49 +17,57 @@ sub-fields of research:
 \end{itemize}
 
 This thesis is concerned specifically with Machine Learning.  
-Particularly with a subset of Machine Learning known as 
-unsupervised learning.  Some authors \cite{SuttonBarto} insist 
-Reinforcement Learning is itself different from unsupervised 
-learning, but for the sake of simplicity we address the 
-distinctions later on.
+Particularly with a subset of the field known as Reinforcement 
+Learning. Some authors such as \cite{SuttonBarto} divide the 
+field of Machine Learning (ML) in three parts: supervised 
+learning, unsupervised learning, and reinforcement learning.  
+Both supervised and unsupervised learning rely heavily in 
+statistics-based techniques such as regression models and 
+statistical inference. The techniques used in reinforcement 
+learning (RL), rely on different models of what learning is, and 
+tries to go beyond finding association rules for a simple, 
+well-defined problem.
 
 In contrast to supervised learning where a learning agent is 
 given data labeled by a knowledgeable source and must ``learn'' 
 to classify based on those initial labels, in unsupervised 
-learning there is no ``train data'', the agent must act and 
-optimize it's strategy based only upon the reward or penalty 
-resulting from making a certain decision.  The key words here 
-being \textit{optimize}, \textit{strategy} and 
-\textit{decision}.
+learning as well as reinforcement learning, there is no ``train 
+data'', the agent must act and optimize it's strategy based only 
+upon the reward or penalty resulting from making a certain 
+decision.  The key words here being \textit{optimize}, 
+\textit{strategy} and \textit{decision}.
 
-For a concrete example, picture a robot vacuum cleaner tasked 
-with moving from an initial point to a target point.  Only that 
-this robot has no sense of direction, it can only move up, down, 
-left or right with respect to itself. The robot cannot ``tell'' 
-which way to go, it only senses if got closer or farther away. 
-Is there a way the robot can reach it's goal?
+For a concrete example picture someone at a casino playing at a 
+slot machine, only this machine has $k$ levers instead of just 
+one. This person would naturally like to win as much money as 
+possible across some number of games. How could this be 
+achieved? Surely each lever makes the machine operate 
+differently and thus is more or less likely to get a jackpot.  
+This person would, across many games, try each lever and see how 
+much money comes out. Hopefully, after the first few games this 
+person has a clear idea of which are the best levers to pull.
 
-If you think about it, the robot analogy is not so different 
-from the standard mental model we have of say an infant learning 
-to crawl.  With poor vision and only it's caretaker's voice as 
-guide, it must learn to find its way to safety by trial and 
-error. It cannot be given millions of examples of ``valid 
-paths'' for extrapolation, as is the case with supervised 
-learning. This agent learns by interacting with the environment 
-itself.
+If you think about it, the slot machine analogy is not so 
+different from the standard mental model we have of say an 
+infant learning to crawl.  With poor vision and only it's 
+caretaker's voice as guide, it must learn to find its way to 
+safety by trial and error. It cannot be given millions of 
+examples of ``valid paths'' for extrapolation, as is the case 
+with supervised learning. This agent learns by interacting with 
+the environment itself.
 
-In a certain sense, Reinforcement Learning leverages our 
-intuitions about the nature of learning. All the main elements 
-are there: cause and effect, goals, and consequences to 
-decisions made, but as we will see, it also encodes more subtle 
-concepts. For instance, delayed gratification and planning 
-ahead. It also has the novelty of being goal-oriented rather 
-than task-oriented as most Machine Learning techniques often 
-are. For example, a self-driving car ``trained'' via supervised 
-learning might train on millions of examples on what constitutes 
-a valid steering wheel move, while one learning without 
-supervision is learning how to drive as an activity consisting 
-of hundreds of little tasks, all to be mastered.
+In a certain sense RL leverages our intuitions about the nature 
+of learning. All the main elements are there: cause and effect, 
+goals, and consequences to decisions made, but as we will see, 
+it also encodes more subtle concepts. For instance, delayed 
+gratification and planning ahead. It also has the novelty of 
+being goal-oriented rather than task-oriented as most Machine 
+Learning techniques often are. For example, a self-driving car 
+``trained'' via supervised learning might train on millions of 
+examples on what constitutes a valid steering wheel move, while 
+one learning by being evaluated is learning how to drive as an 
+activity consisting of hundreds of little tasks, all to be 
+mastered.
 
 \section{Formalizing ideas}
 Now, mathematically speaking, what does it \textit{mean} for a 
