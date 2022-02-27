@@ -65,11 +65,11 @@ goals, and consequences to decisions made, but as we will see,
 it also encodes more subtle concepts. For instance, delayed 
 gratification and planning ahead. It also has the novelty of 
 being goal-oriented rather than task-oriented as most Machine 
-Learning techniques often are. For example, a self-driving car 
+Learning techniques often are. For example, a self-driving car, 
 ``trained'' via supervised learning might train on millions of 
-examples on what constitutes a valid steering wheel move and 
-then expected to extrapolate to situations outside the training 
-data. Meanwhile a self-driving car learning by being evaluated 
+examples on what constitutes a valid steering wheel move, is
+expected to extrapolate to situations outside the training 
+data. Meanwhile a self-driving car, learning by being evaluated 
 is learning how to drive as an activity consisting of hundreds 
 of little tasks, all to be mastered simultaneously.
 
@@ -79,10 +79,10 @@ machine to ``learn''?
 
 We might not get as far as what learning as a whole means for 
 humans or machines, but we can certainly discuss what 
-mechanisms allow self-driving to exist or computers beating 
-world champions of Chess and Go. For that, we need to identify 
-the key concepts in the picture I painted and express them in 
-the language of mathematics.
+mechanisms allow self-driving cars to exist or computers to 
+beat world champions of Chess and Go. For that, we need to 
+identify the key concepts in the picture I painted and express 
+them in the language of mathematics.
 
 For now, we can gloss over the details of how might a machine 
 make decisions, perceive goals, take actions or perceive 
@@ -94,18 +94,17 @@ it made before and whether or not they resulted in positive
 results so it can later on apply that knowledge to become an 
 increasingly better problem solver. If this agent is evaluated 
 each time it carries out some task, we would like for its score 
-to increase each successive time it tries to complete some 
-task. The idea of a continuously improving score is the 
-foundation of mathematical optimization.
+to increase each successive time it tries to complete the task. 
+The idea of a continuously improving score is the foundation of 
+mathematical optimization.
 
 \subsection{Optimization Theory}
 As the name suggests, mathematical optimization is concerned 
-with finding an ``optimal'' solution to problems where an 
-unambiguous score might be given to different solutions  
-(whatever ``optimal'' means). Even if there is no best solution 
-to a given problem, the techniques used in mathematical 
-optimization often allow for a continuous improvement through 
-iteration.
+with finding an ``optimal'' (whatever ``optimal'' means) 
+solution to problems where an unambiguous score might be given 
+to different solutions. Even if there is no best solution to a 
+given problem, the techniques used in mathematical optimization 
+often allow for a continuous improvement through iteration.
 
 Going back to our slot machine example, each time the robot 
 selects one of the $k$ levers the machine gives out a prize. 
@@ -156,18 +155,18 @@ For instance, the robot at the slot machine might have gotten a
 very big prize the first time it chose a certain lever but got 
 almost nothing the next game. The feedback it got by choosing 
 an action changes as time goes by, because the slot machine 
-behaves randomly. This robot had a certain information after 
-pulling the lever for the first time: this is a good lever to 
-pull. In the next game this robot already knows which lever 
-might be a good bet, so among the $k$ possible options it might 
-choose to pull the same lever as last time. Next time the 
-reward is much smaller, the robot transitioned states in a 
-sense. It was in a state were the best option was somewhat 
-clear, to a state in which that one lever is no longer the most 
-desirable option. It went from being certain to being forced to 
-explore. We might think of this process a navigating the 
-branches of a tree, making a decision every time a branch forks 
-of into smaller branches.
+behaves randomly. This robot had a certain amount of 
+information after pulling the lever for the first time: this is 
+a good lever to pull. In the next game this robot already knows 
+which lever might be a good bet, so among the $k$ possible 
+options it might choose to pull the same lever as last time. 
+Next time the reward is much smaller, the robot transitioned 
+states in a sense. It was in a state were the best option was 
+somewhat clear, to a state in which that one lever is no longer 
+the most desirable option. It went from being certain to being 
+forced to explore. We might think of this process a navigating 
+the branches of a tree, making a decision every time a branch 
+forks of into smaller branches.
 
 [AQUI DIAGRAMA DE ARBOL]
 
@@ -182,13 +181,14 @@ that originated in China, proved to be too complex for the
 techniques used by Deep Blue. Deep Blue was mainly based on 
 hard-coded openings and endgames taken from other grandmaster 
 games, which differs a lot from the RL approach. Go was much 
-later attacked by another robot player named AlphaGo developed 
-by DeepMind researchers \cite{silver2017mastering}.  AlphaGo 
-defeated Lee Sedol, the reigning human champion in 2016.  
-AlphaGo was one of the most notorious applications of RL and 
-made the field even more popular. Since RL has proved to be 
-very good for these kinds of tasks in the past, let us explore 
-an example with a simpler board game.
+later attacked by another robot player named AlphaGo, developed 
+by researchers from a company named DeepMind 
+\cite{silver2017mastering}.  AlphaGo defeated Lee Sedol, the 
+reigning human champion in 2016.  AlphaGo was one of the most 
+notorious applications of RL and made the field even more 
+popular. Since RL has proved to be very good for these kinds of 
+tasks in the past, let us explore an example with a simpler 
+board game.
 
 \subsection{Duopoly, oligopoly, \ldots}
 Consider a simplified version of a popular game whose name I 
@@ -239,24 +239,27 @@ clearer.
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.75\textwidth]{img/diagram-start.pdf}
-	\caption{Squares accessible on the first spin.}
+	\caption{Squares accessible on the first turn.}
 	\label{fig:miniopoly-diagram-start}
 \end{figure}
 
-In fig. \ref{fig:miniopoly-diagram-start} we can see all the 
+In figure \ref{fig:miniopoly-diagram-start} we can see all the 
 possible squares the robot might land on and then buy starting 
-from the first turn. Notice how for instance there is an arrow 
-that points from ``Start'' to itself. This transition might 
-happen. In fact we know what it takes for it to happen: land on 
-``Roll Again'', and then land on ``GoTo Start''. In other 
-words, this transition happens if the robot spins a 3 two 
-consecutive times. Notice how in this diagram we only care 
+from the first turn. Notice how in this figure we only care 
 about the starting and ending points, not the transit points, 
-so that is why there are no arrows pointing to the squares what 
-move the player elsewhere. Notice how squares 6 and further are 
-not included. If the robot were to spin a 4, square number 4 is 
-the furthest it could go. If it were to land on Roll Again and 
-then spin a 4, the largest possible spin, it could move four 
+so that is why there are no arrows pointing to the squares that 
+move the player elsewhere like Spin Again and GoTo Start.
+This is the reason there is an arrow that points from ``Start'' 
+to itself. This transition might happen. In fact, we know what 
+it takes for this to happen: land on ``Roll Again'', and then 
+land on ``GoTo Start''. In other words, this transition happens 
+if the robot spins a 3 two consecutive times.
+
+% va arriba
+Notice how squares 6 and further are not included.
+If the robot were to spin a 4, the square with number 3 is the 
+furthest it could go. If it were to land on Roll Again and then 
+spin a 4, the largest possible spin, it could move four 
 squares: from Roll Again to 3, then to 4, then to GoTo Start, 
 and finally to square 5, exhausting its possible moves.
 
@@ -290,6 +293,7 @@ for the robot to ``take that route'' so to speak. Once we do,
 we can calculate how likely a ``trajectory'' or sequence of 
 arrows is.
 
+% Quitar el p=1 en la flecha de de GS -> S
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\textwidth]{img/transicion-markov.pdf}
@@ -320,13 +324,17 @@ somewhere and tallying up as it goes. For instance after a few
 turns it might have something fig. \ref{fig:hist-miniopoly} on 
 its head to help make decisions.
 
+% Aqui no va el square 6 porque es first turn
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{img/hist-miniopoly.tikz}
 \label{fig:hist-miniopoly}
-\caption{Histogram of rewards obtained by visiting each square}
+\caption{Boxplot of rewards obtained by visiting each square}
 \end{figure}
 
+% EXPLICAR MUCHO MEJOR
+% SOLO ES UN FIRST TURN SIMULADO MUCHAS VECES CON SQUARES 
+% COMPRADOS YA
 Its stands to reason that as this histogram is updated the 
 learning agent will be able to make progressively better 
 choices. Simple as this example might be, the essence is 

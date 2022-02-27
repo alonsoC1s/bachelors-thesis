@@ -2,7 +2,7 @@
 .nvimlog
 temp/
 *.log
-escrito/*.synctex.gz
+*.synctex.gz
 papers/Reinforcement Learing - Sutton & Barto.pdf
 *.auxlock
 *.blg

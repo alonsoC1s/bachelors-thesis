@@ -97,7 +97,7 @@
 	% Logo ITAM
 	\begin{figure}[h]
 	\begin{center}
-	\includegraphics[scale=0.50]{img/logo-ITAM.pdf}
+	\includegraphics[scale=0.50]{img/logo_ITAM.pdf}
 	\end{center}
 	\end{figure}
 

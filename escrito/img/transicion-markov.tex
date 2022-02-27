@@ -1,4 +1,4 @@
-\documentclass[tikz,14pt,border=10pt]{standalone}
+\documentclass[tikz,12pt]{standalone}
 \usepackage{textcomp}
 
 \usepackage{tikz}
@@ -38,19 +38,26 @@
 % Math font to match
 \usepackage[bigdelims,baskervaldx]{newtxmath}
 
+% \usetikzlibrary{backgrounds}
+
 \begin{document}
 
 
 \begin{tikzpicture}
     [
+		% show background rectangle,
 		node distance=1.75cm,
-        place/.style={
+		place/.style={
 			draw, circle, align=center, minimum size=0.75cm
 		}
-    ]
+	]
+
+% \draw [use as bounding box]
+	% (left, down) - (right, up)
+	% (-1.2cm, -2.45cm) rectangle (5.65cm, 1.15cm);
 
 % Nodes
-\node (RA) [place, align=center] {RA};
+\node (RA) [place, align=center] {SA};
 \node (three) [place, right of=RA, fill=auroraRed] {3};
 \node (four) [place, right of=three, fill=auroraRed] {4};
 \node (five) [place, right of=four, fill=auroraGreen] {5};
@@ -94,7 +101,7 @@
 	{\color{auroraRed}{\tiny$p=\frac{1}{16}$}} (four) {};
 
 \draw [->, semithick,bend left]
-	(RA) to node [auto, sloped, near end]
+	(RA) to node [auto, sloped, near end, outer ysep=0]
 	{\color{auroraGreen}{\tiny$p=\frac{1}{16}$}} (five) {};
 
 \draw [->, semithick, bend right]
@@ -107,7 +114,7 @@
 
 \draw [->, semithick, bend right]
 	(GS) to node [auto, swap]
-	{\tiny$p=1$} (start) {};
+	{} (start) {};
 
 \end{tikzpicture}
 
