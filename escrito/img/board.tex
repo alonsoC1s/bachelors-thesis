@@ -51,7 +51,7 @@
     ]
 
 % Nodes
-\node (start) [place] {\rotatebox{45}{Start}};
+\node (start) [place] {\rotatebox{45}{\ttfamily Start}};
 
 \node (one) [
 		place, left of=start, fill=frostDarkBlue,
@@ -63,7 +63,7 @@
 
 \node (roll-again) [
 		place, left of=two, text width=1cm,
-	] {Spin Again};
+	] {\ttfamily Spin Again};
 
 \node (three) [
 		place, above of=roll-again, fill=auroraRed,
@@ -75,7 +75,7 @@
 
 \node (goto-start) [
         place, above of=four
-	] {\textsc{GoTo} Start};
+	] {\ttfamily \textsc{GoTo} Start};
 
 \node (five) [
 		place, right of=goto-start, fill=auroraGreen,
@@ -87,7 +87,7 @@
     
 \node (goto_jail) [
         place, right of=six
-    ] {GoTo Jail};
+	] {\ttfamily Jail};
 
 \node (seven) [
 		place, below of=goto_jail, fill=auroraLila,

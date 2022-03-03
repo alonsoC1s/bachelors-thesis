@@ -175,9 +175,9 @@ One of the major achievements and claims to fame for
 reinforcement learning in the past decades has been its use in 
 some of the most famous matches in several classic board games.  
 Chess was ``mastered'' when Kasparov, then chess grandmaster, 
-was beat by Deep Blue in 1997 \cite{silverchess}, but other 
-board games with enormous state spaces such as Go, the game 
-that originated in China, proved to be too complex for the 
+was beaten by Deep Blue in 1997 \cite{silverchess}. Other board 
+games with enormous state spaces such as Go, the game that 
+originated in China, proved to be too complex for the 
 techniques used by Deep Blue. Deep Blue was mainly based on 
 hard-coded openings and endgames taken from other grandmaster 
 games, which differs a lot from the RL approach. Go was much 
@@ -205,13 +205,17 @@ indicate a special action such as allowing the player to spin
 once more in the same turn, complete the circuit by going 
 directly to the starting square and so on.
 
-The robot might acquire that square for itself and if it lands 
+Going forward, picture a robot being ``trained'' to become a 
+super player via the RL techniques we are slowly developing. At 
+each turn the robot spins and moves forward however many 
+squares the spinner indicates. If the robot lands on a colored 
+square it might acquire that square for itself and if it lands 
 on it again, gains some amount of money. The robot also 
 receives money every time it completes the circuit. In this 
 simplified version the robot is playing alone, but every turn 
 some square not currently owned by the robot might become 
 unavailable for purchase, and the robot must pay a fee if it 
-lands on it from then on. If it lands on jail the robot also 
+lands on it in the future. If it lands on jail the robot also 
 loses money, a bigger amount. As you might have guessed, the 
 point of the game is to make the most amount of money. The game 
 ends when the robot goes bankrupt or the amount of squares that 
@@ -219,7 +223,7 @@ the robot can buy runs out. What purchase strategy must the
 robot follow to win?
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=.75\textwidth]{img/board.pdf}
+	\includegraphics[width=.65\textwidth]{img/board.pdf}
 	\caption{Board for the game described earlier.}
 	\label{fig:miniopoly-board}
 \end{figure}
@@ -229,16 +233,16 @@ player cannot entirely choose which square to move to, it can
 only decide if it wants to purchase it or not once it landed on 
 it.  For instance, if we look at Fig. \ref{fig:miniopoly-board} 
 we see that even if the robot wanted to go to square number 8 
-and buy it there is no possible way to do that. The biggest 
+and buy it, there is no possible way to do that. The biggest 
 number it can spin is 4, and even if it got to roll again the 
-furthest it could go is square 5. Let's revise the board and 
-simplify by removing the squares that are not accesible on the 
-first spin, and lets draw some arrows to make the transitions 
-clearer.
-
+furthest it could go is square 5. Figure 
+\ref{fig:miniopoly-diagram-start} shows a simplified version of 
+the board. Only the squares accessible on the first spin are 
+shown, along with arrows indicate the possible transitions 
+between the starting square and the rest.
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=.75\textwidth]{img/diagram-start.pdf}
+	\includegraphics[width=.65\textwidth]{img/diagram-start.pdf}
 	\caption{Squares accessible on the first turn.}
 	\label{fig:miniopoly-diagram-start}
 \end{figure}
@@ -248,30 +252,33 @@ possible squares the robot might land on and then buy starting
 from the first turn. Notice how in this figure we only care 
 about the starting and ending points, not the transit points, 
 so that is why there are no arrows pointing to the squares that 
-move the player elsewhere like Spin Again and GoTo Start.
-This is the reason there is an arrow that points from ``Start'' 
-to itself. This transition might happen. In fact, we know what 
-it takes for this to happen: land on ``Roll Again'', and then 
-land on ``GoTo Start''. In other words, this transition happens 
-if the robot spins a 3 two consecutive times.
+move the player elsewhere like \texttt{Spin Again} and 
+\texttt{Goto Start}. This is the reason there is an arrow that 
+points from \texttt{Start} to itself. This transition might 
+happen. In fact, we know what it takes for this to happen: land 
+on \texttt{Spin Again}, and then land on \texttt{Goto Start}. 
+In other words, this transition happens if the robot spins a 3 
+two consecutive times.
 
 % va arriba
-Notice how squares 6 and further are not included.
-If the robot were to spin a 4, the square with number 3 is the 
-furthest it could go. If it were to land on Roll Again and then 
+Notice how squares 6 and further are not included. If the robot 
+were to spin a 4, the square with number 3 is the furthest it 
+could go. If it were to land on \texttt{Spin Again} and then 
 spin a 4, the largest possible spin, it could move four 
-squares: from Roll Again to 3, then to 4, then to GoTo Start, 
-and finally to square 5, exhausting its possible moves.
+squares: from \texttt{Spin Again} to 3, then to 4, then to 
+\texttt{Goto Start}, and finally to square 5, exhausting its 
+possible moves.
 
-If the robot were to land on Roll Again, then spin a 3, it 
-would ``land'' on GoTo Start, finishing its turn back at the 
-starting square. That particular move results in the robot 
-going back to the start and getting paid for completing the 
-circuit, without running the risk of landing on a square 
-someone owns or jail and getting charged. That sounds like a 
-very desirable play (for us looking at the big picture, the 
-robot cannot see that far ahead yet). Since we would like this 
-to happen, we might ask how likely is for that to happen.
+If the robot were to land on \texttt{Spin Again}, then spin a 
+3, it would ``land'' on \texttt{Goto Start}, finishing its turn 
+back at the starting square. That particular move results in 
+the robot going back to the start and getting paid for 
+completing the circuit, without running the risk of landing on 
+a square someone owns or \texttt{Jail} and getting charged. 
+That sounds like a very desirable play (for us looking at the 
+big picture, the robot cannot see that far ahead yet). Since we 
+would like this to happen, we might ask how likely is for that 
+to happen.
 
 \begin{figure}[h]
 	\centering
@@ -293,7 +300,6 @@ for the robot to ``take that route'' so to speak. Once we do,
 we can calculate how likely a ``trajectory'' or sequence of 
 arrows is.
 
-% Quitar el p=1 en la flecha de de GS -> S
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\textwidth]{img/transicion-markov.pdf}
@@ -303,13 +309,13 @@ arrows is.
 
 At the moment it is not important why some arrows have certain 
 probabilities, and some might not be terribly obvious even for 
-someone acquainted with some basic probability. In diagram 
+someone acquainted with some basic probability. In figure 
 \ref{fig:miniopoly-transicion-markov} to find the probability 
 of getting to a certain square (say 6 for example) we look only 
 at the last arrow, as it takes into account the probability of 
 the last step happening.
 
-The robot we are trying to teach moves as the diagram above 
+The robot we are trying to teach moves as the figure above 
 suggests. For each square there is a different diagram. The 
 robot is not aware of this, all it knows is that it spins, and 
 then is transported elsewhere and must decide whether to buy or 
@@ -318,7 +324,7 @@ been before and if it gained or lost money last turn.
 Crucially, landing on a square previously visited does not 
 necessarily mean the reward will be the same as last time. 
 Also, the reward for buying a square may come much later on or 
-not at all. This student must somehow keep track of what the 
+not at all. This robot must somehow keep track of what the 
 expected reward for landing somewhere might be, recording it 
 somewhere and tallying up as it goes. For instance after a few 
 turns it might have something fig. \ref{fig:hist-miniopoly} on 
@@ -338,7 +344,7 @@ its head to help make decisions.
 Its stands to reason that as this histogram is updated the 
 learning agent will be able to make progressively better 
 choices. Simple as this example might be, the essence is 
-similar to the powerful programs that beat world champions.
+similar to the powerful programs that defeat world champions.
 
 This example covers most of the core ideas of what is referred 
 to as the Reinforcement Learning Problem. We will explore the 
