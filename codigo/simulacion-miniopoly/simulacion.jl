@@ -1,5 +1,25 @@
 using Distributions
 
+
+# Cyclic arrays to make iteration simpler
+struct CyclicArray{L, T}
+    data::NTuple{L,T}
+end
+
+# Useful constructors
+CyclicArray(x...) = CyclicArray(x)
+CyclicArray(x::Vector{}) = CyclicArray(Tuple(x))
+
+function Base.getindex(ca::CyclicArray{L}, i) where {L}
+    # Substracting and adding 1 to i because Julia is 1-based indexed
+    return ca.data[((i - 1) % L) + 1]
+end
+
+function Base.zeros(::Type{CyclicArray{L, T}}) where {L, T}
+    return CyclicArray(zeros(T, L))
+end
+
+
 # Constants for bit-masking
 const OWNED = 1
 const BOT_OWNED = 2
@@ -51,6 +71,8 @@ The square status is obtained by applying bitwise operations on
 the `s` field and the predefined constants that indicate wether
 or not a specific flag is turned on.
 
+Note: Subtype of Integer so I can box it in a CyclicVector.
+
 # Examples
 To check if the square is owned
 ```julia-repl
@@ -62,7 +84,7 @@ Sq = Square(3) # 011 in binary. Both OWNED and BOT_OWNED, but not HAS_HOTEL
 (Sq.s & HAS_HOTEL) != 0 # False
 ```
 """
-struct Square
+struct Square <: Integer
     s::UInt8
 end
 
@@ -104,21 +126,49 @@ Defines a a monopoly player. It only keeps track of how much money
 it has, and where on the board it is. The rest is kept track of by
 the GameManager. See also [`GameManager`](@ref).
 """
-struct Player
+mutable struct Player
     money::Int
     position::Int
 end
 
-"""
-Main structure in charge of the logic of the game, such as yielding
-turns, keeping track of the property record, and enforcing transactions.
-"""
-struct GameManager
-    board::Vector{Square}
+# Default player constructor. Player with 1,500$ on starting square
+Player() = Player(1_500, 0)
+
+function spin!(p::Player)
+    p.position = square_PMF[p.position]
 end
 
-# Default outer constructor
-Board() = GameManager(fill(Square(), 9))
+function getsquare(p::Player)
+    return p.position
+end
+
+# Defining zero so I can make list of players with zeros
+Base.zero(::Type{Player}) = Player()
+
+"""
+Miniopoly main structure for `N` players.
+In charge of the logic of the game, such as yielding turns, keeping
+track of the property record, and enforcing transactions.
+"""
+mutable struct GameManager{N}
+    board::CyclicArray{9, Square}
+    players::CyclicArray{N, Player}
+    turn::Int
+end
+
+# Default outer constructor for n_players players
+newgame(N) = GameManager{N}(
+        #fill(Square(), 9),          # Board of squares
+        zeros(CyclicArray{9, Square}),
+        #fill(Player(), n_players),  # Vector of players
+        zeros(CyclicArray{N, Player}),
+        1
+    )
+
+function nextplayer(gm::GameManager)
+    gm.turn += 1
+    return gm.players[gm.turn]
+end
 
 # Functions
 
@@ -128,4 +178,20 @@ Board() = GameManager(fill(Square(), 9))
 Performs a single turn of the game.
 """
 function turn!(gm::GameManager)
+    # Get player in turn
+    player = nextplayer(gm)
+
+    # Spin the spinner
+    spin!(player)
+    square = getsquare(player)
+
+    # Check if available, free, etc...
+    if is_owned(square)
+        if is_bot_owned
+        else
+        end
+    else
+    end
+
+    # Carry out transactions
 end
