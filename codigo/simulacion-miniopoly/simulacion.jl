@@ -16,9 +16,16 @@ function Base.getindex(ca::CyclicArray{L}, i) where {L}
 end
 
 function Base.zeros(::Type{CyclicArray{L, T}}) where {L, T}
-    return CyclicArray(zeros(T, L))
+    return CyclicArray([zero(T) for i = 1:L]) # Hack so items dont share memory
 end
 
+function Base.pairs(ca::CyclicArray)
+    return pairs(ca.data)
+end
+
+Base.length(ca::CyclicArray) = length(ca.data)
+
+Base.iterate(ca::CyclicArray{L}, state = 1) where {L} = state > L ? nothing : (ca[state], state+1)
 
 # Constants for bit-masking
 const OWNED = 1
@@ -57,7 +64,7 @@ rand(square_PMF[2])
 ```
 """
 const square_PMF = Dict(
-        [ (i, DiscreteNonParametric(0:8, P[i+1, :])) for i=0:8]
+        [(i, DiscreteNonParametric(0:8, P[i+1, :])) for i=0:8]
     )
 
 """
@@ -91,7 +98,7 @@ end
 # Outer constructor for default instance
 Square() = Square(0)
 
-# Utilty functions
+Base.zero(::Square) = Square(0)
 
 """
     is_owned(sq::Square)::Bool
@@ -128,15 +135,11 @@ the GameManager. See also [`GameManager`](@ref).
 """
 mutable struct Player
     money::Int
-    position::Int
+    # position::Int
 end
 
 # Default player constructor. Player with 1,500$ on starting square
-Player() = Player(1_500, 0)
-
-function spin!(p::Player)
-    p.position = square_PMF[p.position]
-end
+Player() = Player(1_500)
 
 function getsquare(p::Player)
     return p.position
@@ -153,41 +156,46 @@ track of the property record, and enforcing transactions.
 mutable struct GameManager{N}
     board::CyclicArray{9, Square}
     players::CyclicArray{N, Player}
-    turn::Int
+    turn::UInt
+    positions::Dict{Player, Int}
 end
 
-# Default outer constructor for n_players players
-newgame(N) = GameManager{N}(
-        #fill(Square(), 9),          # Board of squares
-        zeros(CyclicArray{9, Square}),
-        #fill(Player(), n_players),  # Vector of players
-        zeros(CyclicArray{N, Player}),
-        1
+function newgame(N)
+    players = zeros(CyclicArray{N, Player})
+    
+    GameManager{N}(
+        zeros(CyclicArray{9, Square}),  # Board of clean Squares
+        players,
+        1,
+        Dict(player=> 0 for player in players)
     )
-
-function nextplayer(gm::GameManager)
-    gm.turn += 1
-    return gm.players[gm.turn]
 end
 
-# Functions
+function nextplayer!(gm::GameManager)
+    gm.turn += 1
+end
+
+function spin!(gm::GameManager)
+    next_square_pos = square_PMF[p.position]
+    p.position = square_PMF[p.position]
+end
 
 """
-    turn!(b::Board)
+    turn!(gm::GameManager)
 
 Performs a single turn of the game.
 """
 function turn!(gm::GameManager)
     # Get player in turn
-    player = nextplayer(gm)
+    nextplayer!(gm)
 
     # Spin the spinner
-    spin!(player)
+    spin!(gm, player)
     square = getsquare(player)
 
     # Check if available, free, etc...
     if is_owned(square)
-        if is_bot_owned
+        if is_bot_owned(square)
         else
         end
     else
