@@ -1,6 +1,5 @@
 using Distributions
 
-
 # Cyclic arrays to make iteration simpler
 struct CyclicArray{L, T}
     data::NTuple{L,T}
@@ -27,10 +26,10 @@ Base.length(ca::CyclicArray) = length(ca.data)
 
 Base.iterate(ca::CyclicArray{L}, state = 1) where {L} = state > L ? nothing : (ca[state], state+1)
 
-# Constants for bit-masking
-const OWNED = 1
-const BOT_OWNED = 2
-const HAS_HOTEL = 4
+# Constants for bit-masking & Player setting
+const OWNED = 2^0
+const N = 2
+const HAS_HOTEL = 2^(N+1)
 
 # Markov chain stochastic transition matrix
 const P = [
@@ -114,8 +113,8 @@ end
 
 Check if `sq` is owned by bot.
 """
-function is_bot_owned(sq::Square)::Bool
-    return is_owned(sq) && (sq.s & BOT_OWNED) != 0
+function playerOwns(p::Player, sq::Square)::Bool
+    return is_owned(sq) && (sq.s & p.id) != 0
 end
 
 """
@@ -135,18 +134,16 @@ the GameManager. See also [`GameManager`](@ref).
 """
 mutable struct Player
     money::Int
-    # position::Int
+    id::Int     # Identifier used to check if a square belongs to player
 end
-
-# Default player constructor. Player with 1,500$ on starting square
-Player() = Player(1_500)
 
 function getsquare(p::Player)
     return p.position
 end
 
-# Defining zero so I can make list of players with zeros
-Base.zero(::Type{Player}) = Player()
+# Defining zero so I can make list of players with `zeros`
+Base.zero(::Type{Player}) = Player(0, 0)
+
 
 """
 Miniopoly main structure for `N` players.
@@ -160,17 +157,26 @@ mutable struct GameManager{N}
     positions::Dict{Player, Int}
 end
 
-function newgame(N)
+function newgame(N, initial_money)
     players = zeros(CyclicArray{N, Player})
     
-    GameManager{N}(
+    gm = GameManager{N}(
         zeros(CyclicArray{9, Square}),  # Board of clean Squares
         players,
         1,
-        Dict(player=> 0 for player in players)
+        Dict(player => 0 for player in players) # Player's positions
     )
+
+    # Initializing players
+    for (i, player) in pairs(gm.players)
+        player.money = initial_money
+        player.id = 2^i
+    end
+
+    return gm
 end
 
+#= DEPRECATED To be rewritten
 function nextplayer!(gm::GameManager)
     gm.turn += 1
 end
@@ -179,6 +185,7 @@ function spin!(gm::GameManager)
     next_square_pos = square_PMF[p.position]
     p.position = square_PMF[p.position]
 end
+=#
 
 """
     turn!(gm::GameManager)
@@ -187,13 +194,11 @@ Performs a single turn of the game.
 """
 function turn!(gm::GameManager)
     # Get player in turn
-    nextplayer!(gm)
 
     # Spin the spinner
-    spin!(gm, player)
-    square = getsquare(player)
 
-    # Check if available, free, etc...
+
+    # Main logic of the game
     if is_owned(square)
         if is_bot_owned(square)
         else
