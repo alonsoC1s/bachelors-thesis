@@ -20,9 +20,7 @@ function Base.zeros(::Type{CyclicArray{L, T}}) where {L, T}
     return CyclicArray([zero(T) for i = 1:L]) # Hack so items dont share memory
 end
 
-function Base.pairs(ca::CyclicArray)
-    return pairs(ca.data)
-end
+Base.pairs(ca::CyclicArray) = pairs(ca.data)
 
 Base.length(ca::CyclicArray) = length(ca.data)
 
@@ -87,10 +85,8 @@ mutable struct Player
     id::Int     # Identifier used to check if a square belongs to player
 end
     
-function getsquare(p::Player)
-    return p.position
-end
-    
+getsquare(p::Player) = p.position
+ 
 # Defining zero so I can make list of players with `zeros`
 Base.zero(::Type{Player}) = Player(0, 0)
 
@@ -132,27 +128,21 @@ Base.zero(::Square) = Square(0)
 
 Check if `sq` is owned or available for purchase.
 """
-function is_owned(sq::Square)::Bool
-    return (sq.s & OWNED) != 0
-end
+is_owned(sq::Square)::Bool = (sq.s & OWNED) != 0
 
 """
     is_bot_owned(sq::Square)::Bool
 
 Check if `sq` is owned by bot.
 """
-function playerOwns(p::Player, sq::Square)::Bool
-    return is_owned(sq) && (sq.s & p.id) != 0
-end
+playerOwns(p::Player, sq::Square)::Bool = s_owned(sq) && (sq.s & p.id) != 0
 
 """
     has_hotel(sq::Square)::Bool
 
 Check if `sq` has a hotel
 """
-function has_hotel(sq::Square)::Bool
-    return  is_owned(sq) && (sq.s & HAS_HOTEL) != 0
-end
+has_hotel(sq::Square)::Bool = is_owned(sq) && (sq.s & HAS_HOTEL) != 0
 
 """
 Miniopoly main structure for `N` players.
