@@ -1,4 +1,6 @@
-using Distributions
+" Arrays with a fixed length that allow for out-of-index circular indexing"
+module CyclicArrays
+export CyclicArray
 
 # Cyclic arrays to make iteration simpler
 struct CyclicArray{L, T}
@@ -24,7 +26,16 @@ end
 
 Base.length(ca::CyclicArray) = length(ca.data)
 
-Base.iterate(ca::CyclicArray{L}, state = 1) where {L} = state > L ? nothing : (ca[state], state+1)
+function Base.iterate(ca::CyclicArray{L}, state = 1) where {L}
+    return state > L ? nothing : (ca[state], state+1)
+end
+
+end #CyclicArrays
+
+"Definitions for board and players for Miniopoly"
+module MiniopolySimulator
+using ..CyclicArrays
+using Distributions
 
 # Constants for bit-masking & Player setting
 const OWNED = 2^0
@@ -65,6 +76,23 @@ rand(square_PMF[2])
 const square_PMF = Dict(
         [(i, DiscreteNonParametric(0:8, P[i+1, :])) for i=0:8]
     )
+
+"""
+Defines a a monopoly player. It only keeps track of how much money
+it has, and where on the board it is. The rest is kept track of by
+the GameManager. See also [`GameManager`](@ref).
+"""
+mutable struct Player
+    money::Int
+    id::Int     # Identifier used to check if a square belongs to player
+end
+    
+function getsquare(p::Player)
+    return p.position
+end
+    
+# Defining zero so I can make list of players with `zeros`
+Base.zero(::Type{Player}) = Player(0, 0)
 
 """
 Represents a single square on the board. Designed to work as 
@@ -126,25 +154,6 @@ function has_hotel(sq::Square)::Bool
     return  is_owned(sq) && (sq.s & HAS_HOTEL) != 0
 end
 
-
-"""
-Defines a a monopoly player. It only keeps track of how much money
-it has, and where on the board it is. The rest is kept track of by
-the GameManager. See also [`GameManager`](@ref).
-"""
-mutable struct Player
-    money::Int
-    id::Int     # Identifier used to check if a square belongs to player
-end
-
-function getsquare(p::Player)
-    return p.position
-end
-
-# Defining zero so I can make list of players with `zeros`
-Base.zero(::Type{Player}) = Player(0, 0)
-
-
 """
 Miniopoly main structure for `N` players.
 In charge of the logic of the game, such as yielding turns, keeping
@@ -158,7 +167,7 @@ mutable struct GameManager{N}
 end
 
 function newgame(N, initial_money)
-    players = zeros(CyclicArray{N, Player})
+    #players = zeros(CyclicArray{N, Player})
     
     gm = GameManager{N}(
         zeros(CyclicArray{9, Square}),  # Board of clean Squares
@@ -208,3 +217,5 @@ function turn!(gm::GameManager)
 
     # Carry out transactions
 end
+
+end # MiniopolySimulator
