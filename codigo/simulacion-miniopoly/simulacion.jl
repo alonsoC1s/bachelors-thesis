@@ -82,9 +82,9 @@ mutable struct Player
     money::Int
     id::Int     # Identifier used to check if a square belongs to player
 end
-
+    
 getsquare(p::Player) = p.position
-
+ 
 # Defining zero so I can make list of players with `zeros`
 Base.zero(::Type{Player}) = Player(0, 0)
 
