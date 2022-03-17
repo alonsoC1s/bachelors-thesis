@@ -28,10 +28,18 @@ function Base.iterate(ca::CyclicArray{L}, state = 1) where {L}
     return state > L ? nothing : (ca[state], state + 1)
 end
 
+function Base.show(io::IO, ::MIME"text/plain", ca::CyclicArray{L,T}) where {L,T}
+    print(io, "CyclicArray{$T} of length $L:\n   ", ca.data)
+end
+
 end #CyclicArrays
 
 "Definitions for board and players for Miniopoly"
 module MiniopolySimulator
+
+export square_PMF
+export GameManager, newgame, currentplayer, spin!
+
 using ..CyclicArrays
 using Distributions
 
@@ -82,34 +90,27 @@ mutable struct Player
     money::Int
     id::Int     # Identifier used to check if a square belongs to player
 end
-    
+
 getsquare(p::Player) = p.position
- 
+
 # Defining zero so I can make list of players with `zeros`
 Base.zero(::Type{Player}) = Player(0, 0)
+
+function Base.show(io::IO, ::MIME"text/plain", p::Player)
+    print(io, "Player with key $(p.id), \$$(p.money)")
+end
 
 """
 Represents a single square on the board. Designed to work as 
 a bit-field. The bits represent in order:
 - Wether or not the square is owned.
-- If its owned by the bot.
+- Who owns it 
 - If it has a hotel.
 
 The square status is obtained by applying bitwise operations on the `s` field and the 
 predefined constants that indicate wether or not a specific flag is turned on.
 
 Note: Subtype of Integer so I can box it in a CyclicVector.
-
-# Examples
-To check if the square is owned
-```julia-repl
-Sq = Square(3) # 011 in binary. Both OWNED and BOT_OWNED, but not HAS_HOTEL
-(Sq.s & OWNED) != 0 # True
-
-(Sq.s & BOT_OWNED) != 0 # True
-
-(Sq.s & HAS_HOTEL) != 0 # False
-```
 """
 struct Square <: Integer
     s::UInt8
@@ -128,11 +129,11 @@ Check if `sq` is owned or available for purchase.
 is_owned(sq::Square)::Bool = (sq.s & OWNED) != 0
 
 """
-    is_bot_owned(sq::Square)::Bool
+    player_owns(p::Player, sq::Square)::Bool
 
 Check if `sq` is owned by bot.
 """
-playerOwns(p::Player, sq::Square)::Bool = s_owned(sq) && (sq.s & p.id) != 0
+player_owns(p::Player, sq::Square)::Bool = s_owned(sq) && (sq.s & p.id) != 0
 
 """
     has_hotel(sq::Square)::Bool
@@ -152,13 +153,17 @@ mutable struct GameManager{N}
     positions::Dict{Player,Int}
 end
 
+function Base.show(io::IO, ::MIME"text/plain", gm::GameManager{N}) where {N}
+    print(io, "Miniopoly, with $N players:\nAt positions:\n$(gm.positions)")
+end
+
 function newgame(N, initial_money)
-    #players = zeros(CyclicArray{N, Player})
+    players = zeros(CyclicArray{N,Player})
 
     gm = GameManager{N}(
         zeros(CyclicArray{9,Square}),  # Board of clean Squares
         players,
-        1,
+        1,      # Turn counter
         Dict(player => 0 for player in players) # Player's positions
     )
 
@@ -171,16 +176,19 @@ function newgame(N, initial_money)
     return gm
 end
 
-#= DEPRECATED To be rewritten
-function nextplayer!(gm::GameManager)
-    gm.turn += 1
-end
+nextturn!(gm::GameManager) = gm.turn += 1
 
-function spin!(gm::GameManager)
-    next_square_pos = square_PMF[p.position]
-    p.position = square_PMF[p.position]
+currentplayer(gm::GameManager) = gm.players[gm.turn]
+
+function spin!(cp::Player, gm::GameManager)
+    # Spin the spinner and record the result
+    next_square_pos = rand(square_PMF[gm.positions[cp]])
+
+    # Update the game manager positions dict
+    gm.positions[cp] = next_square_pos
+
+    return gm.board[next_square_pos]
 end
-=#
 
 """
     turn!(gm::GameManager)
@@ -189,13 +197,14 @@ Performs a single turn of the game.
 """
 function turn!(gm::GameManager)
     # Get player in turn
+    cur_player = currentplayer(gm)
 
-    # Spin the spinner
-
+    # Spin the spinner, get new position
+    cur_square = spin!(cur_player, gm)
 
     # Main logic of the game
-    if is_owned(square)
-        if is_bot_owned(square)
+    if is_owned(cur_square)
+        if player_owns(cur_player, cur_square)
         else
         end
     else
