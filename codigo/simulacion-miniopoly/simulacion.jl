@@ -109,8 +109,6 @@ a bit-field. The bits represent in order:
 
 The square status is obtained by applying bitwise operations on the `s` field and the 
 predefined constants that indicate wether or not a specific flag is turned on.
-
-Note: Subtype of Integer so I can box it in a CyclicVector.
 """
 struct Square <: Integer
     s::UInt8
@@ -204,10 +202,10 @@ function turn!(gm::GameManager)
 
     # Main logic of the game
     if is_owned(cur_square)
-        if player_owns(cur_player, cur_square)
-        else
+        if !player_owns(cur_player, cur_square)
         end
     else
+        # Apply buying policy
     end
 
     # Carry out transactions
