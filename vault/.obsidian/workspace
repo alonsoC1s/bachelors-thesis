@@ -7,10 +7,9 @@
         "id": "d0c84f21ef0f572d",
         "type": "leaf",
         "state": {
-          "type": "markdown",
+          "type": "pdf",
           "state": {
-            "file": "Reinforcement Learning Textbook/sutton2020reinforcement.md",
-            "mode": "source"
+            "file": "readings/borkar2002convex.pdf"
           }
         }
       }
@@ -68,7 +67,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Reinforcement Learning Textbook/sutton2020reinforcement.md",
+                "file": "readings/borkar2002convex.pdf",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -88,15 +87,15 @@
   },
   "active": "d0c84f21ef0f572d",
   "lastOpenFiles": [
-    "Reinforcement Learning Textbook/sutton2020reinforcement.md",
-    "readings/schweitzer1985generalized.md",
-    "readings-notes/farias2002thesis.md",
+    "readings/borkar2002convex.pdf",
     "readings-notes/borkar2002convex.md",
+    "readings-notes/farias2002thesis.md",
+    "thesis/Net de ideas.md",
+    "Reinforcement Learning Textbook/sutton2020reinforcement.md",
+    "readings-notes/schweitzer1985generalized.md",
     "readings-notes/hordijk1979LP4MDP.md",
     "readings/farias2002thesis.pdf",
     "readings/farias2003LP2ADP.pdf",
-    "thesis/Objetivos.md",
-    "readings-notes/silver2015lecture.md",
-    "readings-notes/kolter2014lecture.md"
+    "thesis/Objetivos.md"
   ]
 }
