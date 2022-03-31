@@ -52,21 +52,22 @@ const square_PMF = Dict(
 Defining abstract supertype of `Square` so I can reference `Square` inside
 rewardslog before actually defining the struct `Square`.
 """
-abstract type Position end
+# abstract type Position end
 
 mutable struct Player
     money::Int
     id::Int
     # TODO: Add buying policy
-	rewardslog::Dict{Tuple{Bool, Position}, Float64}
+	# rewardslog::Dict{Tuple{Bool, Position}, Float64}
+	rewardslog::Dict{Tuple{Bool, Int}, Float64}
 end
 
-function logreward!(p::Player, s::Position, ismine::Bool, reward, n)
+function logreward!(p::Player, sqr::Int, ismine::Bool, reward, n)
 	try
-		Qₙ = p.rewardslog[ismine, s]
-		p.rewardslog[(ismine, s)] += 2/n * (reward - Qₙ)
+		Qₙ = p.rewardslog[ismine, sqr]
+		p.rewardslog[(ismine, sqr)] += 2/n * (reward - Qₙ)
 	catch
-		p.rewardslog[(ismine, s)] = reward
+		p.rewardslog[(ismine, sqr)] = reward
 	end
 end
 
@@ -84,7 +85,7 @@ function Base.zero(::Type{Player})
 	Player(
 		0, # Zero money
 		0, # id = 0
-		Dict{Tuple{Bool, Position}, Float64}() # Empty rewardslog
+		Dict{Tuple{Bool, Int}, Float64}() # Empty rewardslog
 	)
 end
 
@@ -92,10 +93,10 @@ function Base.show(io::IO, ::MIME"text/plain", p::Player)
 	print(io, "Player #$(p.id), \$$(Int(p.money))")
 end
 
-mutable struct Square <: Position
+mutable struct Square
     # s::UInt8
 	owner::Union{Player, Nothing}
-	hotels::UInt8
+	hotels::Int8
 end
 
 # Outer constructor for default instance
@@ -121,7 +122,7 @@ buyhotel!(sq::Square, p::Player) = sq.hotels += 1
 
 buy!(sq::Square, p::Player, what::Symbol) = what === :square ? buysquare!(sq, p) : buyhotel!(sq, p) 
 
-function moneytransfer!(sqr::Square, sender::P, receiver::P, amount::Int, n)::Bool where {P <: Player}
+function moneytransfer!(sqr::Int, sender::P, receiver::P, amount::Int, n)::Bool where {P <: Player}
 	# Transactions and logging for receiver
 	_ = transaction!(receiver, sqr, amount, :charge, n)
 
@@ -129,11 +130,11 @@ function moneytransfer!(sqr::Square, sender::P, receiver::P, amount::Int, n)::Bo
 	return transaction!(sender, sqr, amount, :pay, n)
 end
 
-function transaction!(p::Player, s::Square, amount::Int, direction::Symbol, n)::Bool
+function transaction!(p::Player, sqr::Int, amount::Int, direction::Symbol, n)::Bool
 	gone_broke = false
 
 	if direction === :pay
-		logreward!(p, s, false, amount, n)
+		logreward!(p, sqr, false, amount, n)
 
 		if p.money - amount < 0
 			gone_broke = true
@@ -141,7 +142,7 @@ function transaction!(p::Player, s::Square, amount::Int, direction::Symbol, n)::
 			p.money -= amount
 		end
 	elseif direction === :charge
-		logreward!(p, s, true, amount, n) 
+		logreward!(p, sqr, true, amount, n) 
 		p.money += amount
 	end
 
@@ -189,7 +190,7 @@ function spin!(cp::Player, gm::GameManager)
 
 	if next_square_pos == 0
 		@info "Player $(cp) just crossed starting point and received $(LAP_REWARD)"
-		transaction!(cp, gm.board[gm.positions[cp] + 1], LAP_REWARD, :charge, gm.turn)
+		transaction!(cp, next_square_pos, LAP_REWARD, :charge, gm.turn)
 	end
 
     # Update the game manager positions dict
@@ -206,6 +207,7 @@ function turn!(gm::GameManager, logging::Bool)::Bool
 
     # Spin the spinner, get new position
     cur_square = spin!(cur_player, gm)
+	square_number = gm.positions[cur_player] # Supposedly safe from 0-indexing
 
     # Main logic of the game
 	gone_broke = false
@@ -215,7 +217,7 @@ function turn!(gm::GameManager, logging::Bool)::Bool
 	if is_mine && isbuying(cur_player)
 		@info "Player $(cur_player) is buying a hotel for square $(cur_square)"
 		buy!(cur_square, cur_player, :hotel)
-		gone_broke = transaction!(cur_player, cur_square, HOTEL_PRICE, :pay, n)
+		gone_broke = transaction!(cur_player, square_number, HOTEL_PRICE, :pay, n)
 	else
 		# Either already owned, or available to buy
 		if is_owned(cur_square)
@@ -223,12 +225,12 @@ function turn!(gm::GameManager, logging::Bool)::Bool
 			amount = FLAT_FEE + 500 * hotels(cur_square)
 			@info "Player $(cur_player) landed on owned square and will pay $(amount)"
 
-			gone_broke = moneytransfer!(cur_square, cur_player, owner(cur_square), amount, n)
+			gone_broke = moneytransfer!(square_number, cur_player, owner(cur_square), amount, n)
 		elseif isbuying(cur_player) # Available for purchase
 			@info "Player $(cur_player) is buying square $(cur_square)"
 			buy!(cur_square, cur_player, :square)
 
-			gone_broke = transaction!(cur_player, cur_square, SQUARE_PRICE, :pay, n)
+			gone_broke = transaction!(cur_player, square_number, SQUARE_PRICE, :pay, n)
 		end
 	end
 

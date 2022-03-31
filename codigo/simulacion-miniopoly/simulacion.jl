@@ -19,7 +19,23 @@ end
 
 # Running many simulations
 function run_simulation()
-	Threads.@threads for i = 1:1_000_000
+	results = DataFrame(
+		mine=Vector{Bool}(),
+		square=Vector{Int}(),
+		reward=Vector{Float64}()
+	)
+
+	Threads.@threads for i = 1:10_000
 		gm = one_game()
+
+		for player in gm.players
+			log = player.rewardslog
+
+			for (key, reward) in log
+				push!(results, [key[1], key[2], reward])
+			end
+		end
 	end
+
+	return results
 end
