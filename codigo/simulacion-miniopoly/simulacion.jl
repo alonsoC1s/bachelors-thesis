@@ -4,7 +4,7 @@ using ..Miniopoly
 using Logging, DataFrames, CSV
 
 # Disabling logging for performance reasons
-Logging.disable_logging(Logging.Info)
+# Logging.disable_logging(Logging.Info)
 
 function one_game()
 	broke = false
