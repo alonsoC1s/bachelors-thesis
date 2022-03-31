@@ -8,9 +8,7 @@ using ..CyclicArrays
 using Distributions
 
 # Constants for bit-masking & Player setting
-# const OWNED = 2^0
 const N = 2
-# const HAS_HOTEL = 2^(N + 1)
 const FLAT_FEE = 250
 const SQUARE_PRICE = 350
 const HOTEL_PRICE = 100
@@ -51,38 +49,28 @@ const square_PMF = Dict(
 )
 
 """
-Defines a a miniopoly player. It only keeps track of how much money it has, and where on 
-the board it is. The rest is kept track of by the GameManager. See also 
-[`GameManager`](@ref).
+Defining abstract supertype of `Square` so I can reference `Square` inside
+rewardslog before actually defining the struct `Square`.
 """
+abstract type Position end
+
 mutable struct Player
     money::Int
-    id::Int     # Identifier used to check if a square belongs to player
+    id::Int
     # TODO: Add buying policy
+	rewardslog::Dict{Tuple{Bool, Position}, Float64}
 end
 
-# getsquare(p::Player) = p.position
-
-function moneytransfer!(sender::P, receiver::P, amount::Int)::Bool where {P <: Player}
-	_ = transaction!(receiver, amount, :charge)
-	return transaction!(sender, amount, :pay)
-
-end
-
-function transaction!(p::Player, amount::Int, direction::Symbol)::Bool
-	gone_broke = false
-	if direction === :pay
-		if p.money - amount < 0
-			gone_broke = true
-		else
-			p.money -= amount
-		end
-	elseif direction === :charge
-		p.money += amount
+function logreward!(p::Player, s::Position, ismine::Bool, reward, n)
+	try
+		Qₙ = p.rewardslog[ismine, s]
+		p.rewardslog[(ismine, s)] += 2/n * (reward - Qₙ)
+	catch
+		p.rewardslog[(ismine, s)] = reward
 	end
-
-	return gone_broke
 end
+
+
 
 # FIXME: Función burda de una política de decisión
 function isbuying(p::Player)::Bool
@@ -92,23 +80,19 @@ function isbuying(p::Player)::Bool
 end
 
 # Defining zero so I can make list of players with `zeros`
-Base.zero(::Type{Player}) = Player(0, 0)
-
-function Base.show(io::IO, ::MIME"text/plain", p::Player)
-	print(io, "Player with id $(p.id), \$$(Int(p.money))")
+function Base.zero(::Type{Player})
+	Player(
+		0, # Zero money
+		0, # id = 0
+		Dict{Tuple{Bool, Position}, Float64}() # Empty rewardslog
+	)
 end
 
-"""
-Represents a single square on the board. Designed to work as 
-a bit-field. The bits represent in order:
-- Wether or not the square is owned.
-- Who owns it 
-- If it has a hotel.
+function Base.show(io::IO, ::MIME"text/plain", p::Player)
+	print(io, "Player #$(p.id), \$$(Int(p.money))")
+end
 
-The square status is obtained by applying bitwise operations on the `s` field and the 
-predefined constants that indicate wether or not a specific flag is turned on.
-"""
-mutable struct Square
+mutable struct Square <: Position
     # s::UInt8
 	owner::Union{Player, Nothing}
 	hotels::UInt8
@@ -119,25 +103,14 @@ Square() = Square(Nothing(), 0)
 
 Base.zero(::Type{Square}) = Square()
 
-"""
-    is_owned(sq::Square)::Bool
+function Base.show(io::IO, ::MIME"text/plain", sq::Square)
+	print(io, "Square ownedby $(owner) w/ $(hotels) hotels")
+end
 
-Check if `sq` is owned or available for purchase.
-"""
 is_owned(sq::Square)::Bool = !isnothing(sq.owner)
 
-"""
-    player_owns(p::Player, sq::Square)::Bool
+ismine(p::Player, sq::Square)::Bool = p == sq.owner
 
-Check if `sq` is owned by bot.
-"""
-player_owns(p::Player, sq::Square)::Bool = p == sq.owner
-
-"""
-    has_hotel(sq::Square)::Bool
-
-Check if `sq` has a hotel
-"""
 hotels(sq::Square)::UInt8 = sq.hotels
 
 owner(sq::Square)::Player = sq.owner
@@ -148,6 +121,32 @@ buyhotel!(sq::Square, p::Player) = sq.hotels += 1
 
 buy!(sq::Square, p::Player, what::Symbol) = what === :square ? buysquare!(sq, p) : buyhotel!(sq, p) 
 
+function moneytransfer!(sqr::Square, sender::P, receiver::P, amount::Int, n)::Bool where {P <: Player}
+	# Transactions and logging for receiver
+	_ = transaction!(receiver, sqr, amount, :charge, n)
+
+	# Transactions and logging for sender
+	return transaction!(sender, sqr, amount, :pay, n)
+end
+
+function transaction!(p::Player, s::Square, amount::Int, direction::Symbol, n)::Bool
+	gone_broke = false
+
+	if direction === :pay
+		logreward!(p, s, false, amount, n)
+
+		if p.money - amount < 0
+			gone_broke = true
+		else
+			p.money -= amount
+		end
+	elseif direction === :charge
+		logreward!(p, s, true, amount, n) 
+		p.money += amount
+	end
+
+	return gone_broke
+end
 """
 Miniopoly main structure for `N` players. In charge of the logic of the game, such as 
 yielding turns, keeping track of the property record, and enforcing transactions.
@@ -176,7 +175,7 @@ function newgame(N, initial_money)
     # Initializing players
     for (i, player) in pairs(gm.players)
         player.money = initial_money
-        player.id = 2^i
+        player.id = i
     end
 
     return gm
@@ -190,7 +189,7 @@ function spin!(cp::Player, gm::GameManager)
 
 	if next_square_pos == 0
 		@info "Player $(cp) just crossed starting point and received $(LAP_REWARD)"
-		transaction!(cp, LAP_REWARD, :charge)
+		transaction!(cp, gm.board[gm.positions[cp] + 1], LAP_REWARD, :charge, gm.turn)
 	end
 
     # Update the game manager positions dict
@@ -202,42 +201,36 @@ function spin!(cp::Player, gm::GameManager)
     return gm.board[next_square_pos + 1] # Correcting 0-based indexing
 end
 
-"""
-    turn!(gm::GameManager)
-
-Performs a single turn of the game.
-"""
-function turn!(gm::GameManager)::Bool
-    # Get player in turn
-    cur_player = currentplayer(gm)
+function turn!(gm::GameManager, logging::Bool)::Bool
+    cur_player = currentplayer(gm) # Player in turn
 
     # Spin the spinner, get new position
     cur_square = spin!(cur_player, gm)
 
     # Main logic of the game
 	gone_broke = false
-    if is_owned(cur_square)
-        if !player_owns(cur_player, cur_square)
-			# Transaction. Charge flat fee * hotel
+	is_mine = ismine(cur_player, cur_square)
+	n = gm.turn
+
+	if is_mine && isbuying(cur_player)
+		@info "Player $(cur_player) is buying a hotel for square $(cur_square)"
+		buy!(cur_square, cur_player, :hotel)
+		gone_broke = transaction!(cur_player, cur_square, HOTEL_PRICE, :pay, n)
+	else
+		# Either already owned, or available to buy
+		if is_owned(cur_square)
+			# Transaction. Charge flat fee * hotels
 			amount = FLAT_FEE + 500 * hotels(cur_square)
 			@info "Player $(cur_player) landed on owned square and will pay $(amount)"
 
-			gone_broke = moneytransfer!(cur_player, owner(cur_square), amount)
-		else
-			# Give opportunity to buy hotel
-			if isbuying(cur_player)
-				@info "Player $(cur_player) will buy a hotel for square $(cur_square)"
-				buy!(cur_square, cur_player, :hotel)
-				gone_broke = transaction!(cur_player, HOTEL_PRICE, :pay)
-			end
-        end
-    else
-		if isbuying(cur_player)
+			gone_broke = moneytransfer!(cur_square, cur_player, owner(cur_square), amount, n)
+		elseif isbuying(cur_player) # Available for purchase
 			@info "Player $(cur_player) is buying square $(cur_square)"
 			buy!(cur_square, cur_player, :square)
-			gone_broke = transaction!(cur_player, SQUARE_PRICE, :pay)
+
+			gone_broke = transaction!(cur_player, cur_square, SQUARE_PRICE, :pay, n)
 		end
-    end
+	end
 
 	# Termination conditions
 	return gone_broke
