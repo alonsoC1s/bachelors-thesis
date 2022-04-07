@@ -11,11 +11,11 @@ using Distributions
 
 # Constants for settings
 const N = 2
-const FLAT_FEE = 250
-const SQUARE_PRICE = 350
-const HOTEL_PRICE = 100
+const FLAT_FEE = 150
+const SQUARE_PRICE = 100
+const HOTEL_PRICE = 250
 const INITIAL_MONEY = 1_500
-const SALARY = 200
+const SALARY = 150
 
 # Markov chain stochastic transition matrix
 const P = [
@@ -79,7 +79,7 @@ function transaction!(p::Player, sqr::Int, amount::Int, direction::Symbol, n)::B
     gone_broke = false
 
     if direction === :pay
-        logreward!(p, sqr, false, amount, n)
+        logreward!(p, sqr, false, -amount, n)
 
         if p.money - amount < 0
             gone_broke = true
@@ -105,9 +105,10 @@ end
 
 function newgame(N, initial_money)
     players = zeros(CyclicArray{N,Player})
+    squares = zeros(CyclicArray{9,Square})  # Board of clean Squares
 
     gm = GameManager{N}(
-        zeros(CyclicArray{9,Square}),  # Board of clean Squares
+        squares,
         players,
         1,      # Turn counter
         Dict(player => 0 for player in players) # Player's positions
@@ -117,6 +118,11 @@ function newgame(N, initial_money)
     for (i, player) in pairs(gm.players)
         player.money = initial_money
         player.id = i
+    end
+
+    # Numbering squares
+    for (i, square) in pairs(gm.board)
+        square.id = i
     end
 
     return gm
@@ -129,12 +135,14 @@ function spin!(cp::Player, gm::GameManager)
     next_square_pos = rand(square_PMF[gm.positions[cp]])
 
     if next_square_pos == 0
-        @info "Player $(cp) just crossed starting point and received $(SALARY)"
-        transaction!(cp, next_square_pos, SALARY, :charge, gm.turn)
+        @info "$(cp) just crossed starting point and received $(SALARY)"
+		transaction!(cp, gm.positions[cp], SALARY, :charge, gm.turn)
     end
 
     # Update the game manager positions dict
     gm.positions[cp] = next_square_pos
+
+    @info "$(cp) landed on square $(next_square_pos + 1)"
 
     # Incrementing turn counter
     gm.turn += 1
@@ -142,7 +150,8 @@ function spin!(cp::Player, gm::GameManager)
     return gm.board[next_square_pos+1] # Correcting 0-based indexing
 end
 
-function turn!(gm::GameManager, logging::Bool)::Bool
+function turn!(gm::GameManager)::Bool
+    @info "Turn: $(gm.turn)"
     cur_player = currentplayer(gm) # Player in turn
 
     # Spin the spinner, get new position
@@ -154,20 +163,20 @@ function turn!(gm::GameManager, logging::Bool)::Bool
     is_mine = ismine(cur_player, cur_square)
     n = gm.turn
 
-    if is_mine && willbuy(cur_player)
-        @info "Player $(cur_player) is buying a hotel for square $(cur_square)"
+	if is_mine && willbuy(cur_player, HOTEL_PRICE) && hotels(cur_square) <= 3
+        @info "$(cur_player) is buying a hotel for square $(cur_square)"
         buy!(cur_square, cur_player, :hotel)
         gone_broke = transaction!(cur_player, square_number, HOTEL_PRICE, :pay, n)
     else
         # Either already owned, or available to buy
         if is_owned(cur_square)
             # Transaction. Charge flat fee * hotels
-            amount = FLAT_FEE + 500 * hotels(cur_square)
-            @info "Player $(cur_player) landed on owned square and will pay $(amount)"
+            amount = FLAT_FEE + 50 * hotels(cur_square)
+            @info "$(cur_player) landed on owned square and will pay $(amount)"
 
             gone_broke = moneytransfer!(square_number, cur_player, owner(cur_square), amount, n)
-        elseif willbuy(cur_player) # Available for purchase
-            @info "Player $(cur_player) is buying square $(cur_square)"
+        elseif willbuy(cur_player, SQUARE_PRICE) # Available for purchase
+            @info "$(cur_player) is buying square $(cur_square)"
             buy!(cur_square, cur_player, :square)
 
             gone_broke = transaction!(cur_player, square_number, SQUARE_PRICE, :pay, n)

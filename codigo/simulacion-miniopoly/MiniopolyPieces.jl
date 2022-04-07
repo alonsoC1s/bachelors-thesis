@@ -29,6 +29,7 @@ function Base.show(io::IO, ::MIME"text/plain", p::Player)
 end
 
 function logreward!(p::Player, sqr::Int, ismine::Bool, reward, n)
+	sqr += 1 # Correcting for 1-based index
     try
         Qₙ = p.rewardslog[(ismine, sqr)]
         p.rewardslog[(ismine, sqr)] += 2 / n * (reward - Qₙ)
@@ -38,27 +39,32 @@ function logreward!(p::Player, sqr::Int, ismine::Bool, reward, n)
 end
 
 # FIXME: Función burda de una política de decisión
-function willbuy(p::Player)::Bool
+function willbuy(p::Player, price)::Bool
     # Apply buying policy to make a choice
-    p = 0.5
-    return rand(DiscreteNonParametric([true, false], [p, 1 - p]))
+    q = 0.5
+	decision = false
+	if p.money - price > 0
+		decision = rand(DiscreteNonParametric([true, false], [q, 1 - q]))
+	end
+	return decision
 end
 
 
 ### Square
 mutable struct Square
     # s::UInt8
+    id::Int
     owner::Union{Player,Nothing}
     hotels::Int8
 end
 
 # Outer constructor for default instance
-Square() = Square(Nothing(), 0)
+Square() = Square(0, Nothing(), 0)
 
 Base.zero(::Type{Square}) = Square()
 
 function Base.show(io::IO, sq::Square)
-    print(io, "Square $(sq.owner)")
+    print(io, "Square $(sq.id)")
 end
 
 function Base.show(io::IO, ::MIME"text/plain", sq::Square)
