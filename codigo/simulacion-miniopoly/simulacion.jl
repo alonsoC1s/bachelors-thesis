@@ -1,11 +1,13 @@
-include("Miniopoly.jl")
+using Revise
+
+includet("Miniopoly.jl")
 
 using ..Miniopoly
 using Logging, DataFrames, CSV
 using ProgressMeter
 
 # Disabling logging for performance reasons
-Logging.disable_logging(Logging.Info)
+# Logging.disable_logging(Logging.Info)
 
 function one_game()
 	broke = false

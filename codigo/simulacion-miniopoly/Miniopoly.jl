@@ -89,6 +89,14 @@ function transaction!(p::Player, sqr::Int, amount::Int, direction::Symbol, n)::B
     elseif direction === :charge
         logreward!(p, sqr, true, amount, n)
         p.money += amount
+    elseif direction === :squarepurchase
+        logreward!(p, sqr, true, amount, n)
+
+        if p.money - amount < 0
+            gone_broke = true
+        else
+            p.money -= amount
+        end
     end
 
     return gone_broke
@@ -122,7 +130,7 @@ function newgame(N, initial_money)
 
     # Numbering squares
     for (i, square) in pairs(gm.board)
-        square.id = i
+        square.id = i-1
     end
 
     return gm
@@ -136,13 +144,13 @@ function spin!(cp::Player, gm::GameManager)
 
     if next_square_pos == 0
         @info "$(cp) just crossed starting point and received $(SALARY)"
-		transaction!(cp, gm.positions[cp], SALARY, :charge, gm.turn)
+		transaction!(cp, gm.positions[cp], 0, :charge, gm.turn)
     end
 
     # Update the game manager positions dict
     gm.positions[cp] = next_square_pos
 
-    @info "$(cp) landed on square $(next_square_pos + 1)"
+    @info "$(cp) landed on square $(next_square_pos)"
 
     # Incrementing turn counter
     gm.turn += 1
@@ -158,15 +166,19 @@ function turn!(gm::GameManager)::Bool
     cur_square = spin!(cur_player, gm)
     square_number = gm.positions[cur_player] # Supposedly safe from 0-indexing
 
+    @assert cur_square.id == square_number
+
     # Main logic of the game
     gone_broke = false
     is_mine = ismine(cur_player, cur_square)
     n = gm.turn
 
-	if is_mine && willbuy(cur_player, HOTEL_PRICE) && hotels(cur_square) <= 3
-        @info "$(cur_player) is buying a hotel for square $(cur_square)"
-        buy!(cur_square, cur_player, :hotel)
-        gone_broke = transaction!(cur_player, square_number, HOTEL_PRICE, :pay, n)
+	if is_mine
+        if willbuy(cur_player, HOTEL_PRICE) && hotels(cur_square) <= 3
+            @info "$(cur_player) is buying a hotel for square $(cur_square)"
+            buy!(cur_square, cur_player, :hotel)
+            gone_broke = transaction!(cur_player, square_number, HOTEL_PRICE, :pay, n)
+        end
     else
         # Either already owned, or available to buy
         if is_owned(cur_square)
@@ -175,11 +187,11 @@ function turn!(gm::GameManager)::Bool
             @info "$(cur_player) landed on owned square and will pay $(amount)"
 
             gone_broke = moneytransfer!(square_number, cur_player, owner(cur_square), amount, n)
-        elseif willbuy(cur_player, SQUARE_PRICE) # Available for purchase
+        elseif square_number != 0 && willbuy(cur_player, SQUARE_PRICE) # Available for purchase
             @info "$(cur_player) is buying square $(cur_square)"
             buy!(cur_square, cur_player, :square)
 
-            gone_broke = transaction!(cur_player, square_number, SQUARE_PRICE, :pay, n)
+            gone_broke = transaction!(cur_player, square_number, SQUARE_PRICE, :squarepurchase, n)
         end
     end
 

@@ -29,7 +29,7 @@ function Base.show(io::IO, ::MIME"text/plain", p::Player)
 end
 
 function logreward!(p::Player, sqr::Int, ismine::Bool, reward, n)
-	sqr += 1 # Correcting for 1-based index
+	# sqr += 1 # Correcting for 1-based index
     try
         Qₙ = p.rewardslog[(ismine, sqr)]
         p.rewardslog[(ismine, sqr)] += 2 / n * (reward - Qₙ)
