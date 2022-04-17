@@ -197,29 +197,31 @@ circuit with predefined squares, some available for sale, in
 which a player is at any given moment. In order to move, a 
 player spins an arrow fixed on the center of a circle that can 
 stop at any of four circle segments numbered from 1 to 4. This 
-is the number of squares the player moves forward. You can find 
-a scaled version of this game's board in figure 
-\ref{fig:miniopoly-board}. The squared numbered 1 through 8 
-(colored) are available for purchase, while the white squares 
-indicate a special action such as allowing the player to spin 
-once more in the same turn, complete the circuit by going 
-directly to the starting square and so on.
+is the number of squares the player moves forward. We refer to 
+this spinning arrow as the \textit{spinner}.
+
+You can find a scaled version of this game's board in figure 
+\ref{fig:miniopoly-board}. The squares numbered 1 through 8 
+(colored in shades of red, blue, purple and green) are 
+available for purchase, while the white squares indicate a 
+special action such as allowing the player to spin once more in 
+the same turn, complete the circuit by going directly to the 
+starting square and so on.
 
 Going forward, picture a robot being ``trained'' to become a 
 super player via the RL techniques we are slowly developing. At 
 each turn the robot spins and moves forward however many 
-squares the spinner indicates. If the robot lands on a colored 
-square it might acquire that square for itself and if it lands 
-on it again, gains some amount of money. The robot also 
-receives money every time it completes the circuit. In this 
-simplified version the robot is playing alone, but every turn 
-some square not currently owned by the robot might become 
-unavailable for purchase, and the robot must pay a fee if it 
-lands on it in the future. If it lands on jail the robot also 
-loses money, a bigger amount. As you might have guessed, the 
-point of the game is to make the most amount of money. The game 
-ends when the robot goes bankrupt or the amount of squares that 
-the robot can buy runs out. What purchase strategy must the 
+squares the spinner indicates. If the robot lands on any square 
+with a number on it, it might acquire that square for itself. 
+From that moment on, if the opponent lands on that square the 
+robot player will be paid rent. If the robot lands on that same 
+square, it may build hotels on it so next time the opponent 
+lands there, the rent payed will be much higher. The robot also 
+receives money every time it completes the circuit.
+
+As you might have guessed, the point of the game is to make the 
+most amount of money. The game ends when either the robot or 
+it's opponent go bankrupt. What purchase strategy must the 
 robot follow to win?
 \begin{figure}[H]
 	\centering
@@ -230,16 +232,16 @@ robot follow to win?
 
 First off, unlike the slot machine-playing robot, this robot 
 player cannot entirely choose which square to move to, it can 
-only decide if it wants to purchase it or not once it landed on 
-it.  For instance, if we look at Fig. \ref{fig:miniopoly-board} 
-we see that even if the robot wanted to go to square number 8 
-and buy it, there is no possible way to do that. The biggest 
-number it can spin is 4, and even if it got to roll again the 
-furthest it could go is square 5. Figure 
-\ref{fig:miniopoly-diagram-start} shows a simplified version of 
-the board. Only the squares accessible on the first spin are 
-shown, along with arrows indicate the possible transitions 
-between the starting square and the rest.
+only decide if it wants to purchase it or not once it has 
+landed on it. The biggest number it can spin is 4, and even if 
+it got to spin again the furthest it could go is square 5. Even 
+if the robot wanted to go to square number 8 and buy it, there 
+is no possible way to do that.
+
+Figure \ref{fig:miniopoly-diagram-start} shows a simplified 
+version of the board. Only the squares accessible on the first 
+turn are shown, along with arrows indicating the possible 
+transitions between the starting square and the rest.
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.65\textwidth]{img/diagram-start.pdf}
@@ -249,41 +251,42 @@ between the starting square and the rest.
 
 In figure \ref{fig:miniopoly-diagram-start} we can see all the 
 possible squares the robot might land on and then buy starting 
-from the first turn. Notice how in this figure we only care 
-about the starting and ending points, not the transit points, 
-so that is why there are no arrows pointing to the squares that 
-move the player elsewhere like \texttt{Spin Again} and 
-\texttt{Goto Start}. This is the reason there is an arrow that 
-points from \texttt{Start} to itself. This transition might 
-happen. In fact, we know what it takes for this to happen: land 
-on \texttt{Spin Again}, and then land on \texttt{Goto Start}. 
-In other words, this transition happens if the robot spins a 3 
-two consecutive times.
+from the first turn. Notice how squares 6 and further are not 
+included. If the robot were to spin a 4, the red square with 
+number 3 is the furthest it could go. If it were to land on 
+\texttt{Spin Again} and then spin a 4, the largest possible 
+spin, it could move four squares: from \texttt{Spin Again} to 
+3, then to 4, then to \texttt{Goto Start}, and finally to 
+square 5, exhausting its possible moves.
 
-% va arriba
-Notice how squares 6 and further are not included. If the robot 
-were to spin a 4, the square with number 3 is the furthest it 
-could go. If it were to land on \texttt{Spin Again} and then 
-spin a 4, the largest possible spin, it could move four 
-squares: from \texttt{Spin Again} to 3, then to 4, then to 
-\texttt{Goto Start}, and finally to square 5, exhausting its 
-possible moves.
+Notice how in this figure we only care about the starting and 
+ending points, not the transit points, so that is why there are 
+no arrows pointing to the squares that move the player 
+elsewhere like \texttt{Spin Again} and \texttt{Goto Start}. 
+This is the reason there is an arrow that points from 
+\texttt{Start} to itself. This transition might happen. In 
+fact, we know what it takes for this to happen: land on 
+\texttt{Spin Again}, and then land on \texttt{Goto Start}. In 
+other words, this transition happens if the robot spins a 3 two 
+consecutive times.
 
 If the robot were to land on \texttt{Spin Again}, then spin a 
 3, it would ``land'' on \texttt{Goto Start}, finishing its turn 
 back at the starting square. That particular move results in 
 the robot going back to the start and getting paid for 
 completing the circuit, without running the risk of landing on 
-a square someone owns or \texttt{Jail} and getting charged. 
-That sounds like a very desirable play (for us looking at the 
-big picture, the robot cannot see that far ahead yet). Since we 
-would like this to happen, we might ask how likely is for that 
-to happen.
+a square someone else owns. That sounds like a very desirable 
+move (for us looking at the big picture, the robot cannot see 
+that far ahead yet). Since we would like this to happen, we 
+might ask how likely is for that to happen.
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\textwidth]{img/transicion.pdf}
-	\caption{Transition diagram}
+	\caption{Diagram showing the possible transitions to the 
+	numbered squares, starting the turn at \texttt{Start}. 
+	Squares \texttt{GoTo Start} and \texttt{Spin Again} are 
+	abbreviated as \texttt{GS} and \texttt{SA} respectively.}
 	\label{fig:miniopoly-transicion}
 \end{figure}
 
@@ -294,11 +297,10 @@ to think of the possible steps that lead to it. On figure
 diagram of the possible movements the robot might make, and 
 this time we are taking into account intermediate squares. Each 
 arrow represents where the robot might land after spinning, not 
-necessarily where it is when the turn ends. Now, using some 
-very basic probability theory we can calculate how likely it is 
-for the robot to ``take that route'' so to speak. Once we do, 
-we can calculate how likely a ``trajectory'' or sequence of 
-arrows is.
+necessarily it's final resting square. Now, using some very 
+basic probability theory we can calculate how likely it is for 
+the robot to ``take that route'' so to speak. Once we do, we 
+can calculate how likely a ``route'' or sequence of arrows is.
 
 \begin{figure}[h]
 	\centering
@@ -313,42 +315,89 @@ someone acquainted with some basic probability. In figure
 \ref{fig:miniopoly-transicion-markov} to find the probability 
 of getting to a certain square (say 6 for example) we look only 
 at the last arrow, as it takes into account the probability of 
-the last step happening.
+the previous step happening. For example, the probability of 
+the move that takes the player from \texttt{Start} back to 
+\texttt{Start} we can look at the bottom left corner of figure 
+\ref{fig:miniopoly-transicion-markov}. The player moves to 
+\texttt{Spin Again} with probability 1/4 because the spinner 
+has an equal chance of making the player move either 1, 2, 3 or 
+4 squares. Once the player is on \texttt{Spin Again} and spins 
+once more, it has a chance of 1/16 of landing on \texttt{GoTo 
+Start}. The final arrow pointing from \texttt{GoTo Start} to 
+\texttt{Start} is not annotated with the probability of it 
+happening, since that transition is not random. Once the player 
+lands there, the next thing that happens to the player is 
+always the same: go to the starting square.
 
 The robot we are trying to teach moves as the figure above 
-suggests. For each square there is a different diagram. The 
-robot is not aware of this, all it knows is that it spins, and 
-then is transported elsewhere and must decide whether to buy or 
-not (if the square is available). All it knows is where it has 
-been before and if it gained or lost money last turn. 
-Crucially, landing on a square previously visited does not 
-necessarily mean the reward will be the same as last time. 
-Also, the reward for buying a square may come much later on or 
-not at all. This robot must somehow keep track of what the 
-expected reward for landing somewhere might be, recording it 
-somewhere and tallying up as it goes. For instance after a few 
-turns it might have something fig. \ref{fig:hist-miniopoly} on 
-its head to help make decisions.
+suggests. There is a different diagram for each square in which 
+the player finds itself at the start of its turn. The robot is 
+not aware of this, all it knows is that it spins, and then is 
+transported elsewhere and must decide whether to buy or not (if 
+the square is available). All it knows is it's current 
+position, and the gains or losses it sustained on the other 
+squares it has visited. Crucially, landing on a square 
+previously visited does not necessarily mean the reward will be 
+the same as last time. For instance, if it lands on square 3 
+and decides not to buy it, the reward was a net 0, but the 
+other player may buy it so that the next time the robot visits 
+that square it has to pay rent, which would mean a loss. Also, 
+the reward for buying a square may come much later on or not at 
+all. This robot must somehow keep track of what the expected 
+reward for landing somewhere might be, recording it somewhere 
+and tallying up as it goes.
 
-% Aqui no va el square 6 porque es first turn
+For instance after a few turns it might have something fig. 
+\ref{fig:hist-miniopoly} on its head to help make decisions.
+
+After playing a few games, keeping a record of which squares it 
+bought, the player might make a graph to discover what moves it 
+made that resulted in higher rewards at the end of the game. 
+Such a graph might look like figure \ref{fig:hist-miniopoly}, 
+which is a violin plot. In this plot, a violin-shaped figure 
+gives the robot an idea of what squares yielded better rewards 
+or smaller losses when bought or when left for other players to 
+buy. The height of the violin indicates how high the reward was 
+at the end of the game, while the width of the violin helps the 
+robot decide whether that outcome was a fluke or not. A thin 
+violin at a specific height (reward) indicates that over the 
+games it has played so far, that specific reward marked by the 
+y-axis is not as common as the reward that corresponds to the 
+thicker parts of the violin.
+% Se entiende??
+
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{img/hist-miniopoly.tikz}
 \label{fig:hist-miniopoly}
-\caption{Boxplot of rewards obtained by visiting each square}
+\caption{Violinplot}
 \end{figure}
 
-% EXPLICAR MUCHO MEJOR
-% SOLO ES UN FIRST TURN SIMULADO MUCHAS VECES CON SQUARES 
-% COMPRADOS YA
-Its stands to reason that as this histogram is updated the 
-learning agent will be able to make progressively better 
-choices. Simple as this example might be, the essence is 
-similar to the powerful programs that defeat world champions.
+This figure was created by simulating N-THOUSAND games and 
+recording what rewards the robot player obtained at the end of 
+the game by buying or not buying a certain square. For 
+instance, if it bought square 3, the record shows the initial 
+loss of however much money the player paid for the square. 
+Later on in the game if the opponent lands on square 3 and pays 
+rent, that rent is recorded as a gain for the robot player. 
+That number is averaged out at the end of the game so the robot 
+can analyze this information later. One way of analyzing this 
+information to improve strategy is precisely to make a graph 
+like the one in figure \ref{fig:hist-miniopoly}
+
+Its stands to reason that as this graph is updated the learning 
+agent will be able to make progressively better choices by 
+identifying the patterns. For instance, it might notice from 
+figure \ref{fig:hist-miniopoly} that buying SQUARE ALGO 
+consistently results in higher rewards at the end of the game. 
+The robot noticed this because the violin corresponding to 
+SQUARE ALGO is noticeably higher than the others. Simple as 
+this example might be, the essence is similar to the powerful 
+programs that defeat world champions of chess and Go.
 
 This example covers most of the core ideas of what is referred 
 to as the Reinforcement Learning Problem. We will explore the 
-ideas presented here in much more detail along this theses and 
+ideas presented here in much more detail along this thesis and 
 crucially, focus on something we left out on this example. How 
 can a purchase strategy be improved upon?
 
@@ -357,10 +406,19 @@ So far we have developed a mental model of what to do should we
 wish to teach a robot how to drive or beat a world champion of 
 Go. The rest of this thesis is dedicated to the careful 
 development of the ideas here presented into the language of 
-mathematics.  But beyond mere description, this exercise has 
-the potential to unlock \textit{insight}. As is often said by 
-legendary math communicator Grant Sanderson\footnote{From the 
-YouTube channel 
+mathematics. Specifically, tackling questions such as:
+\begin{itemize}
+	\item What mechanism allows the robot player to learn from 
+	experience and fine-tune it's strategy to become better?
+	\item How can we tell when a new strategy is better than an 
+	old one?
+	\item Is it possible to find \textit{the} best strategy? 
+	How difficult is it?
+\end{itemize}
+
+Beyond mere description, this exercise has the potential to 
+unlock \textit{insight}. As is often said by legendary math 
+communicator Grant Sanderson\footnote{From the YouTube channel 
 \href{https://www.youtube.com/channel/UCYO_jab_esuFRV4b17AJtAw}{3blue1brown}}(loose 
 quote), the point in formulating things this way is to gain a 
 deeper understanding of the phenomenon. So let's dive right in.
