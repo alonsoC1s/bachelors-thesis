@@ -1,4 +1,4 @@
-\documentclass[tikz,12pt]{standalone}
+\documentclass[tikz,10pt]{standalone}
 \usepackage{textcomp}
 
 \usepackage{tikz}
@@ -82,12 +82,13 @@
     ] {5};
 
 \node (six) [
-		place, right of=five, fill=auroraGreen,
+		place, right of=five, fill=auroraGreen
 	] {6};
     
 \node (goto_jail) [
-        place, right of=six
-	] {\ttfamily Jail};
+		place, right of=six,
+	] {\rotatebox{45}{\parbox[l]{1cm}{\ttfamily \centering 
+	Advance One}}};
 
 \node (seven) [
 		place, below of=goto_jail, fill=auroraLila,
