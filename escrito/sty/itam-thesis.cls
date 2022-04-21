@@ -31,7 +31,7 @@
 		% Required packages %
 		%===================%
 		\RequirePackage{xcolor}
-		\RequirePackage{gitinfo2}
+		\RequirePackage[dirty=dirty]{gitinfo2}
 		\RequirePackage{amsmath}
 		\RequirePackage{mathtools} % coloneqq
 		\RequirePackage{graphicx}
@@ -130,10 +130,13 @@
 
 \newcommand{\makefrontmatter}{
 	\vspace*{\fill}
-	\noindent Typeset in Baskervald X and Nimbus Sans by \LaTeX.
+	\noindent Typeset by the author in Baskervald X and Nimbus 
+	Sans by \LaTeX.
 
-	\noindent This version is revision \gitAbbrevHash{} (\gitAuthorDate), with content 
-	generated
+	\noindent This version is corresponds to commit 
+	\texttt{\gitAbbrevHash{}} on branch: \texttt{\gitBranch{}}, 
+	committed on \textit{\gitAuthorDate{}}. The working tree is 
+	\gitDirty{}
 
 	\newpage
 
@@ -145,13 +148,16 @@
 	\noindent
 	{
 	\fontfamily{lmr}\selectfont
-	<<Con fundamento en los artículos 21 y 27 de la Ley Federal del Derecho de Autor y 
-	como titular de los derechos moral y patrimonial de la obra titulada 
-	``\textbf{\@title}'', otorgo de manera gratuita y permanente al Instituto Tecnológico 
-	Autónomo de México y a la Biblioteca Raúl Bailléres Jr., la autorización para que 
-	fijen la obra en cualquier medio, incluido el electrónico, y la divulguen entre sus 
-	usuarios, profesores, estudiantes o terceras personas, sin que pueda percibir por tal 
-	divulgación una contraprestación.>>
+	<<Con fundamento en los artículos 21 y 27 de la Ley Federal 
+	del Derecho de Autor y como titular de los derechos moral y 
+	patrimonial de la obra titulada ``\textbf{\@title}'', 
+	otorgo de manera gratuita y permanente al Instituto 
+	Tecnológico Autónomo de México y a la Biblioteca Raúl 
+	Baill\`eres Jr., la autorización para que fijen la obra en 
+	cualquier medio, incluido el electrónico, y la divulguen 
+	entre sus usuarios, profesores, estudiantes o terceras 
+	personas, sin que pueda percibir por tal divulgación una 
+	contraprestación.>>
 	\normalfont
 	}
 
