@@ -2,17 +2,24 @@ using CSV, DataFrames, DataFramesMeta
 using Statistics, StatsPlots
 using OhMyREPL
 
-theme(:ggplot2)
+using PGFPlotsX
 
-data = CSV.read("simulacion-10k.csv", DataFrame)
+cd("../simulacion-miniopoly/")
+
+include("../nord.jl")
+
+theme(:ggnord)
+pgfplotsx()
+
+data = CSV.read("simulacion-20k.csv", DataFrame)
 @subset!(data, :square .!= 0)
 
-summs = @chain data begin
-        @subset :square .!= 0
-        groupby([:square, :mine])
-		combine(:reward => (x -> (min=minimum(x), avg=mean(x), max=maximum(x), std=std(x))) => AsTable)
-        # groupby(:mine)
-    end
+# summs = @chain data begin
+#     @subset :square .!= 0
+#     groupby([:square, :mine])
+#     combine(:reward => (x -> (min=minimum(x), avg=mean(x), max=maximum(x), std=std(x))) => AsTable)
+#     # groupby(:mine)
+# end
 
 gd = groupby(data, :mine)
 
@@ -20,14 +27,18 @@ gd = groupby(data, :mine)
     linewidth=1,
     xlabel="Square",
     ylabel="Average reward when not bought",
-    label=:none,
+    label="When left free",
     xticks=1:8,
 )
 
-@df gd[2] violin(:square, :reward,
+fis = @df gd[2] violin!(:square, :reward,
     linewidth=1,
     xlabel="Square",
-    ylabel="Average reward when bought",
-    label=:none,
+    ylabel="Average reward",
+    label="When bought",
     xticks=1:8,
+    legend=:bottomright,
 )
+
+
+savefig("hist-miniopoly.tikz")
