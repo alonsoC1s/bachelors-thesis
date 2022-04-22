@@ -1,0 +1,11 @@
+Hola. Quiero probar que pasa nada más.
+
+\begin{lstlisting}[language=julia, caption=Aplicando algoritmo 
+de cifrado]
+# Definiendo sistema de Lorenz
+function lorenz!(du, u, p, t, σ=10, β=8//3, ρ=28)
+    du[1] = σ * (u[2] - u[1])
+    du[2] = u[1] * (ρ - u[3]) - u[2]
+    du[3] = u[1] * u[2] - β * u[3]
+end
+\end{lstlisting}
