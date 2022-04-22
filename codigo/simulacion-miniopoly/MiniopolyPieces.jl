@@ -6,8 +6,6 @@ using Distributions
 mutable struct Player
     money::Int
     id::Int
-    # TODO: Add buying policy
-    # rewardslog::Dict{Tuple{Bool, Position}, Float64}
     rewardslog::Dict{Tuple{Bool,Int},Float64}
 end
 

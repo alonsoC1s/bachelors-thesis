@@ -1,11 +1,48 @@
-Hola. Quiero probar que pasa nada más.
+\label{appendix:miniopoly-simulation}
 
-\begin{lstlisting}[language=julia, caption=Aplicando algoritmo 
-de cifrado]
-# Definiendo sistema de Lorenz
-function lorenz!(du, u, p, t, σ=10, β=8//3, ρ=28)
-    du[1] = σ * (u[2] - u[1])
-    du[2] = u[1] * (ρ - u[3]) - u[2]
-    du[3] = u[1] * u[2] - β * u[3]
-end
-\end{lstlisting}
+\section*{Code used to simulate the game described on earlier 
+chapters.}
+
+The specific rules for the game described in Chapter 
+\ref{chapter:motivation} can be best visualized as literal 
+code. Listing \ref{lst:main-logic} contains the actual code 
+used to check and enforce buying and renting rules, as well as 
+carry out transactions. All code presented here is valid Julia 
+code.
+
+\lstinputlisting[language=julia, firstline=161, lastline=200, 
+caption=Main logic for the game, 
+label={lst:main-logic}]{../codigo/simulacion-miniopoly/Miniopoly.jl}
+
+The code above depends on the definition of several ``Objects'' 
+in Object Oriented Programming parlance: 
+\lstinline{GameManager}, \lstinline{Player} and 
+\lstinline{Square}.
+
+The \lstinline{Player} Structure represents a single player of 
+the game. The code in listing \ref{lst:player-def} shows what 
+attributes or fields characterize it (i.e. the information we 
+keep track of). Notice for instance the attribute 
+\lstinline{rewardslog}, which is a mapping between a 
+\lstinline{Square} represented as its number and the its 
+ownership status to a number. This is the mechanism that keeps 
+track of the reward obtained by buying or not a certain square.
+
+\lstinputlisting[language=julia, firstline=6, lastline=10, 
+caption=Definition of Player structure, 
+label={lst:player-def}]{../codigo/simulacion-miniopoly/MiniopolyPieces.jl}
+
+The \lstinline{Square} Structure represents a purchasable 
+square as defined by the game rules outlined on Chapter 
+\ref{chapter:motivation}. 
+
+\lstinputlisting[language=julia, firstline=52, lastline=57, caption=Definition of Square structure, label={lst:square-def}]{../codigo/simulacion-miniopoly/MiniopolyPieces.jl}
+
+The \lstinline{GameManager} Structure is essentially what keeps 
+track of the property ledger, the current state of the game, 
+among other things. Listing \ref{lst:gamemanager-def} shows 
+what information is kept for book-keeping purposes.
+
+\lstinputlisting[language=julia, firstline=57, lastline=62, 
+caption=Definition of GameManager structure, 
+label={lst:gamemanager-def}]{../codigo/simulacion-miniopoly/Miniopoly.jl}
