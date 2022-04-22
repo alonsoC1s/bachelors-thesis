@@ -280,20 +280,20 @@ move (for us looking at the big picture, the robot cannot see
 that far ahead yet). Since we would like this to happen, we 
 might ask how likely is for that to happen.
 
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=\textwidth]{img/transicion.pdf}
-	\caption{Diagram showing the possible transitions to the 
-	numbered squares, starting the turn at \texttt{Start}. 
-	Squares \texttt{GoTo Start} and \texttt{Spin Again} are 
-	abbreviated as \texttt{GS} and \texttt{SA} respectively.}
-	\label{fig:miniopoly-transicion}
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{img/transicion.pdf}
+\caption{Diagram showing the possible transitions to the 
+numbered squares, starting the turn at \texttt{Start}. Squares 
+\texttt{GoTo Start} and \texttt{Spin Again} are abbreviated as 
+\texttt{GS} and \texttt{SA} respectively.}
+\label{fig:markov-start}
 \end{figure}
 
 Lets try to analyze how likely the robot is to end up in this 
 particularly rewarding situation. For that it's often helpful 
 to think of the possible steps that lead to it. On figure 
-\ref{fig:miniopoly-transicion} we can see a more abstract 
+\ref{fig:markov-start} we can see a more abstract 
 diagram of the possible movements the robot might make, and 
 this time we are taking into account intermediate squares. Each 
 arrow represents where the robot might land after spinning, not 
@@ -306,28 +306,30 @@ can calculate how likely a ``route'' or sequence of arrows is.
 	\centering
 	\includegraphics[width=\textwidth]{img/transicion-markov.pdf}
 	\caption{Transition diagram with transition probabilities}
-	\label{fig:miniopoly-transicion-markov}
+	\label{fig:annotated-markov-start}
 \end{figure}
 
 At the moment it is not important why some arrows have certain 
 probabilities, and some might not be terribly obvious even for 
 someone acquainted with some basic probability. In figure 
-\ref{fig:miniopoly-transicion-markov} to find the probability 
+\ref{fig:annotated-markov-start} to find the probability 
 of getting to a certain square (say 6 for example) we look only 
 at the last arrow, as it takes into account the probability of 
 the previous step happening. For example, the probability of 
 the move that takes the player from \texttt{Start} back to 
 \texttt{Start} we can look at the bottom left corner of figure 
-\ref{fig:miniopoly-transicion-markov}. The player moves to 
+\ref{fig:annotated-markov-start}. The player moves to 
 \texttt{Spin Again} with probability 1/4 because the spinner 
 has an equal chance of making the player move either 1, 2, 3 or 
 4 squares. Once the player is on \texttt{Spin Again} and spins 
-once more, it has a chance of 1/16 of landing on \texttt{GoTo 
-Start}. The final arrow pointing from \texttt{GoTo Start} to 
-\texttt{Start} is not annotated with the probability of it 
-happening, since that transition is not random. Once the player 
-lands there, the next thing that happens to the player is 
-always the same: go to the starting square.
+once more, once again it has a chance of 1/4 of spinning a 3, 
+landing on \texttt{GoTo Start}. Spinning a 3 \textit{two 
+consecutive times}, has a probability of $1/4 \times 1/4 = 
+1/16$ of happening. The final arrow pointing from \texttt{GoTo 
+Start} to \texttt{Start} is not annotated with the probability 
+of it happening, since that transition is not random. Once the 
+player lands there, the next thing that happens to the player 
+is always the same: go to the starting square.
 
 The robot we are trying to teach moves as the figure above 
 suggests. There is a different diagram for each square in which 
@@ -347,13 +349,21 @@ all. This robot must somehow keep track of what the expected
 reward for landing somewhere might be, recording it somewhere 
 and tallying up as it goes.
 
-For instance after a few turns it might have something fig. 
-\ref{fig:hist-miniopoly} on its head to help make decisions.
+For instance after a few turns it might have something like 
+fig. \ref{fig:violinplot} on its head to help make decisions.
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{img/hist-miniopoly.tikz}
+\caption{Violinplot of the average reward obtained at the end 
+of the game by buying or not buying a square.}
+\label{fig:violinplot}
+\end{figure}
 
 After playing a few games, keeping a record of which squares it 
 bought, the player might make a graph to discover what moves it 
 made that resulted in higher rewards at the end of the game. 
-Such a graph might look like figure \ref{fig:hist-miniopoly}, 
+Such a graph might look like figure \ref{fig:violinplot}, 
 which is a violin plot. In this plot, a violin-shaped figure 
 gives the robot an idea of what squares yielded better rewards 
 or smaller losses when bought or when left for other players to 
@@ -366,14 +376,6 @@ y-axis is not as common as the reward that corresponds to the
 thicker parts of the violin.
 % Se entiende??
 
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{img/hist-miniopoly.tikz}
-\label{fig:hist-miniopoly}
-\caption{Violinplot of the average reward obtained at the end 
-of the game by buying or not buying a square.}
-\end{figure}
-
 This figure was created by simulating 20 thousand 
 games\footnote{The entire simulation took around 70 seconds.} 
 and recording what rewards the robot player obtained at the end 
@@ -385,12 +387,12 @@ rent, that rent is recorded as a gain for the robot player.
 That number is averaged out at the end of the game so the robot 
 can analyze this information later. One way of analyzing this 
 information to improve strategy is precisely to make a graph 
-like the one in figure \ref{fig:hist-miniopoly}
+like the one in figure \ref{fig:violinplot}
 
 Its stands to reason that as this graph is updated the learning 
 agent will be able to make progressively better choices by 
 identifying the patterns. For instance, it might notice from 
-figure \ref{fig:hist-miniopoly} that buying square number 5 
+figure \ref{fig:violinplot} that buying square number 5 
 consistently results in higher rewards at the end of the game. 
 The robot noticed this because the violin corresponding to 
 square 5 is noticeably higher than the others. Simple as this 
