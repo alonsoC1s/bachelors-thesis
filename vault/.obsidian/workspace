@@ -9,7 +9,7 @@
         "state": {
           "type": "markdown",
           "state": {
-            "file": "thesis/draft-ch-stochastic_processes.md",
+            "file": "thesis/draft-pt2-LinearProgramming.md",
             "mode": "source"
           }
         }
@@ -68,7 +68,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "thesis/draft-ch-stochastic_processes.md",
+                "file": "thesis/draft-pt2-LinearProgramming.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -88,8 +88,8 @@
   },
   "active": "d0c84f21ef0f572d",
   "lastOpenFiles": [
-    "thesis/draft-ch-stochastic_processes.md",
     "thesis/draft-pt2-LinearProgramming.md",
+    "thesis/draft-ch-stochastic_processes.md",
     "thesis/draft-pt1-probability.md",
     "thesis/Net de ideas.md",
     "readings-notes/farias2003LP2ADP.md",
