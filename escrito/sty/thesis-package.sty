@@ -17,8 +17,8 @@
 % \definecolor{lightRed}{RGB}{191, 97, 106}
 
 % Custom colors
-\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
-\definecolor{backcolour}{RGB}{229, 229, 229}
+% \definecolor{backcolour}{RGB}{229, 229, 229}
+\definecolor{backcolour}{RGB}{229,233,240}
 % Polar Night Palette
 \definecolor{nightDarkest}{RGB}{46, 52, 64}
 \definecolor{nightDark}{RGB}{59, 66, 82}
@@ -56,22 +56,24 @@
 \pgfkeys{/pgf/number format/1000 sep={}}
 
 % JuliaMono font
-\newfontfamily\JuliaMono{JuliaMono}
+\newfontfamily\JuliaMono{JuliaMono}[Scale=0.75]
 
 % Language definitions and listings
 \lstdefinelanguage{julia}{
-		morekeywords= [0]{function, if, end, elseif, @constraint, return, module, 
-		export, using, =, copy, issparse, Matrix, isposdef, inv, 
-		zeros, size, findall, findmin, ones, else, length, I, trues,
-        isfinite., abs., abs, eps, Float64, julia>, julia, println, Bool, rand,
-		prinln, round, pkg},
+		morekeywords= [0]{function, if, end, elseif, 
+		@constraint, return, module, export, using, =, copy, 
+		issparse, Matrix, isposdef, inv, zeros, size, findall, 
+		findmin, ones, else, length, I, trues, isfinite., abs., 
+		abs, eps, Float64, julia>, julia, println, Bool, rand, 
+		prinln, round, pkg, mutable, struct, Int, Dict, Tuple, 
+	Union, Nothing, Int8, UInt},
         morekeywords = [1]{1,2,3,40},
 		sensitive=false,
 		morestring=[s]{"}{"},
 		morecomment=[l]\#,
 		morecomment=[s]{"""}{"""},
-		otherkeywords={*, +, -, \\, ', :, .==, .<=, ./, .>, .!, .=, 
-		.^, .-,.,;},
+		otherkeywords={*, +, -, \\, ', :, .==, .<=, ./, .>, .!, 
+		.=, .^, .-,.,;, @info, @assert},
 	}
 \lstset{language=julia,
 		basicstyle={\JuliaMono\small \color{nightDarkest}},
