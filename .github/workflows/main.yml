@@ -25,4 +25,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: main
-          path: pruebas.pdf
+          path: escrito/pruebas.pdf
