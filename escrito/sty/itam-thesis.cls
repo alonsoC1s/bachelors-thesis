@@ -130,8 +130,9 @@
 
 \newcommand{\makefrontmatter}{
 	\vspace*{\fill}
-	\noindent Typeset by the author in Baskervald X and Nimbus 
-	Sans by \LaTeX.
+	\noindent Typeset by the author in Baskervald X, Nimbus 
+	Sans and Julia Mono (github.com/cormullion/juliamono) by 
+	\LaTeX.
 
 	\noindent This version is corresponds to commit 
 	\texttt{\gitAbbrevHash{}} on branch: \texttt{\gitBranch{}}, 
