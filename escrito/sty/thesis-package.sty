@@ -56,7 +56,15 @@
 \pgfkeys{/pgf/number format/1000 sep={}}
 
 % JuliaMono font
-\newfontfamily\JuliaMono{JuliaMono}[Scale=0.75]
+% If installed in the system, use the line below
+% \newfontfamily\JuliaMono{JuliaMono}[Scale=0.75]
+% If not installed, the next line
+\newfontfamily\JuliaMono{JuliaMono}[
+	Scale=0.75,
+	Path=./sty/JuliaMonoFont/,
+    Extension = .ttf,
+    UprightFont=*-Regular,
+]
 
 % Language definitions and listings
 \lstdefinelanguage{julia}{
