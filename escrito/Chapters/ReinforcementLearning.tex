@@ -1,6 +1,7 @@
+
 \label{chapter:ReinforcementLearning}
 
-On chapter \ref{chapter:motivation} we presented a very simple 
+On Chapter~\ref{chapter:motivation} we presented a very simple 
 example of a problem that may be solved via Reinforcement 
 Learning. As simple as that example was, the key ideas will now 
 allow us to delve into the theory proper, and formalize some 
@@ -8,6 +9,54 @@ ideas while hopefully giving satisfying answers to some
 questions that the intuitive treatment might have left open.
 
 \section{The Agent \& the Environment}
-Recall from chapter \ref{chapter:motivation} that we referred 
+Recall from Chapter~\ref{chapter:motivation} that we referred 
 to the robot player as a ``learning agent''. This agent is 
 continuously interacting with the rest of the game and 
+surveying its current state. As we saw earlier, the robot then 
+selects an action on the basis of this current game state.
+
+To be precise, say that the game starts at some $t=0$ and ends 
+at $t=T$. We discretize this period of time into $t = 0, 1, 2, 
+\ldots$ At each of this points $t$ in time, the agent finds 
+itself at some state $S_t \in \States$, where $\States$ 
+represents the set of all possible states. This defines exactly 
+what we called a stochastic process back in 
+Chapter~\ref{chapter:stochastic}: a series of random variables 
+$\{ S_t \}_{t = 0, 1 \ldots}$. 
+
+Likewise, at each time step $t$ the agent chooses how to 
+interact with an action $A_t \in \Actions(s)$, where 
+$\Actions(s)$ is the set of all \textit{available} actions at 
+the current state $s$. This too forms a stochastic process. One 
+time step in the future $t+1$ the agent receives more feedback 
+from the environment, the so-called reward signal $R_{t+1} \in 
+\Rewards \subseteq \R$. This process moves forward from $t$ to 
+$t+1$ and so on until the task is over. This defines a Markov 
+Decision Process (MDP from now on), which we can reorder as 
+follows:
+\begin{equation}
+	S_0, A_0, R_1, A_1, R_2, S_2, A_2, R_3, \ldots
+\end{equation}
+
+This particular ordering makes it easy to see why we chose to 
+discretize time into steps. This illustrates how at each time 
+step the agent surveys the state, and based on it selects a 
+\textit{feasible} action. The next time step begins when the 
+robot receives a reward signal from the environment. 
+
+The key point above is subtly hidden in the notation. Notice 
+how only the set of actions depends on a particular $s$. Both 
+the set of states $\States$ and the set of rewards $\Rewards$ 
+are in a certain sense independent of $s$. Why is it that only 
+$\Actions(s)$ is dependent on $s$?
+
+The ``Markov'' in Markov Decision Process is exactly what makes 
+the set of actions special. As covered in 
+Chapter~\ref{chapter:stochastic}, a Markov process is often 
+used to describe stochastic transitions between a set of, 
+emphasize on terminology here, \textit{states}. In the example 
+on Chapter~\ref{chapter:motivation} the states were the literal 
+squares in the game. And as we discussed, not every state is 
+accessible from any other state. Thus, it makes sense that for 
+each state the set of possible actions is determined by it. 
+Some transitions are just impossible.
