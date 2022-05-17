@@ -16,12 +16,12 @@ surveying its current state. As we saw earlier, the robot then
 selects an action on the basis of this current game state.
 
 To be precise, say that the game starts at some $t=0$ and ends 
-at $t=T$. We discretize this period of time into $t = 0, 1, 2, 
-\ldots$ At each of this points $t$ in time, the agent finds 
-itself at some state $S_t \in \States$, where $\States$ 
+at $t=T$. We discretize this period of time into $t \in \{0, 1, 
+2, \ldots \}$ At each of this points $t$ in time, the agent 
+finds itself at some state $S_t \in \States$, where $\States$ 
 represents the set of all possible states. This defines exactly 
 what we called a stochastic process back in 
-Chapter~\ref{chapter:stochastic}: a series of random variables 
+Chapter~\ref{chapter:Stochastic}: a series of random variables 
 $\{ S_t \}_{t = 0, 1 \ldots}$. 
 
 Likewise, at each time step $t$ the agent chooses how to 
@@ -44,15 +44,15 @@ step the agent surveys the state, and based on it selects a
 \textit{feasible} action. The next time step begins when the 
 robot receives a reward signal from the environment. 
 
-The key point above is subtly hidden in the notation. Notice 
-how only the set of actions depends on a particular $s$. Both 
-the set of states $\States$ and the set of rewards $\Rewards$ 
-are in a certain sense independent of $s$. Why is it that only 
+A key idea is subtly hidden in the notation. Notice how only 
+the set of actions depends on a particular $s$. Both the set of 
+states $\States$ and the set of rewards $\Rewards$ are in a 
+certain sense independent of $s$. Why is it that only 
 $\Actions(s)$ is dependent on $s$?
 
 The ``Markov'' in Markov Decision Process is exactly what makes 
 the set of actions special. As covered in 
-Chapter~\ref{chapter:stochastic}, a Markov process is often 
+Chapter~\ref{chapter:Stochastic}, a Markov process is often 
 used to describe stochastic transitions between a set of, 
 emphasize on terminology here, \textit{states}. In the example 
 on Chapter~\ref{chapter:motivation} the states were the literal 
@@ -60,3 +60,24 @@ squares in the game. And as we discussed, not every state is
 accessible from any other state. Thus, it makes sense that for 
 each state the set of possible actions is determined by it. 
 Some transitions are just impossible.
+
+Not only are some transitions impossible at certain states, a 
+given action chosen by the agent will not always result in the 
+same transition from the state $s$ to the state $s'$, which 
+might sound obvious as we have already established that this 
+entire process can be best modeled by a MDP. To study the 
+probability of a certain transition from state $s$ to state 
+$s'$ given that a certain action $a \in \Actions(s)$ was taken 
+we introduce the \textit{dynamics} function, keeping with the 
+notation in \cite{SuttonBarto}.
+
+\begin{dfn}{Dynamics function}{dynamics-func}
+	For all $s, s' \in \States, r \in \Rewards, a \in 
+	\Actions(s)$, we define the \emph{dynamics function} $f: 
+	\States \times \Rewards \times \States \times \Actions(s) 
+	\to [0, 1]$ as follows:
+	\begin{equation*}
+		p(s', r \versep s, a) \coloneq \IP{S_t}
+\end{dfn}
+
+Hola \ref{dfn:dynamics-func}

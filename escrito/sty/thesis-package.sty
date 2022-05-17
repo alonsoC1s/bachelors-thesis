@@ -114,7 +114,7 @@
 %% Commands
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\E}{\mathbb{E}\brackets}
-\newcommand{\Pe}{\mathbb{P}\brackets}
+\newcommand{\IP}{\mathbb{P}\brackets}
 \newcommand{\vertsep}{\,\middle\vert\,} % Growable vertical bar with spacing
 \newcommand{\States}{\mathcal{S}}
 \newcommand{\Actions}{\mathcal{A}}
@@ -140,6 +140,23 @@
 			colback=frostMidBlue % Title box inner color
 			}
 	}{thm}
+
+% Theorem
+\newtcbtheorem[number within=chapter]{dfn}{Definition}%
+	{
+		colback=white, % Inside color of content box
+		colframe=frostMidBlue, % Outer box frame color
+		fonttitle=\bfseries\scshape, % font title style
+		enhanced,
+		coltitle=snowLight, % Title font color
+		attach boxed title to top left={
+			xshift=2ex,yshift=-2mm,yshifttext=-1mm
+			},
+		boxed title style={ % Title box
+			colframe=frostMidBlue, % Title box outer frame color
+			colback=frostMidBlue % Title box inner color
+			}
+	}{dfn}
 
 % Corollary
 \newtcbtheorem[number within=chapter]{coro}{Corollary}%
