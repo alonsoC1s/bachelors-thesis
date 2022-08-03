@@ -105,7 +105,7 @@
 \DeclarePairedDelimiter{\nint}\lfloor\rceil %nearest integer
 \DeclarePairedDelimiter{\ceil}\lceil\rceil \DeclarePairedDelimiter{\floor}\lfloor\rfloor 
 \DeclarePairedDelimiter{\abs}\lvert\rvert % absolute value
-\DeclarePairedDelimiter{\brackets}{[}{]}
+\DeclarePairedDelimiter{\brackets}{\left[}{\right]}
 
 %% Operators
 \DeclareMathOperator*{\argmax}{arg\,max}
@@ -114,7 +114,8 @@
 %% Commands
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\E}{\mathbb{E}\brackets}
-\newcommand{\IP}{\mathbb{P}\brackets}
+% \newcommand{\IP}{\mathbb{P}\brackets}
+\providecommand{\IP}[1]{\mathbb{P}\left[#1\right]}
 \newcommand{\vertsep}{\,\middle\vert\,} % Growable vertical bar with spacing
 \newcommand{\States}{\mathcal{S}}
 \newcommand{\Actions}{\mathcal{A}}

@@ -3,13 +3,14 @@
 
 On Chapter~\ref{chapter:motivation} we presented a very simple 
 example of a problem that may be solved via Reinforcement 
-Learning. As simple as that example was, the key ideas will now 
-allow us to delve into the theory proper, and formalize some 
-ideas while hopefully giving satisfying answers to some 
-questions that the intuitive treatment might have left open.
+Learning: a robot trying to play a game we called Miniopoly. As 
+simple as that example was, the key ideas will now allow us to 
+delve into the theory proper, and formalize some ideas while 
+hopefully giving satisfying answers to some questions that the 
+intuitive treatment might have left open.
 
 \section{The Agent \& the Environment}
-Recall from Chapter~\ref{chapter:motivation} that we referred 
+Recall from Chapter~\ref{chapter:Motivation} that we referred 
 to the robot player as a ``learning agent''. This agent is 
 continuously interacting with the rest of the game and 
 surveying its current state. As we saw earlier, the robot then 
@@ -17,7 +18,7 @@ selects an action on the basis of this current game state.
 
 To be precise, say that the game starts at some $t=0$ and ends 
 at $t=T$. We discretize this period of time into $t \in \{0, 1, 
-2, \ldots \}$ At each of this points $t$ in time, the agent 
+2, \ldots \}$ At each of these points $t$ in time, the agent 
 finds itself at some state $S_t \in \States$, where $\States$ 
 represents the set of all possible states. This defines exactly 
 what we called a stochastic process back in 
@@ -53,13 +54,13 @@ $\Actions(s)$ is dependent on $s$?
 The ``Markov'' in Markov Decision Process is exactly what makes 
 the set of actions special. As covered in 
 Chapter~\ref{chapter:Stochastic}, a Markov process is often 
-used to describe stochastic transitions between a set of, 
-emphasize on terminology here, \textit{states}. In the example 
-on Chapter~\ref{chapter:motivation} the states were the literal 
-squares in the game. And as we discussed, not every state is 
-accessible from any other state. Thus, it makes sense that for 
-each state the set of possible actions is determined by it. 
-Some transitions are just impossible.
+used to describe stochastic transitions between a set 
+of---emphasis on terminology here---\textit{states}. In the 
+example on Chapter~\ref{chapter:Motivation} the states were the 
+literal squares in the game. And as we discussed, not every 
+state is accessible from any other state. Thus, it makes sense 
+that for each state the set of possible actions is determined 
+by it. Some transitions are just impossible.
 
 Not only are some transitions impossible at certain states, a 
 given action chosen by the agent will not always result in the 
@@ -77,7 +78,9 @@ notation in \cite{SuttonBarto}.
 	\States \times \Rewards \times \States \times \Actions(s) 
 	\to [0, 1]$ as follows:
 	\begin{equation*}
-		p(s', r \versep s, a) \coloneq \IP{S_t}
+		p(s', r \mid s, a) \coloneqq \IP{S_t = s', R_t = r 
+		\vertsep S_{t-1} = s, A_{t-1} = a}.
+	\end{equation*}
 \end{dfn}
 
 Hola \ref{dfn:dynamics-func}
