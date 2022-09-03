@@ -45,6 +45,7 @@
 		\RequirePackage{fontspec} % For custom ttfont
 		\RequirePackage{hyperref}
 		\RequirePackage{mathtools}
+		\RequirePackage{amsthm}
 		% \RequirePackage{mdframed}
 
 		% % load ntheorem before newtxmath to avoid multiple definition of \openbox
@@ -132,8 +133,7 @@
 \newcommand{\makefrontmatter}{
 	\vspace*{\fill}
 	\noindent Typeset by the author in Baskervald X, Nimbus 
-	Sans and Julia Mono (github.com/cormullion/juliamono) by 
-	\LaTeX.
+	Sans and Julia Mono by \LaTeX.
 
 	\noindent This version is corresponds to commit 
 	\texttt{\gitAbbrevHash{}} on branch: \texttt{\gitBranch{}}, 

@@ -40,6 +40,9 @@
 \definecolor{auroraYellow}{RGB}{235, 203, 139}
 \definecolor{auroraGreen}{RGB}{163, 190, 140}
 
+% Allow breakable theorem boxes from tcolorbox
+\tcbuselibrary{breakable, theorems}
+
 % Hyperref setup
 \hypersetup{
 	colorlinks=true,
@@ -120,6 +123,7 @@
 \newcommand{\States}{\mathcal{S}}
 \newcommand{\Actions}{\mathcal{A}}
 \newcommand{\Rewards}{\mathcal{R}}
+\let\vec\mathbf
 
 %%===========================%
 %% Theorem-like Environments %
@@ -140,7 +144,7 @@
 			colframe=frostMidBlue, % Title box outer frame color
 			colback=frostMidBlue % Title box inner color
 			}
-	}{thm}
+	}{thrm}
 
 % Theorem
 \newtcbtheorem[number within=chapter]{dfn}{Definition}%
@@ -174,7 +178,7 @@
 			colframe=auroraLila, % Title box outer frame color
 			colback=auroraLila % Title box inner color
 			}
-	}{cor}
+	}{coro}
 
 % Lemma
 \newtcbtheorem[number within=chapter]{lemma}{Lemma}%
