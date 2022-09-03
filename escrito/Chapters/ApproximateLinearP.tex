@@ -21,7 +21,7 @@ that are described in detail in \cite[Chapter~4]{SuttonBarto}. The somewhat nove
 described in this thesis was developed in the first decade of the 2000s and is
 not part of the standard toolbox for solving RL problems, since it was
 originally developed in the area of management science and particularly for the
-problem of probabilistic inventory management, following the previous work laid
+problem of probabilistic inventory management, following the previous work, laid
 out since the 1980s. 
 
 Specifically, the technique to be laid out in this part of the thesis was
@@ -108,13 +108,14 @@ $s$ to state $s'$ after taking action $a$. We define:
     R_\pi (s) &= \sum_{a \in \Actions} \pi(a \mid s) \, r(s,a), \\
     P_\pi (s, s') &= \sum_{a \in \Actions} \pi(a \mid s) \sum_{s' \in \States} p(s' \mid s, a),
 \end{align*}
-which result from a slighly rearranged version of \eqref{eq:bellmans-recurrence-prime}.
+which result from a slightly rearranged version of
+\eqref{eq:bellmans-recurrence-prime}.
 
 We denote by $\vec{R}_\pi$ the vector $\left[ R_\pi(s_1), \dots, R_\pi
 (s_{|\States|}) \right]$ and $\vec{P}_\pi$ the stochastic matrix $\left[
 P_\pi(s_i, s_{i'}) \right]$ that defines the transition probabilities from any
 state $s_i$ to every other distinct state $s_{i'}$. As promised, this is the key
-to what will become one of our most powerfull tools: Bellman's policy operator.
+to what will become one of our most powerful tools: Bellman's policy operator.
 This will enable us to study how \textit{any} $v$ acts on the set of states
 $\States$.
 
@@ -133,9 +134,10 @@ recurrence equation \eqref{eq:bellmans-recurrence} as
 \begin{equation*}
     T_\pi \vec{v}_\pi = \vec{v}_\pi.
 \end{equation*}
-Which means $\vec{v}_\pi$ is a fixed point of the Bellman Policy Operator.
+This means $\vec{v}_\pi$ is a fixed point of the Bellman Policy Operator.
 
-Siezing the built-up momentum, let us write Bellman's optimality equation for the value function \eqref{eq:bellmans-value} using another operator.
+Seizing the built-up momentum, let us write Bellman's optimality equation for
+the value function \eqref{eq:bellmans-value} using another operator.
 
 \begin{dfn}{Bellman's Optimality Operator}{}
     We denote by $T_*: \R^{|\States|} \to \R^{|\States|}$ \emph{Bellman's Optimality Operator}, defined as:
@@ -155,16 +157,17 @@ In other words, the optimality operator $T_*$ is a non-linear operator with a
 fixed point $\vec{v}_*$ \cite[Lect. Jan 15 2019]{rao2022}.
 
 As promised, Bellman's operators yield the solutions to both the optimal value
-function, and the prediction problem, which come in handy to prove wether or
+function, and the prediction problem, which come in handy to prove whether or
 not our RL problem has solutions, or under which circumstances. However, so far,
 we have no idea how to solve them.
 
-Whith our toolbox almost complete, it is time to advance in our search for
+With our toolbox almost complete, it is time to advance in our search for
 optimality. As previously mentioned there are several approaches to solving
-Bellman's equations based on dynamic programming, yielding several algorithms we
-don't review in detail in this thesis as they are outside of scope, and the
-literature for those techniques is excellent. For a more detailed treatment of
-said algorithms please review \cite{SuttonBarto} and \cite{raoRL4F}.
+Bellman's equations are based on dynamic programming, yielding several
+algorithms we don't review in detail in this thesis as they are outside of
+scope, and the literature for those techniques is excellent. For a more detailed
+treatment of said algorithms please review \cite{SuttonBarto} and
+\cite{raoRL4F}.
 
 \subsection{Approaching optimality}
 So far our goal has been to find the ``best'' policy, but what does it mean for
@@ -174,7 +177,7 @@ compare the value given by the value function for each of them. The optimal, the
 
 We say that a given policy $\pi$ is in a certain sense \textit{better} than the
 policy $\pi'$, which we write as $\pi \geq \pi'$, whenever $v_\pi(s) \geq
-v_{\pi'} (s)$ for every $s \in \States$. This is caled a partial ordering over
+v_{\pi'} (s)$ for every $s \in \States$. This is called a partial ordering over
 the space of policies. Even better, the equality is only satisfied when both
 policies are optimal, as stated in the following lemma.
 
@@ -195,7 +198,7 @@ Wielding lemma \ref{lem:equality-on-optimality} we can prove that there always
 exists an optimal policy for the RL problem we have been studying.
 
 \begin{thrm}{}{opt-policy-existence}
-    For a Reinforcement Problem based in a discrete-time, finite-space Markov Decision Process, the following hold:
+    For a Reinforcement Problem based on a discrete-time, finite-space Markov Decision Process, the following hold:
     \begin{itemize}
         \item There exists an optimal policy $\pi_*$. That is, $v_{\pi_*} (s)
             \geq v_{\pi}$ for all other policies $\pi$ and all states $s \in
@@ -212,26 +215,29 @@ exists an optimal policy for the RL problem we have been studying.
     We follow the proof in \cite[Pg.~115]{raoRL4F} closely.
 
     As a consequence of lemma \ref{lem:equality-on-optimality}, we only need to
-    find a policy that maxizes both the value and action value functions,
+    find a policy that maximizes both the value and action value functions,
     achieving the maximum values: $v_*$ and $q_*$ respectively.
 
-    A policy that is candidate to be optimal can be constructed as follows:
+    A policy that is a candidate to be optimal can be constructed as follows:
     \begin{equation*}
         \pi_{*}^{D} (s) = \argmax_{a} q_{*} (s, a) \quad \forall s \in \States.
     \end{equation*}
 
-    For now we assume that the resulting action $a$ for any given state $s$ is
+    For now, we assume that the resulting action $a$ for any given state $s$ is
     unique.
 
-    We show that $\pi_{*}^{D}$ maximizes the optimal value and action-value functions. As established in chapter \ref{chapter:ReinforcementLearning}, equation \eqref{eq:prop-dependencia-vq}, $v_* (s) = \max_a q_* (s, a)$, and therefore,
+    We show that $\pi_{*}^{D}$ maximizes the optimal value and action-value
+    functions. As established in chapter \ref{chapter:ReinforcementLearning},
+    equation \eqref{eq:prop-dependencia-vq}, $v_* (s) = \max_a q_* (s, a)$, and
+    therefore,
     \begin{equation*}
         v_* (s) = q_* (s, \pi_{*}^{D}(s)).
     \end{equation*}
 
     In other words, we maximize the value function if we first take the action
     prescribed by the policy $\pi_{*}^{D}$ followed by the action from the next
-    time steps that maximizes the value function, and so on. This is precisely
-    why Bellmans recurrence equations work as they do. Likewise, the
+    time steps that maximize the value function, and so on. This is precisely
+    why Bellman's recurrence equations work as they do. Likewise, the
     action-value function is maximized following whatever action $\pi_{*}^{D}$
     prescribes. Formally,
     \begin{equation*}
@@ -250,7 +256,9 @@ exists an optimal policy for the RL problem we have been studying.
 
 A much more interesting and aesthetically pleasing way of proving theorem \ref{thrm:opt-policy-existence} is by using the properties of Bellman's operators
 
-Theorem \ref{thrm:opt-policy-existence} guarantees the existance of an optimal policy in theory. But we are interested in finding such a policy in practice, preferrably in a way that is computable this century. 
+Theorem \ref{thrm:opt-policy-existence} guarantees the existence of an optimal
+policy in theory. But we are interested in finding such a policy in practice,
+preferably in a way that is computable this century. 
 
 \begin{proof}
     Aqui se usa el operador de Bellman y se muestra que es contracción, luego se
@@ -264,7 +272,8 @@ objective of this Chapter, and indeed the whole thesis: avoiding the use of
 inefficient dynamic programming and use linear programming to solve Bellman's
 equations.
 
-First, we start by noting that, by Theorem 6.2.2a in \cite[Ch.~6.9.1]{puterman2014}, whenever a given policy $\vec{v}$ satisfies
+First, we start by noting that, by Theorem 6.2.2a in
+\cite[Ch.~6.9.1]{puterman2014}, whenever a given policy $\vec{v}$ satisfies
 \begin{equation*}
     \vec{v} \geq T_\pi \vec{v} = \vec{R}_\pi + \gamma \vec{P}_{\pi} \vec{v}
 \end{equation*}
@@ -273,7 +282,7 @@ for all possible policies, then, by Bellman's optimality equation
 \begin{equation*}
     \vec{v} \geq \vec{v}_* = T_* \vec{v}_*.
 \end{equation*}
-Where vectors $\vec{v}$ and $\vec{v}_*$ are compared component-wise. In other words we can fin an upper bound $\vec{v} \geq T_{*} \vec{v}$ by considering the following set of linear constraints:
+Where vectors $\vec{v}$ and $\vec{v}_*$ are compared component-wise. In other words, we can find an upper bound $\vec{v} \geq T_{*} \vec{v}$ by considering the following set of linear constraints:
 \begin{equation}
     \vec{v} \geq r(s, a) + \gamma \sum_{s'} p(s' \mid s, a) \vec{v}(s') \quad \forall a \in \Actions, s \in \States.
 \end{equation}
@@ -281,9 +290,9 @@ Where vectors $\vec{v}$ and $\vec{v}_*$ are compared component-wise. In other wo
 Since the solution to \eqref{eq:bellmans-optimality-operators} is guaranteed to
 exist by Theorem \ref{thrm:opt-policy-existence} and be such that $\vec{v}_* =
 T_* \vec{v}_*$, we can approach it by finding the smallest vector upper bound
-given that we can generate upper bounds as dicussed just before.
+given that we can generate upper bounds as discussed just before.
 
-Finding that smallest upper bound leads to the following Linear Program:
+Finding the smallest upper bound leads to the following Linear Program:
 \begin{equation}
 \label{lp:exact-lp}
 \tag{ELP}
@@ -299,7 +308,7 @@ Professor \citeauthor{farias2002thesis} refers to Linear Program
 \cite[Ch.~2.3]{farias2002thesis}. This LP (linear program) has $|\States|$
 variables and $|\States| \times |\Actions|$ constraints. This makes it
 tremendously vulnerable to the curse of dimensionality. Solving this LP for the
-amount of states in a modern RL problem becomes prohibitively computationally
+number of states in a modern RL problem becomes prohibitively computationally
 expensive, even when the average-case complexity of solving an LP is [NUMERO Y
 REFERENCIA], much better than $\mathcal{O}(|\States|!)$ [IGUAL REFERENCIA].
 
@@ -319,7 +328,7 @@ conditional expectation of $\vec{y}$ given the $\vec{x}_i$, or $\mathbb{E} \left
 \mid \vec{x}_i \right]$. In a nutshell, the relationship is modeled by a linear
 function $\vec{x}_{i}^{\top} \vec{B}$. The matrix $\vec{B}$ is filled with
 coefficients that minimize the distance between the approximation and the actual
-observed values $\vec{x}_i$. The key idea here is, these parameters are obtained
+observed values $\vec{x}_i$. The key idea here is, that these parameters are obtained
 by measuring the error between the predicted linear relationship and the true,
 observed values. The exact nature of this process is not important at the
 moment, but it is important to keep in mind that it can only be carried out if
@@ -328,7 +337,7 @@ problem of interest, we have no such luxury. We have to be a bit more clever.
 
 \subsubsection{Linear architecture}
 The strategy followed in \cite{farias2002thesis} is generating scoring functions
-with a pa\-ra\-me\-trized class of functions, similarly to linear regression but
+with a pa\-ra\-me\-trized class of functions, similar to linear regression but
 carrying out the ``fitting'' without being able to sample the function we are
 trying to approximate.
 
@@ -353,7 +362,7 @@ linear approximation to the value function.
 This way, use the representation for $\widehat{\vec{v}} = \Phi \vec{\beta}$,
 where $\vec{\beta}$ is a vector of parameters that will fit this representation.
 Armed with this one last tool, let us take another look at the exact LP
-\eqref{lp:exact-lp}, substituding the function for the approximation wherever
+\eqref{lp:exact-lp}, substituting the function for the approximation wherever
 pertinent.
 
 \begin{equation}
@@ -375,7 +384,7 @@ approximated efficiently with modern methods. The rest of
 from dynamic programming can be used to efficiently sample constraints, making
 the solution of this LP more efficient.
 
-The next chapters of this part are dedicated to breifly reviewing the extensions
+The next chapters of this part are dedicated to briefly reviewing the extensions
 and results of this method.
 
 
@@ -397,10 +406,10 @@ For the development of Bellman's Optimality Operator we follow several sources:
         approaches we skip in this section.
 \end{itemize}
 
-For a more through development of why Bellman's Operator is defined, please
+For a more thorough development of why Bellman's Operator is defined, please
 consult any of the sources referenced directly above.
 
-For the conceptual leap involved in casting the dynamic programming problem as a
+The conceptual leap involved in casting the dynamic programming problem as a
 linear program using the properties of Bellman's operators, entire chapters are
 dedicated to explaining the background and motivating the ideas and laying a
 solid foundation in \ref{puterman2014}, specifically chapters 2 and 6.
