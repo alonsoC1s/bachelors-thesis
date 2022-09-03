@@ -1,28 +1,29 @@
 \section{Introduction}
 
-As we discussed in previous chapters \ref{chapter:ReinforcementLearning}, the
+As discussed in previous chapters \ref{chapter:ReinforcementLearning}, the
 problem of finding the best policies by using Bellman's optimality equations
-falls within the realm of dynamic programming. The problem is, that even if an
+falls within the realm of dynamic programming. The problem is that even if an
 explicit solution can be given under certain conditions, the computational
-burden of calculating exact solutions is often too big to overcome even on
-modern computing equipment. And given the ``curse of dimensionality'', even if
-the modern problems became tractable in the future thanks to the ever-increasing
-computing power, that very same improvement in computing power would motivate
-researchers to tackle bigger still problems. So, to use the RL techniques we
-must find a way to use our computational resources more efficiently. 
+burden of calculating exact solutions is often too significant to overcome, even
+on modern computing equipment. And given the ``curse of dimensionality'', even
+if the contemporary problems became tractable in the future thanks to the
+ever-increasing computing power, that very same improvement in computing power
+would motivate researchers to tackle bigger still problems. So, to use the RL
+techniques, we must find a way to use our computational resources more
+efficiently. 
 
 Since Reinforcement Learning happens to be part of the techniques often grouped
-under the umbrella of ``artificial intelligence'', it has enjoyed a lot of
-attention for some decades now. Thanks to these research efforts and numerous
-applications in the industry there are several battle-tested approximate
-solutions to the RL problem we have developed here. Among these are: Q-learning,
-Monte--Carlo estimation methods, temporal difference learning, and many others
-that are described in detail in \cite[Chapter~4]{SuttonBarto}. The somewhat novel technique
-described in this thesis was developed in the first decade of the 2000s and is
-not part of the standard toolbox for solving RL problems, since it was
-originally developed in the area of management science and particularly for the
-problem of probabilistic inventory management, following the previous work, laid
-out since the 1980s. 
+under the umbrella of ``artificial intelligence'', it has enjoyed much attention
+for decades. Thanks to these research efforts and numerous applications in the
+industry, there are several battle-tested approximate solutions to the RL
+problem we have developed here. Among these are: Q-learning, Monte--Carlo
+estimation methods, temporal difference learning, and many others that are
+described in detail in \cite[Chapter~4]{SuttonBarto}. The somewhat novel
+technique described in this thesis was developed in the first decade of the
+2000s and is not part of the standard toolbox for solving RL problems since it
+was developed initially in the area of management science and particularly for
+the problem of probabilistic inventory management, following the previous work,
+laid out since the 1980s. 
 
 Specifically, the technique to be laid out in this part of the thesis was
 developed by \citeauthor*{farias2003LP2ADP}, as a continuation of previous work
@@ -32,12 +33,12 @@ laid out by \citeauthor*{denardo1970} and \citeauthor*{depenoux1963} in
 from solving Bellman's optimality equations as a linear program and then gets
 around the curse of dimensionality by using linear approximations for the
 interest functions to reduce the number of variables in the problem. Without
-further ado, let us get to the details, right after developing the necessary
+further ado, let us get to the details right after developing the necessary
 background.
 
 \section{Exact Dynamic Programming}
 In Chapter \ref{chapter:ReinforcementLearning}, we showed that using Bellman's
-optimality equations we can obtain optimal policies if we have access to the
+optimality equations, we can obtain optimal policies if we have access to the
 optimal value ($v_*$) or action-value ($q_{*}$) functions. We denote these
 functions underscored by $*$ to accentuate the fact that they are optimal in the
 sense that they satisfy Bellman's optimality equations, which are
@@ -62,8 +63,8 @@ Equation \eqref{eq:bellmans-value} is important, but not that helpful in
 practice. It tells us the best possible reward a learning agent can expect in a
 learning task. In other words, the best possible reward \textit{after} the agent
 followed the best policy but tells us very little about how to obtain that
-policy. What we would like to do is predict the total reward a given policy will
-yield. Thankfully, in chapter [CITE] we obtained an expression to calculate the
+policy. We would like to predict the total reward a given policy will
+yield. Thankfully, in chapter [CITE], we obtained an expression to calculate the
 expected reward a given policy $\pi$ will yield starting from a certain state
 $s$, that we will refer to as \textit{Bellman's recurrence equation} from now
 on. 
@@ -76,9 +77,9 @@ v_\pi (s) = \sum_{a \in \Actions} \pi(a \mid s) \sum_{s', r} p(s', r \mid s, a) 
 
 Using \eqref{eq:bellmans-recurrence} we can obtain an exact solution for $v_\pi$
 solving one equation for each state $s \in \States$. This is often called the
-\textit{prediction problem} in the literature \cite[Chapter~4.1]{SuttonBarto}. Transforming
-equation \eqref{eq:bellmans-recurrence} we obtain the following, simpler
-expression:
+\textit{prediction problem} in the literature \cite[Chapter~4.1]{SuttonBarto}.
+Transforming equation \eqref{eq:bellmans-recurrence} we obtain the following,
+simpler expression:
 
 \begin{align}
 \label{eq:bellmans-recurrence-prime}
@@ -93,10 +94,11 @@ we can take the hint one step further and think of the system of equations
 defined in terms of vectors and matrices. This approach will later serve to
 define Bellman's policy\footnote{or ``one-step'' \cite[pg.~9]{nadeemward2021},
 or ``expectation backup'' \cite[Lect.~3, Contraction Mapping]{silver2015}, the
-literature uses a variety of different names. We follow
+literature uses various names. We follow
 \cite{rao2022}.} and optimality operators, a powerful tool.
 
-Let us think of the value function as a vector for now, following \cite[pg.~132]{raoRL4F}. Specifically,
+For now, let us consider the value function as a vector, following
+\cite[pg.~132]{raoRL4F}. Specifically,
 \begin{equation*}
     % FIXME: No entiendo al 100 porqué ya no tienen sub-pi.
     \vec{v} = \left[ v (s_1), \dots , v (s_{|\States|}) \right].
@@ -120,16 +122,17 @@ This will enable us to study how \textit{any} $v$ acts on the set of states
 $\States$.
 
 \begin{dfn}{Bellman's Policy Operator}{}
-    We denote by $T_\pi$ the operator $T_\pi: \R^{|\States|} \to \R^{|\States|}$ defined as:
+    We denote by $T_\pi$ the operator $T_\pi: \R^{|\States|} \to \R^{|\States|}$
+    defined as:
     \begin{equation*}
         T_\pi \vec{v} = \vec{R}_\pi + \gamma \vec{P}_\pi \vec{v},
     \end{equation*}
-    for any value function vector $\vec{v} \in \R^{|\States|}$. A more complete
-    motivation for the definition of this operator can be found in
+    for any value function vector $\vec{v} \in \R^{|\States|}$. A
+    better-motivated definition of this operator can be found in
     \cite[Ch.~5.4]{raoRL4F}.
 \end{dfn}
 
-Using the newly defined Bellman's Policy Operator we can rewrite Bellman's
+Using the newly defined Bellman's Policy Operator, we can rewrite Bellman's
 recurrence equation \eqref{eq:bellmans-recurrence} as
 \begin{equation*}
     T_\pi \vec{v}_\pi = \vec{v}_\pi.
@@ -157,22 +160,22 @@ In other words, the optimality operator $T_*$ is a non-linear operator with a
 fixed point $\vec{v}_*$ \cite[Lect. Jan 15 2019]{rao2022}.
 
 As promised, Bellman's operators yield the solutions to both the optimal value
-function, and the prediction problem, which come in handy to prove whether or
-not our RL problem has solutions, or under which circumstances. However, so far,
+function and the prediction problem, which come in handy to prove whether or
+not our RL problem has solutions or under which circumstances. However, so far,
 we have no idea how to solve them.
 
-With our toolbox almost complete, it is time to advance in our search for
-optimality. As previously mentioned there are several approaches to solving
+With our toolbox almost complete, it is time to advance our search for
+optimality. As previously mentioned, there are several approaches to solving
 Bellman's equations are based on dynamic programming, yielding several
 algorithms we don't review in detail in this thesis as they are outside of
-scope, and the literature for those techniques is excellent. For a more detailed
-treatment of said algorithms please review \cite{SuttonBarto} and
+scope. The literature for those techniques is excellent. For a more detailed
+treatment of said algorithms, please review \cite{SuttonBarto} and
 \cite{raoRL4F}.
 
 \subsection{Approaching optimality}
-So far our goal has been to find the ``best'' policy, but what does it mean for
+So far, our goal has been to find the ``best'' policy, but what does it mean for
 a policy to be the best? We can not compare policies directly, but we can
-compare the value given by the value function for each of them. The optimal, the
+compare the value function's value for each of them. The optimal, the
 ``best'' policy is the one that maximizes the value function.
 
 We say that a given policy $\pi$ is in a certain sense \textit{better} than the
@@ -203,7 +206,7 @@ exists an optimal policy for the RL problem we have been studying.
         \item There exists an optimal policy $\pi_*$. That is, $v_{\pi_*} (s)
             \geq v_{\pi}$ for all other policies $\pi$ and all states $s \in
             \States$.
-        \item All optimal policies achieve the optimal value function, given by
+        \item All optimal policies achieve the optimal value function given by
             \eqref{eq:bellmans-value}. That is, $v_{\pi_*}(s) = v_* (s)$ for all
             $s \in \States$ where $\pi_*$ is one optimal policy.
         \item All optimal policies achieve the optimal action-value function,
@@ -254,7 +257,7 @@ exists an optimal policy for the RL problem we have been studying.
     $\pi_{*}^{D}$ must be an optimal policy.
 \end{proof}
 
-A much more interesting and aesthetically pleasing way of proving theorem \ref{thrm:opt-policy-existence} is by using the properties of Bellman's operators
+A much more exciting and aesthetically pleasing way of proving theorem \ref{thrm:opt-policy-existence} is by using the properties of Bellman's operators.
 
 Theorem \ref{thrm:opt-policy-existence} guarantees the existence of an optimal
 policy in theory. But we are interested in finding such a policy in practice,
@@ -267,13 +270,13 @@ preferably in a way that is computable this century.
 
 
 \section{Approximate Linear Programming}
-Having established the necessary context we can at last address the main
+Having established the necessary context, we can at last address the main
 objective of this Chapter, and indeed the whole thesis: avoiding the use of
 inefficient dynamic programming and use linear programming to solve Bellman's
 equations.
 
-First, we start by noting that, by Theorem 6.2.2a in
-\cite[Ch.~6.9.1]{puterman2014}, whenever a given policy $\vec{v}$ satisfies
+First, we note that by Theorem 6.2.2a in \cite[Ch.~6.9.1]{puterman2014},
+whenever a given policy $\vec{v}$ satisfies
 \begin{equation*}
     \vec{v} \geq T_\pi \vec{v} = \vec{R}_\pi + \gamma \vec{P}_{\pi} \vec{v}
 \end{equation*}
@@ -319,7 +322,7 @@ ideas: linear approximations.
 
 Approximating complicated functions by collections of linear or linear-affine
 functions is not new. One of the most proliferous applications of this idea is
-linear regression, in the area of statistical learning, or its more glamorous
+linear regression in the area of statistical learning, or its more glamorous
 name: machine learning. The main idea behind linear regression is approximating
 a relationship between a vector of \textit{regressors}, $\vec{x}_i$, measured
 attributes observed for some phenomenon of interest; and a vector of response
@@ -328,7 +331,7 @@ conditional expectation of $\vec{y}$ given the $\vec{x}_i$, or $\mathbb{E} \left
 \mid \vec{x}_i \right]$. In a nutshell, the relationship is modeled by a linear
 function $\vec{x}_{i}^{\top} \vec{B}$. The matrix $\vec{B}$ is filled with
 coefficients that minimize the distance between the approximation and the actual
-observed values $\vec{x}_i$. The key idea here is, that these parameters are obtained
+observed values $\vec{x}_i$. The key idea is that these parameters are obtained
 by measuring the error between the predicted linear relationship and the true,
 observed values. The exact nature of this process is not important at the
 moment, but it is important to keep in mind that it can only be carried out if
@@ -378,19 +381,19 @@ pertinent.
 The LP in \eqref{lp:approx-lp} is referred to as the \textit{approximate linear
 program}. Notice that the number of variables in this LP reduced from
 $|\States|$ to $K$. The number of constraints was not reduced, but according to
-\cite{farias2002thesis} most of the become inactive and solutions can be
+\cite{farias2002thesis}, most of them become inactive, and solutions can be
 approximated efficiently with modern methods. The rest of
 \citeauthor{farias2002thesis}'s work shows how the special structure inherited
 from dynamic programming can be used to efficiently sample constraints, making
 the solution of this LP more efficient.
 
-The next chapters of this part are dedicated to briefly reviewing the extensions
+The subsequent chapters of this part are dedicated to briefly reviewing the extensions
 and results of this method.
 
 
 \section{Bibliographical Notes}
 
-For the development of Bellman's Optimality Operator we follow several sources:
+For the development of Bellman's Optimality Operator, we follow several sources:
 \begin{itemize}
     \item Bellman's original paper \cite{bellman1957}.
     \item Several lectures and corresponding notes:
@@ -411,10 +414,10 @@ consult any of the sources referenced directly above.
 
 The conceptual leap involved in casting the dynamic programming problem as a
 linear program using the properties of Bellman's operators, entire chapters are
-dedicated to explaining the background and motivating the ideas and laying a
+dedicated to explaining the background and motivating the ideas, and laying a
 solid foundation in \ref{puterman2014}, specifically chapters 2 and 6.
 
 Sadly, we are constrained in scope and can not possibly lay the entire
 groundwork for this idea to feel more natural and better motivated. For the
 interested reader, \citeauthor{puterman2014}'s book is a great, if involved
-read, and is cited by several other bibliographic pieces used in this chapter.
+read and is cited by several other bibliographic pieces used in this chapter.
