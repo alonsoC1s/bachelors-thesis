@@ -85,7 +85,7 @@ simpler expression:
 \label{eq:bellmans-recurrence-prime}
 v_\pi(s) &= \sum_{a} \pi(a \mid s) \sum_{s', r} p(s', r \mid s, a) \left[ r + \gamma v_\pi (s') \right] \nonumber \\
 &= \sum_{a} \pi(a \mid s) \left[ \sum_{s', r} r p(s', r \mid s, a) + \gamma \sum_{s', r} v_\pi (s') p(s', r \mid s,a) \right] \nonumber \\
-&= \underbrace{\sum_{r} r \sum_{s'} p(s', r \mid s, a)}_{r(s,a)} \sum_a \pi(a \mid s) + \gamma \sum_{s', r} v_\pi (s') p(s', r \mid s, a) \sum_{a} \pi(a \mid s) \nonumber \\
+&= \underbrace{\sum_{r} r \sum_{s'} p(s', r \mid s, a)}_{r(s,a) (dfn. \ref{dfn:rewards-func})} \sum_a \pi(a \mid s) + \gamma \sum_{s', r} v_\pi (s') p(s', r \mid s, a) \sum_{a} \pi(a \mid s) \nonumber \\
 &= \sum_{a} \pi(a \mid s) \left[ r(s,a) + \gamma \sum_{s'} p(s' \mid s, a) v_\pi (s') \right] \tag{\ref{eq:bellmans-recurrence}'}.
 \end{align}
 

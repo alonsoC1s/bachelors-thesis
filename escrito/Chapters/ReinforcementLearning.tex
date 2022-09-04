@@ -1,80 +1,66 @@
 
 \label{chapter:ReinforcementLearning}
 
-On Chapter~\ref{chapter:motivation} we presented a very simple 
-example of a problem that may be solved via Reinforcement 
-Learning: a robot trying to play a game we called Miniopoly. As 
-simple as that example was, the key ideas will now allow us to 
-delve into the theory proper, and formalize some ideas while 
-hopefully giving satisfying answers to some questions that the 
-intuitive treatment might have left open.
+On Chapter~\ref{chapter:Motivation} we presented a very simple example of a
+problem that may be solved via Reinforcement Learning: a robot trying to play a
+game we called Miniopoly. As simple as that example was, the key ideas will now
+allow us to delve into the theory proper, and formalize some ideas while
+hopefully giving satisfying answers to some questions that the intuitive
+treatment might have left open.
 
-\section{The Agent \& the Environment}
-Recall from Chapter~\ref{chapter:Motivation} that we referred 
-to the robot player as a ``learning agent''. This agent is 
-continuously interacting with the rest of the game and 
-surveying its current state. As we saw earlier, the robot then 
-selects an action on the basis of this current game state.
+\section{The Agent \& the Environment} Recall from
+Chapter~\ref{chapter:Motivation} that we referred to the robot player as a
+``learning agent''. This agent is continuously interacting with the rest of the
+game and surveying its current state. As we saw earlier, the robot then selects
+an action on the basis of this current game state.
 
-To be precise, say that the game starts at some $t=0$ and ends 
-at $t=T$. We discretize this period of time into $t \in \{0, 1, 
-2, \ldots \}$ At each of these points $t$ in time, the agent 
-finds itself at some state $S_t \in \States$, where $\States$ 
-represents the set of all possible states. This defines exactly 
-what we called a stochastic process back in 
-Chapter~\ref{chapter:Stochastic}: a series of random variables 
-$\{ S_t \}_{t = 0, 1 \ldots}$. 
+To be precise, say that the game starts at some time $t=0$ and ends at $t=T$. We
+discretize this period of time into $t \in \{0, 1, 2, \ldots \}$ At each of
+these points $t$ in time, the agent finds itself at some state $S_t \in
+\States$, where $\States$ represents the set of all possible states. This
+defines exactly what we called a stochastic process back in 
+Chapter~\ref{chapter:Stochastic}: a series of random variables $\{ S_t \}_{t =
+0, 1 \ldots}$. 
 
-Likewise, at each time step $t$ the agent chooses how to 
-interact with an action $A_t \in \Actions(s)$, where 
-$\Actions(s)$ is the set of all \textit{available} actions at 
-the current state $s$. This too forms a stochastic process. One 
-time step in the future $t+1$ the agent receives more feedback 
-from the environment, the so-called reward signal $R_{t+1} \in 
-\Rewards \subseteq \R$. This process moves forward from $t$ to 
-$t+1$ and so on until the task is over. This defines a Markov 
-Decision Process (MDP from now on), which we can reorder as 
-follows:
-\begin{equation}
-	S_0, A_0, R_1, A_1, R_2, S_2, A_2, R_3, \ldots
-\end{equation}
+Likewise, at each time step $t$ the agent chooses how to interact with an action
+$A_t \in \Actions(s)$, where $\Actions(s)$ is the set of all \textit{available}
+actions at the current state $s$. This too forms a stochastic process. One time
+step in the future $t+1$ the agent receives more feedback from the environment,
+the so-called reward signal $R_{t+1} \in \Rewards \subseteq \R$. This process
+moves forward from $t$ to $t+1$ and so on until the task is over. This defines a
+Markov Decision Process (MDP from now on), which we can reorder as follows:
+\begin{equation} S_0, A_0, R_1, A_1, R_2, S_2, A_2, R_3, \ldots \end{equation}
 
-This particular ordering makes it easy to see why we chose to 
-discretize time into steps. This illustrates how at each time 
-step the agent surveys the state, and based on it selects a 
-\textit{feasible} action. The next time step begins when the 
-robot receives a reward signal from the environment. 
+This particular ordering makes it easy to see why we chose to discretize time
+into steps. This illustrates how at each time step the agent surveys the state,
+and based on it selects a \textit{feasible} action. The next time step begins
+when the robot receives a reward signal from the environment. 
 
-A key idea is subtly hidden in the notation. Notice how only 
-the set of actions depends on a particular $s$. Both the set of 
-states $\States$ and the set of rewards $\Rewards$ are in a 
-certain sense independent of $s$. Why is it that only 
-$\Actions(s)$ is dependent on $s$?
+A key idea is subtly hidden in the notation. Notice how only the set of actions
+depends on a particular $s$. Both the set of states $\States$ and the set of
+rewards $\Rewards$ are in a certain sense independent of $s$. Why is it that
+only $\Actions(s)$ is dependent on $s$?
 
-The ``Markov'' in Markov Decision Process is exactly what makes 
-the set of actions special. As covered in 
-Chapter~\ref{chapter:Stochastic}, a Markov process is often 
-used to describe stochastic transitions between a set 
-of---emphasis on terminology here---\textit{states}. In the 
-example on Chapter~\ref{chapter:Motivation} the states were the 
-literal squares in the game. And as we discussed, not every 
-state is accessible from any other state. Thus, it makes sense 
-that for each state the set of possible actions is determined 
-by it. Some transitions are just impossible.
+The ``Markov'' in Markov Decision Process is exactly what makes the set of
+actions special. As covered in Chapter~\ref{chapter:Stochastic}, a Markov
+process is often used to describe stochastic transitions between a set 
+of---emphasis on terminology here---\textit{states}. In the example on
+Chapter~\ref{chapter:Motivation} the states were the literal squares in the
+game. And as we discussed, not every state is accessible from any other state.
+Thus, it makes sense that for each state the set of possible actions is
+determined by it. Some transitions are just impossible.
 
-Not only are some transitions impossible at certain states, a 
-given action chosen by the agent will not always result in the 
-same transition from the state $s$ to the state $s'$, which 
-might sound obvious as we have already established that this 
-entire process can be best modeled by a MDP. To study the 
-probability of a certain transition from state $s$ to state 
-$s'$ given that a certain action $a \in \Actions(s)$ was taken 
-we introduce the \textit{dynamics} function, keeping with the 
-notation in \cite{SuttonBarto}.
+Not only are some transitions impossible at certain states, a given action
+chosen by the agent will not always result in the same transition from the state
+$s$ to the state $s'$, which might sound obvious as we have already established
+that this entire process can be best modeled by a MDP. To study the probability
+of a certain transition from state $s$ to state $s'$ given that a certain action
+$a \in \Actions(s)$ was taken we introduce the \textit{dynamics} function,
+keeping with the notation in \cite{SuttonBarto}.
 
 \begin{dfn}{Dynamics function}{dynamics-func}
 	For all $s, s' \in \States, r \in \Rewards, a \in 
-	\Actions(s)$, we define the \emph{dynamics function} $f: 
+	\Actions(s)$, we define the \emph{dynamics function} $p: 
 	\States \times \Rewards \times \States \times \Actions(s) 
 	\to [0, 1]$ as follows:
 	\begin{equation*}
@@ -84,10 +70,82 @@ notation in \cite{SuttonBarto}.
 \end{dfn}
 
 Hola \ref{dfn:dynamics-func}
+Using the notation 
 
+Notice how the dynamics function is just a joint probability density function
+over the space of state-reward pairs ($\States \times \Rewards$). This means we
+can treat it as such and get valuable information about, for instance, expected
+rewards
+\begin{equation*}
+	\mathbb{E} \left[ R_t \mid S_{t-1} = s, A_{t-1} = a \right].
+\end{equation*}
+We will be talking about expected rewards often, so we define the expected
+rewards function to simplify notation further on.
+
+\begin{dfn}{Expected rewards function}{rewards-func}
+	For a state action pair $s, \in \States, a \in \Actions$ we define the
+	\emph{expected rewards function} of simply the \emph{rewards function} $r:
+	\States \times \Actions \to \R$ as
+	\begin{equation*}
+		r(s, a) \coloneqq \sum_{r \in \Rewards} r \sum_{s' \in \States} p(s', r \mid s, a).
+	\end{equation*}
+\end{dfn}
+
+Keep in mind that both the dynamics and the rewards function are merely tools
+for us formalizing the process. The learning agent has very little or
+non-existent knowledge of the dynamics underlying transitions for instance. The
+only way it can interact with the environment is via the rewards. From the
+agent's perspective the environment is a black box. Each time the agent takes a
+given action, the black box responds with a new state and a reward. How or why
+the new states and rewards is not known to the agent (and sometimes not obvious
+to us humans doing the modelling either), but that is all it will need to learn.
+Toddlers have no concept of Newton's third law, nor do they need it to learn
+which things they can push around and which will push them.
+
+\section{What I Talk About When I Talk About Learning}
+The Agent-Environment interface we just described is surpisingly useful to frame
+the way humans master a given task. Toddlers learn to walk by reinforcement.
+Whenever they stand up and fall they recieve a negative reinforcement: pain.
+Each new attempt the toddler will try to fall as little as it can, minimizing
+the total pain. The way the robot learning Miniopoly operates is perfectly
+analogous, it recives postive rewards when winning, negative ones when losing.
+The idea that learning can be framed as a process of optimization is formalized
+as the \emph{reward hypothesis}.
+
+\begin{remark}{The reward hypothesis}
+	The learning goal can be posed as the maximization of the expected reward
+	value of the cumulative sum of a reward recieved by the learning agent. 
+\end{remark}
+
+The other subtle concept involved in our concept of learning is the
+ability to make mistakes and learn from them.
+
+Formally, the learning agent acts acording to a given policy, a rule of
+correspondece between states and actions. This rule is not necessarily
+deterministic, the agent is free to explore and respond to the same state
+differently each time it encounters it.
+
+\begin{dfn}{Policy}{policy}
+	A \emph{policy} $\pi$ is the probability $\pi: \Actions \to [0,1]$ of taking
+	action $a$ from a given state $s$ at some time $t$,
+	\begin{equation*}
+		\pi(a \mid s) \coloneqq \IP{A_t = a \mid S_t = s}.
+	\end{equation*}
+\end{dfn}
+
+Our task is to find increasingly ``better'' policies. Better in the sense of the
+reward hypothesis. Achieving a ``good'' policy is exactly like mastering a given
+task. Abusing our toddler example one final time, a walking toddler learned to
+respond to the feeling of falling forward by taking another step.
+
+Are we done then? 
+
+We just need to decide what makes one policy better than any other one.
+
+\subsection{The value of policies}
 
 % FIXME: ESTO NO TIENE CONTEXTO, PONERLO
 \begin{equation}
 	\label{eq:prop-dependencia-vq}
-	v_* (s) = \max_{a \in \Actions} q_* (s, a) \quad \forall \s in \States.
+	v_* (s) = \max_{a \in \Actions} q_* (s, a) \quad \forall s \in \States.
 \end{equation}

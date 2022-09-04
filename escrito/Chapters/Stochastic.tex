@@ -2,3 +2,26 @@
 \label{chapter:Stochastic}
 
 To be filled\ldots
+
+
+
+\begin{dfn}{Stochastic Process}{stochastic-process}
+\end{dfn}
+
+\begin{dfn}{Markov's Property}
+    Given a stochastic process made up of random states $S_t$ for times $t = 0,
+    1, 2, \dots$, we say it satisfies the \emph{Markov property} (or is
+    \emph{Markovian}) if the probalities of transition between $S_t$ and
+    $S_{t+1}$ satisfy
+    \begin{equation*}
+        \P \left[ S_{t+1} \mid S_t, S_{t-1}, \dots, S_0 \right] = \P \left[ S_{t+1} \mid S_t \right],
+    \end{equation*}
+    for all $t \geq 0$.
+\end{dfn}
+
+Markov's property is often called the ``memoryless property'', since in essence,
+it says the history of the process does not influence the future evolution, it
+is only determined by the present state.
+
+\begin{dfn}{Markov Decision Process}{MDP}
+\end{dfn}
