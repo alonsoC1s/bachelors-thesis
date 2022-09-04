@@ -196,3 +196,11 @@
 			colback=auroraRed % Title box inner color
 			}
 	}{lem}
+
+% Shaded box
+\newenvironment{remark}[1]{%
+  \definecolor{shadecolor}{RGB}{229,233,240}
+  \begin{shaded}{\color{auroraLila}\noindent\textsc{#1}}\\%
+}{%
+  \end{shaded}%
+}
