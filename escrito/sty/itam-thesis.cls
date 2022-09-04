@@ -47,6 +47,7 @@
 		\RequirePackage{mathtools}
 		\RequirePackage{amsthm}
 		\RequirePackage{framed} % Shaded box
+		% \RequirePackage{witharrows} % Pretty margin anotations for equations
 		% \RequirePackage{mdframed}
 
 		% % load ntheorem before newtxmath to avoid multiple definition of \openbox

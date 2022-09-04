@@ -1,4 +1,3 @@
-
 \label{chapter:ReinforcementLearning}
 
 On Chapter~\ref{chapter:Motivation} we presented a very simple example of a
@@ -143,9 +142,167 @@ Are we done then?
 We just need to decide what makes one policy better than any other one.
 
 \subsection{The value of policies}
+As established earlier by the reward hypothesis, the ultimate goal of our
+learning task is to maximize the accumulated rewards received by the agent. The
+rewards the agent will percieve depend chiefly on two things:
+\begin{enumerate}
+	\item The starting state,
+	\item The policy followed by the agent.
+\end{enumerate}
 
-% FIXME: ESTO NO TIENE CONTEXTO, PONERLO
+From now on we talk about the \textit{value} of a given state when following a
+certain policy with the help of the value function. Even though we defined the
+Agent--Environment interface with finite MDPs, for the rest of this thesis we
+focus on infinite processes, since they generalize finite ones.
+
+\begin{dfn}{State-Value Function}{value-func}
+	The \emph{value} of the state $s$ is the expected value of the
+	\underline{discounted} sum of the accumulated rewards from time $t$ forward
+	when the agent follows the policy $\pi$,
+	\begin{equation*}
+		v^{\pi} (s) \coloneqq \mathbb{E}_{\pi} \left[\sum_{k=0}^{\infty} \gamma^{k} R_{t+k+1} \vertsep S_{t} = s\right],
+	\end{equation*}
+	for all $s \in \States$.
+\end{dfn}
+
+The constant $\gamma$ is called the \textit{discount factor}. By considering the
+discounted sum of accumulated rewards as the value function we are modelling the
+preference for inmediate rather than delayed rewards\footnote{It's esential to
+consider the discounted sum since the simple sum of rewards for an infinite MDP
+is not finite}. 
+
+The notation used in definition \ref{dfn:value-func} is a bit abusive. The
+symbol $\mathbb{E}_{\pi}$ means the expected value of the random variable $R$
+(the rewards) given that the agent follows the policy $\pi$. Recall that the
+random variable $R$ depends on the actions the action takes.
+
+Figure \ref{fig:hist-miniopoly} way back in Chapter \ref{chapter:Motivation} is
+a graphical representation of $v_\pi (s)$ for the Miniopoly game for each square
+in the board! Actually, it is not \textit{exactly} the value function for the
+game Miniopoly, since the states of that game are determined not only by
+\textit{where} on the board the player is, but also on othe factors such as
+ownership of the square and how much money is available. The important thing is,
+as we showed earlier, the value function can be estimated! This idea is key to
+developing the algorithms that allow reinforcement learning to be used in
+practice.
+
+For the practical implementations of Reinforcement Learning its also very useful
+to consider how deviating from the chosen policy just at the present time, and
+follow it for al subsequent decisions. This can help us evaluate of the current
+policy is on track to be the best available, or if we can find an action that
+would yield better results in the long run. For those action-value evaluation decissions we use introduce the next function.
+
+\begin{dfn}{Action-Value Function}{action-value-func}
+	We define the value of taking action $a$ in state $s$ at time $t$ and
+	following policy $\pi$ for times $t+k$ once again as the discounted sum of
+	accumulated rewards,
+	\begin{equation*}
+		q_\pi (s, a) \coloneqq \mathbb{E}_{\pi} \left[ \sum_{k=0}^{\infty} \gamma^{k} R_{t+k+1} \vertsep S_t = s, A_t = a \right].
+	\end{equation*}
+\end{dfn}
+
+One of the characteristic properties of the value functions we have introduced
+this chapter, and indeed more generally the problems that arise from optimal
+strategies in MDPs, is that they can be written recursively. In other words, to
+evaluate the value of a given state we can ``play it out'' and find that value
+as a combination of the values of all the posible states the agent will visit in
+the future.
+
+\begin{lemma}{Recursive evaluation}{recursive-eval}
+	The value function $v_\pi$ can be written in terms of itself as
+	\begin{equation*}
+		v_\pi (s) = \sum_{a \in \Actions} \pi(a \mid s) \sum_{s', r} p(s', r \mid s, a) \left[ r + \gamma \, v_\pi (s') \right].
+	\end{equation*}
+\end{lemma}
+
+Lemma \ref{lem:recursive-eval} will be the basis for the methods we will review
+further on on this thesis. What may not be obvious is that there may exist a
+trivially-evaluable value function. The last action the agent takes can only
+come from a relatively small list of possible actions, the computational burden
+of exploring said list is often realistic. The second to last action taken comes
+from a much larger list of possible actions, but we dont have to explore every
+combination since we already have the values computed for each terminal action.
+Using the lemma we can easily compute the value for each state-action pair for
+the second-to-last step in the process, and so on for the $n$th-to-last. In
+simple terms, we can evaluate by ``starting from the end'' and playing back to
+the beginning. This relationship was first noted by Bellman \cite{bellman1957},
+one of the pioneers of \textit{dynamic programming}.
+
+\begin{proof}[Proof of Lemma \ref{lem:recursive-eval}]
+	\begin{align}
+		\label{eq:bellman-equation-v}
+		v_\pi (s) &= \mathbb{E}_{\pi} \left[ R_{t+1} + \sum_{k=1}^{\infty} \gamma^{k} R_{t+k+1} \right] \nonumber \\
+		&= \sum_a \pi(a \mid s) \sum_{s'} \sum_r p(s', r \mid s, a) \left[ r + \gamma \mathbb{E}_\pi \left[ \sum_{k=1}^{\infty} \gamma^{k} R_{{t+k+1}} \vertsep S_{t+1} = s' \right] \right] \nonumber \\
+		&= \sum_a \pi(a \mid s) \sum_{s', r} p(s', r \mid s, a) \left[ r + \gamma v_{\pi} (s') \right] \quad \text{for all } s \in \States.
+	\end{align}
+\end{proof}
+
+Equation \eqref{eq:bellman-equation-v} is called Bellman's equation for the
+value function.
+
+\section{Striving for the best}
+As discussed, we are looking a policy that achieves the maximum possible value
+of the value function of a given state, denoted $v_*(s)$ and defined as
+\begin{equation*}
+	v_* (s) \coloneqq \max_{\pi} v_\pi (s).
+\end{equation*}
+Notice how $v_* \in \R$.
+
+Similarly, we can also define the optimal action-value function, denoted $q_*$, as
+\begin{equation*}
+	q_* (s, a) \coloneqq \max_{\pi} q_\pi (s, a),
+\end{equation*}
+for all $s \in \States, a \in \Actions(s)$. The value $q_*$ represents the expected return for taking action $a$ in state $s$ at time $t$ and then following the optimal policy for $t+k$. This can be written succintly as
+\begin{equation*}
+	q_{*} (s, a) = \mathbb{E} \left[ R_{t+1} + \gamma v_* (S_{t+1}) \vertsep S_t = s, A_t = a \right].
+\end{equation*}
+
+The Recursive Evaluation Lemma \ref{lem:recursive-eval} gives a recursive
+relationship any value function must satisfy. However, $v_*$ is special, it can
+be written in a special form \cite{bellman1957,SuttonBarto,raoRL4F} without
+having to reference any specific policy as:
 \begin{equation}
 	\label{eq:prop-dependencia-vq}
-	v_* (s) = \max_{a \in \Actions} q_* (s, a) \quad \forall s \in \States.
+	v_* (s) = \max_{a \in \Actions(s)} q_* (s, a) \quad \forall s \in \States.
 \end{equation}
+This relationship is called \textit{Bellman's optimality equation} for the value
+function. Intuitively, this relationship is very natural. It states that the
+value of a state under an optimal policy must equal the expected return for the
+best action from that state \cite[Ch.~3.6]{SuttonBarto}.
+
+Since the state-value and action-value functions are intimately related to ane
+another we can express the idea behind Bellman's Optimality equation in terms of
+the action-value function as well
+\begin{equation*}
+	q_* (s, a) = \sum_{s', r} p(s', r \mid s, a) \left[ r + \gamma \max_{a'} q_{*} (s', a') \right].
+\end{equation*}
+
+Bellman's optimality equation for the value function is actually a system of
+equations, one for each state $s$. The system of equations can be solved
+explicitly when considering a deterministic poliy and the numer of states is
+small, but is computationally inefficient or simply intractable when the numer
+of states grow, because of the curse of dimensionality, as the RL problem is
+combinatoric in nature. Solving the system of equations explicitly is akin to
+listing out every possible combination of states and actions.
+
+\begin{remark}{The Curse of Dimensionality}
+	By ``curse of dimensionality'' we refer to the fact that in combinatorial
+	problems such as listing all the action-value pairs of the RL problem,
+	whenever the number of states or actions grows linearly, the combinations
+	grow exponentially of factorially.
+\end{remark}
+
+Other methods to solve Bellma's equations are part of an area called dynamic
+programming. Dynamic programming refers to a collection of algorithms and
+heuristics that can be used to solve problems with a similar structure to the RL
+problem. Dynamic programming (DP) is very popular in areas such as Operations
+Research and other disciplines in which the nature of the problems is episodic,
+and requieres having the ability to adapt \textit{dynamically}. DP problems are
+often, as in this case, practically impossible to solve in a computationally
+efficient way.
+
+Most of the methods implemented in practical aplications to solve MDPs and in
+the implementations of Reinforcement Learning are based on techniques that stem
+from the application of DP concepts. In contrast, this thesis focuses on a
+technique that avoids DP completely to instead try to leverage the properties of
+other optimization problems. Namely, the ability to compute efficiently.
