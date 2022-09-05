@@ -53,13 +53,14 @@ Machine Learning.}
 % \pagestyle{plain}
 % \pagenumbering{arabic}
 
-\include{FrontBackMatter/Dedication}
-\include{FrontBackMatter/Acknowledgments}
-\include{FrontBackMatter/Abstract}
+\include{FrontBackMatter/Dedication} \cleardoublepage
+\include{FrontBackMatter/Acknowledgments} \cleardoublepage
+\include{FrontBackMatter/Abstract} \cleardoublepage
 % \include{FrontBackmatter/Foreword}
 % Foreword perhaps...
 
 \tableofcontents
+\cleardoublepage
 
 \mainmatter
 
@@ -71,39 +72,41 @@ Machine Learning.}
 
 % \input{Chapters/printTest.tex}
 \chapter*{Introduction}
-% \include{Chapters/0-Intro}
+\include{Chapters/0-Intro}
 
 \part{Foundations}
 
-\chapter{Setting the stage}
-% \include{Chapters/Motivation}
+	\chapter{Setting the stage}
+	\include{Chapters/Motivation}
 
-\chapter{Probability Theory}
+	\chapter{Probability Theory}
 
-\chapter{Stochastic Processes \& Markov Decision Processes}
-% \include{Chapters/Stochastic}
+	\chapter{Stochastic Processes \& Markov Decision Processes}
+	\include{Chapters/Stochastic}
 
-\chapter{Optimization Theory}
+	\chapter{Optimization Theory}
 
-\chapter{Reinforcement Learning}
-\include{Chapters/ReinforcementLearning}
+	\chapter{Reinforcement Learning}
+	\include{Chapters/ReinforcementLearning}
 
+\cleardoublepage
 \part{Approximate solutions to the Reinforcement Learning 
 Problem}
 
-\chapter{Approximate Linear Programming}
-% \include{Chapters/ApproximateLinearP}
+	\chapter{Approximate Linear Programming}
+	\include{Chapters/ApproximateLinearP}
 
 % Aqui todos los resultados de Farias que menciona LPinRL.
 
+\cleardoublepage
 \part{Applications to Supervised Machine Learning}
+	\appendix
 
-\appendix
-
-\chapter{Simulating Miniopoly}
-\include{Chapters/MiniopolySim}
+	\chapter{Simulating Miniopoly}
+	\include{Chapters/MiniopolySim}
 
 \nocite{*}
+\cleardoublepage
 \printbibliography
 
 \end{document}
