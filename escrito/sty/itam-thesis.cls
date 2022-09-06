@@ -44,9 +44,12 @@
 		\RequirePackage{listings} % Code listings
 		\RequirePackage{fontspec} % For custom ttfont
 		\RequirePackage{hyperref}
+<<<<<<< HEAD
 		\RequirePackage{mathtools}
 		\RequirePackage{amsthm}
 		\RequirePackage{framed} % Shaded box
+=======
+>>>>>>> ch-SupervisedLearning
 		\RequirePackage{dsfont} % For mathbb 1
 		\RequirePackage[ruled, algochapter]{algorithm2e}
 		% \RequirePackage{mdframed}
