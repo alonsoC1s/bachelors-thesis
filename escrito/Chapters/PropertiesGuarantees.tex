@@ -1,0 +1,135 @@
+\label{chapter:PropertiesGuarantees}
+As previously mentioned, the Approximate Linear Programming (ALP) method of
+solving the RL problem is based on work by \citeauthor{farias2003LP2ADP}. This
+next chapter is devoted to reproducing and discussing some of the main results
+presented in \cite{farias2003LP2ADP}. The proofs are left out in favour of more
+verbose explanations of what the results might entail. This chapter aims to
+demistify some of the claims made about linear program \eqref{lp:approx-lp}
+being ``easier'' to solve.
+
+Recall that in the definition of \eqref{lp:approx-lp} we referred to the vector
+$\vec{c}$ as the \emph{state-relevance wights}. The choife of state-relevance
+weights does not influence the solution of \eqref{lp:exact-lp}, but it does
+affect \eqref{lp:approx-lp}. The results discussed below demonstrate the impact
+on the quality of the resulting approximation.
+
+\section{Preliminaries}
+
+\begin{dfn}{Vector-Weighted $\ell_1$ norm}{vectorw-l1-norm}
+    The \emph{vector-weighted} 1-norm over the space $\ell_1$, denoted $\left\| \cdot \right\|_{1, \vec{c}}$, of a vector $\vec{x}$ is defined as
+    \begin{equation*}
+        \left\| \vec{x} \right\|_{1, \vec{c}} \coloneqq  \sum_i |x_i| c_i.
+    \end{equation*}
+\end{dfn}
+
+To measure the quality of a specific policy $\pi$ we will consider the how the
+value $v_\pi(s)$ compares to the optimal $v_* (s)$ when the initial state $s$ is
+random variable with probability distribution $\sigma$. Intuitively, how far are
+the expected total discounted rewards from the optimal when following policy
+$\pi$.
+
+\begin{dfn}{Expected increase in value following $\pi$}{expected-value-increase}
+    The expected increase in value following a policy $\pi$ is defined as
+    \begin{equation}
+        \label{eq:expected-value-increase}
+        \E_{s \sim \sigma} \left[ v_* (s) - v_\pi (s) \right] = \left\| \vec{v
+        }_* - \vec{v}_\pi \right\|_{1, \sigma}.
+    \end{equation}
+    The notation $s \sim \sigma$ means that $s$ is a particular realization of the
+    random variable $S$, which is distributed according to $\sigma$.
+\end{dfn}
+
+The attentive reader might have noticed a slightly abusive notation: $\| \cdot
+\|_{1, \sigma}$. We defined the weighted $\ell_1$ norm for vectors, but $\sigma$
+is not a vector. This is justified; since, as reviewed in chapter
+\ref{chapter:ApproximateLinearP}, vectors $\vec{v}_*$ and $\vec{v}_\pi$ are
+column vectors in which each entry is the state-value function evaluated at a
+single state $s$. By extension, we can imagine that the vector $\sigma$ used in
+\eqref{eq:expected-value-increase} is a column vector where each entry is the
+probability of some $s \in \States$ happening. Formally, we define this
+extension of the weighted norm as follows.
+
+\begin{dfn}{Distribution-Weighted $\ell_1$ norm}{distributionw-l1-norm}
+    Extending the vector-weighted $\ell_1$ norm we define the norm
+    \begin{equation*}
+        \left\| \vec{v} \right\|_{1, \sigma} \coloneqq \sum_{s \in \States} \sigma(s) \, |v(s)|,
+    \end{equation*}
+    for some vector $\vec{v} \sim \sigma$ where $\sigma$ is a probability
+    distribution.
+\end{dfn}
+
+Next, we define a probability measure that captures the probability of the agent
+being in some state given that it is following policy $\pi$ and starte on some
+randomly distributed $s \sim \sigma$.
+
+\begin{dfn}{The $\mu$ measure}{mu-measure}
+    We define a measure $\mu$ as
+    \begin{equation*}
+        \mu_{\pi, \, \sigma}^{\top} \coloneqq (1 - \gamma) \sigma^{\top} \sum_{t=0}^{\infty} \gamma^{t} \vec{P}_{\pi}^{t}.
+    \end{equation*}
+    Since $\sum_{t=0}^{\infty} \gamma^{t} \vec{P}_{\pi}^{t} = (I - \gamma
+    \vec{P}_\pi)^{-1}$, where $I$ is the identity matrix, we have
+    \begin{equation*}
+        \mu_{\pi, \, \sigma}^{\top} = (1 - \gamma) \sigma^{\top} (I - \gamma \vec{P}_{\pi})^{-1}.
+    \end{equation*}
+    We say $\mu$ is a measure in the sense of measure theory. It can be shown
+    \Cite[pg.~864]{farias2003LP2ADP} that $\mu$ is a probability distribution.
+\end{dfn}
+
+\section{Results}
+
+We begin with a lemma that helps illustrate the role of state-relevance weights
+for the approximation procedure.
+
+\begin{lemma}{}{farias-vanroy-lem1}
+    A vector $\vec{\beta}_0$ solves the following LP
+    \begin{equation*}
+    \begin{array}{rl@{}ll}
+        \displaystyle \min_{\vec{\beta} \in \R^{K}} & \vec{c}^{\top} \Phi \vec{\beta} \\
+        \text{S.t.} & \displaystyle \Phi \vec{\beta} (s, a) \geq r(s, a) + \gamma \sum_{s'} p(s' \mid s, a) \Phi \vec{\beta}(s') & \quad \forall a, s \in \Actions, \States . \\
+    \end{array}
+    \end{equation*}
+    if and only if it solves
+    \begin{equation*}
+    \begin{array}{rl@{}ll}
+        \displaystyle \max_{\vec{\beta} \in \R^{K}} & \left\| \vec{v}_* - \Phi \vec{\beta} \right\|_{1, \vec{c}} \\
+        \text{S.t.} & \displaystyle \Phi \vec{\beta} (s, a) \geq r(s, a) + \gamma \sum_{s'} p(s' \mid s, a) \Phi \vec{\beta}(s') & \quad \forall a, s \in \Actions, \States . \\
+    \end{array}
+    \end{equation*}
+\end{lemma}
+
+Lemma \ref{lem:farias-vanroy-lem1} corresponds to Lemma 1 in
+\Cite[Pg.~853]{farias2003LP2ADP}, and effectively establishes that
+\eqref{lp:approx-lp} can be solved as the maximization of a weighted norm where
+the weights are given by the state-relevance weights. The state-relevance
+weights vector does what it's name suggests: impose a balance of the quality of
+the approximation of the value function for each state. This means that by
+tuning $\vec{c}$ we can give more or less attention to different regions of the
+state space $\States$.
+
+Since the state-relevance vector imposes a restriction on how good our
+approximations can be. How good an approximation can we hope to find? The
+following theorem establishes bounds in the quality of approximations.
+
+\begin{thrm}{}{farias-vanroy-thm1}
+    Let $\vec{v}$ such that $\vec{v} \geq T^{*} \vec{v}$, then
+    \begin{equation*}
+       \left\| \vec{v}_{*} - \vec{v}_{\pi_v} \right\| \leq \frac{1}{1 - \gamma} \left\| \vec{v}_{*} - \vec{v} \right\|_{1, \mu_{\pi_v, \, \sigma}}.
+    \end{equation*}
+\end{thrm}
+
+We use the notation $\pi_v$ to mean the policy that yields the value $v$. This
+policy can be extracted once a specific $v$ is known. Theorem
+\ref{thrm:farias-vanroy-thm1} assures us that if the approximate value function
+$\vec{v}$ found by solving the LP is close to the optimal $\vec{v}_{*}$, then
+the performance of the policy generated by $\vec{v}, \pi_v$  will also be close
+to the perfomance achieved by the optimal policy. By combining theorem
+\ref{thrm:farias-vanroy-thm1} with lemma \ref{lem:farias-vanroy-lem1} we
+conclude that we would like the initial state-relevance weight vector to capture
+the (discounted) frequency with which different states are expected to be
+visited. In other words we would like for $\vec{c}$ to be as close as possible
+to $\mu_{\pi_v, \, \sigma}$. That is, we would like to invest more effort
+approximating the function for the states the learning agent is most likely to
+visit, compromising on worse approximations for infrequent states.
+
+\subsection{Error bounds for the ALP}

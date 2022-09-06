@@ -1,3 +1,4 @@
+\label{chapter:ApproximateLinearP}
 \section{Introduction}
 
 As discussed in previous chapters \ref{chapter:ReinforcementLearning}, the
@@ -373,13 +374,16 @@ pertinent.
 \tag{ALP}
 \begin{array}{rl@{}ll}
     \displaystyle \min_{\vec{\beta} \in \R^{K}} & \vec{c}^{\top} \Phi \vec{\beta} \\
-    \text{S.t.} & \vec{\beta}\vec{v} (s) \geq r(s,a) + \gamma \sum_{s'} p(s' \mid s, a) \, \Phi \vec{\beta} (s') & \quad \forall a \in \Actions, s \in \States. \\
+    \text{S.t.} & \displaystyle \Phi \vec{\beta}(s) \geq r(s,a) + \gamma \sum_{s'} p(s' \mid s, a) \, \Phi \vec{\beta} (s') & \quad \forall a \in \Actions, s \in \States. \\
     & \vec{\beta} \text{ unconstrained}.
 \end{array}
 \end{equation}
 
 The LP in \eqref{lp:approx-lp} is referred to as the \textit{approximate linear
-program}. Notice that the number of variables in this LP reduced from
+program}. The vector $\vec{c}$ with positive components is called the
+\emph{state-relevance weights} vector and determines, in a sense, the role each
+basis function plays in approximating a certain characteristic of the target
+function. Notice that the number of variables in this LP reduced from
 $|\States|$ to $K$. The number of constraints was not reduced, but according to
 \cite{farias2002thesis}, most of them become inactive, and solutions can be
 approximated efficiently with modern methods. The rest of
@@ -387,8 +391,13 @@ approximated efficiently with modern methods. The rest of
 from dynamic programming can be used to efficiently sample constraints, making
 the solution of this LP more efficient.
 
-The subsequent chapters of this part are dedicated to briefly reviewing the extensions
-and results of this method.
+The subsequent chapters of this part are dedicated to briefly reviewing the
+extensions and results of this method.
+
+Chapter \ref{chapter:PropertiesGuarantees} continues the exploration of the
+Approximate Linear Programming (ALP) method we have just described. In
+particular, some desirable properties the optimization problem
+\eqref{lp:approx-lp} has and some performance guarantees we can expect.
 
 
 \section{Bibliographical Notes}
