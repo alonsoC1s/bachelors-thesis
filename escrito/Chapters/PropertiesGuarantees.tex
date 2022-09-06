@@ -99,7 +99,7 @@ for the approximation procedure.
 \end{lemma}
 
 Lemma \ref{lem:farias-vanroy-lem1} corresponds to Lemma 1 in
-\Cite[Pg.~853]{farias2003LP2ADP}, and effectively establishes that
+\Cite[pg.~853]{farias2003LP2ADP}, and effectively establishes that
 \eqref{lp:approx-lp} can be solved as the maximization of a weighted norm where
 the weights are given by the state-relevance weights. The state-relevance
 weights vector does what it's name suggests: impose a balance of the quality of
@@ -109,7 +109,8 @@ state space $\States$.
 
 Since the state-relevance vector imposes a restriction on how good our
 approximations can be. How good an approximation can we hope to find? The
-following theorem establishes bounds in the quality of approximations.
+following theorem establishes bounds in the quality of approximations. Said
+theorem corresponds to Theorem 1 in \Cite[pg.~853]{farias2003LP2ADP}.
 
 \begin{thrm}{}{farias-vanroy-thm1}
     Let $\vec{v}$ such that $\vec{v} \geq T^{*} \vec{v}$, then
@@ -133,3 +134,25 @@ approximating the function for the states the learning agent is most likely to
 visit, compromising on worse approximations for infrequent states.
 
 \subsection{Error bounds for the ALP}
+We begin with a simple bound for the error of the ALP, expressing it as a
+function of the minimal error given the selected basis functions.
+
+\begin{thrm}{}{farias-vanroy-thm2}
+    Let $e$ be in the span of the columns of $\Phi$ and $\mu: \States \to [0,1]$
+    be a probability distribution over the state space. If $\vec{\beta}$ is an
+    optimal solution to \eqref{lp:approx-lp},
+    \begin{equation*}
+        \left\| \vec{v}_* - \Phi \vec{\beta} \right\|_{1, \mu} \leq \frac{2}{1-\alpha} \min_{\vec{\beta}} \left\| \vec{v}_* - \Phi \vec{\beta} \right\|_{\infty}.
+    \end{equation*}
+\end{thrm}
+
+Theorem \ref{thm:farias-vanroy-thm2} tells us that whenever the optimal value
+function lies close to the span of the selected basis functions the ALP
+generates a good approximation. If the optimal value function lies within the
+span, then the ALP produces an exact solution.
+
+The error bounds we can achieve can be improved much futher by considering Lyapunov functions.
+
+[Aqui hay dos opciones. Introducir todo lo que falta y poner el último teorema
+de \Citeauthor{farias2003LP2ADP}, o brincar ese teorema y proceder a el paper
+sobre constraint sampling también de Farias \& Van Roy. O ambos]
