@@ -1,80 +1,65 @@
-
 \label{chapter:ReinforcementLearning}
 
-On Chapter~\ref{chapter:motivation} we presented a very simple 
-example of a problem that may be solved via Reinforcement 
-Learning: a robot trying to play a game we called Miniopoly. As 
-simple as that example was, the key ideas will now allow us to 
-delve into the theory proper, and formalize some ideas while 
-hopefully giving satisfying answers to some questions that the 
-intuitive treatment might have left open.
+In Chapter~\ref{chapter:Motivation}, we presented an elementary example of a
+problem that may be solved via Reinforcement Learning: a robot trying to play a
+game called Miniopoly. As simple as that example was, the fundamental ideas will
+now allow us to delve into the theory proper and formalize some ideas while
+hopefully giving satisfying answers to some questions that the intuitive
+treatment might have left open.
 
-\section{The Agent \& the Environment}
-Recall from Chapter~\ref{chapter:Motivation} that we referred 
-to the robot player as a ``learning agent''. This agent is 
-continuously interacting with the rest of the game and 
-surveying its current state. As we saw earlier, the robot then 
-selects an action on the basis of this current game state.
+\section{The Agent \& the Environment} Recall from
+Chapter~\ref{chapter:Motivation} that we referred to the robot player as a
+``learning agent''. This agent continuously interacts with the rest of the
+game and surveys its current state. As we saw earlier, the robot then selects
+an action based on this current game state.
 
-To be precise, say that the game starts at some $t=0$ and ends 
-at $t=T$. We discretize this period of time into $t \in \{0, 1, 
-2, \ldots \}$ At each of these points $t$ in time, the agent 
-finds itself at some state $S_t \in \States$, where $\States$ 
-represents the set of all possible states. This defines exactly 
-what we called a stochastic process back in 
-Chapter~\ref{chapter:Stochastic}: a series of random variables 
-$\{ S_t \}_{t = 0, 1 \ldots}$. 
+To be precise, say that the game starts at some time $t=0$ and ends at $t=T$. We
+discretize this period of time into $t \in \{0, 1, 2, \ldots \}$ At each of
+these points $t$ in time, the agent finds itself at some state $S_t \in
+\States$, where $\States$ represents the set of all possible states. This
+defines exactly what we called a stochastic process back in 
+Chapter~\ref{chapter:Stochastic}: a series of random variables $\{ S_t \}_{t =
+0, 1 \ldots}$. 
 
-Likewise, at each time step $t$ the agent chooses how to 
-interact with an action $A_t \in \Actions(s)$, where 
-$\Actions(s)$ is the set of all \textit{available} actions at 
-the current state $s$. This too forms a stochastic process. One 
-time step in the future $t+1$ the agent receives more feedback 
-from the environment, the so-called reward signal $R_{t+1} \in 
-\Rewards \subseteq \R$. This process moves forward from $t$ to 
-$t+1$ and so on until the task is over. This defines a Markov 
-Decision Process (MDP from now on), which we can reorder as 
-follows:
-\begin{equation}
-	S_0, A_0, R_1, A_1, R_2, S_2, A_2, R_3, \ldots
-\end{equation}
+Likewise, at each time step $t$, the agent chooses how to interact with an action
+$A_t \in \Actions(s)$, where $\Actions(s)$ is the set of all \textit{available}
+actions at the current state $s$. This, too, forms a stochastic process. One time
+step in the future $t+1$ the agent receives more feedback from the environment,
+the so-called reward signal $R_{t+1} \in \Rewards \subseteq \R$. This process
+moves forward from $t$ to $t+1$ and so on until the task is over. This defines a
+Markov Decision Process (MDP from now on), which we can reorder as follows:
+\begin{equation} S_0, A_0, R_1, A_1, R_2, S_2, A_2, R_3, \ldots \end{equation}
 
-This particular ordering makes it easy to see why we chose to 
-discretize time into steps. This illustrates how at each time 
-step the agent surveys the state, and based on it selects a 
-\textit{feasible} action. The next time step begins when the 
-robot receives a reward signal from the environment. 
+This ordering makes it easy to see why we discretize time
+into steps. This illustrates how at each time step, the agent surveys the state
+and, based on it, selects a \textit{feasible} action. The next time step begins
+when the robot receives a reward signal from the environment. 
 
-A key idea is subtly hidden in the notation. Notice how only 
-the set of actions depends on a particular $s$. Both the set of 
-states $\States$ and the set of rewards $\Rewards$ are in a 
-certain sense independent of $s$. Why is it that only 
-$\Actions(s)$ is dependent on $s$?
+A key idea is subtly hidden in the notation. Notice how only the set of actions
+depends on a particular $s$. Both the set of states $\States$ and the set of
+rewards $\Rewards$ are, in a certain sense, independent of $s$. Why is it that
+only $\Actions(s)$ is dependent on $s$?
 
-The ``Markov'' in Markov Decision Process is exactly what makes 
-the set of actions special. As covered in 
-Chapter~\ref{chapter:Stochastic}, a Markov process is often 
-used to describe stochastic transitions between a set 
-of---emphasis on terminology here---\textit{states}. In the 
-example on Chapter~\ref{chapter:Motivation} the states were the 
-literal squares in the game. And as we discussed, not every 
-state is accessible from any other state. Thus, it makes sense 
-that for each state the set of possible actions is determined 
-by it. Some transitions are just impossible.
+The adjective ``Markov'' in Markov Decision Process is precisely what makes the
+set of actions special. As covered in Chapter~\ref{chapter:Stochastic}, a Markov
+process is often used to describe stochastic transitions between a set
+of---emphasis on terminology here---\textit{states}. In the example on
+Chapter~\ref{chapter:Motivation} the states were the literal squares in the
+game. Furthermore, as we discussed, not every state is accessible from any other
+state.  Thus, it makes sense that for each state, the set of possible actions is
+determined by it. Some transitions are just impossible.
 
-Not only are some transitions impossible at certain states, a 
-given action chosen by the agent will not always result in the 
-same transition from the state $s$ to the state $s'$, which 
-might sound obvious as we have already established that this 
-entire process can be best modeled by a MDP. To study the 
-probability of a certain transition from state $s$ to state 
-$s'$ given that a certain action $a \in \Actions(s)$ was taken 
-we introduce the \textit{dynamics} function, keeping with the 
-notation in \cite{SuttonBarto}.
+Not only are some transitions impossible at certain states, a given action
+chosen by the agent will not always result in the same transition from the state
+$s$ to the state $s'$, which might sound obvious as we have already established
+that an MDP can best model this entire process. To study the probability
+of a certain transition from state $s$ to state $s'$ given that a certain action
+$a \in \Actions(s)$ was taken we introduce the \textit{dynamics} function,
+keeping with the notation in \cite{SuttonBarto}.
 
 \begin{dfn}{Dynamics function}{dynamics-func}
 	For all $s, s' \in \States, r \in \Rewards, a \in 
-	\Actions(s)$, we define the \emph{dynamics function} $f: 
+	\Actions(s)$, we define the \emph{dynamics function} $p: 
 	\States \times \Rewards \times \States \times \Actions(s) 
 	\to [0, 1]$ as follows:
 	\begin{equation*}
@@ -84,3 +69,243 @@ notation in \cite{SuttonBarto}.
 \end{dfn}
 
 Hola \ref{dfn:dynamics-func}
+Using the notation 
+
+Notice how the dynamics function is just a joint probability density function
+over the space of state-reward pairs ($\States \times \Rewards$). This means we
+can treat it as such and get valuable information about, for instance, expected
+rewards
+\begin{equation*}
+	\mathbb{E} \left[ R_t \mid S_{t-1} = s, A_{t-1} = a \right].
+\end{equation*}
+We will be talking about expected rewards often, so we define the expected
+rewards function to simplify notation further on.
+
+\begin{dfn}{Expected rewards function}{rewards-func}
+	For a state action pair $s, \in \States, a \in \Actions$ we define the
+	\emph{expected rewards function} of simply the \emph{rewards function} $r:
+	\States \times \Actions \to \R$ as
+	\begin{equation*}
+		r(s, a) \coloneqq \sum_{r \in \Rewards} r \sum_{s' \in \States} p(s', r \mid s, a).
+	\end{equation*}
+\end{dfn}
+
+Keep in mind that both the dynamics and the rewards function are merely tools
+for us to formalize the process. For instance, the learning agent has very
+little or non-existent knowledge of the dynamics underlying transitions. The
+only way it can interact with the environment is via rewards. From the agent's
+perspective, the environment is a black box. Each time the agent takes a given
+action, the black box responds with a new state and a reward. How or why the new
+states and rewards are unknown to the agent (and sometimes not apparent to us
+humans doing the modeling either), but that is all it will need to learn.
+Toddlers have no concept of Newton's third law nor need it to learn which things
+they can push around and which will push them.
+
+\section{What I Talk About When I Talk About Learning} The Agent-Environment
+interface we just described is surprisingly helpful in framing how humans master
+a given task. Toddlers learn to walk by reinforcement.  They receive a negative
+reinforcement: pain whenever they stand up and fall.  For each new attempt, the
+toddler will try to fall as little as possible, minimizing the total pain. The
+way the robot learning Miniopoly operates is perfectly analogous. It receives
+positive rewards when winning and negative ones when losing.  The idea that
+learning can be framed as an optimization process is formalized as the
+\emph{reward hypothesis}.
+
+\begin{remark}{The reward hypothesis}
+	The learning goal can be posited as the maximization of the expected reward
+	value of the cumulative sum of the rewards received by the learning agent. 
+\end{remark}
+
+The other subtle concept involved in our concept of learning is the
+ability to make mistakes and learn from them.
+
+Formally, the learning agent acts according to a given policy, a rule of
+correspondence between states and actions. This rule is not necessarily
+deterministic. The agent is free to explore and respond to the same state
+differently each time it encounters it.
+
+\begin{dfn}{Policy}{policy}
+	A \emph{policy} $\pi$ is the probability $\pi: \Actions \to [0,1]$ of taking
+	action $a$ from a given state $s$ at some time $t$,
+	\begin{equation*}
+		\pi(a \mid s) \coloneqq \IP{A_t = a \mid S_t = s}.
+	\end{equation*}
+\end{dfn}
+
+Our task is to find increasingly ``better'' policies. Better in the sense of the
+reward hypothesis. Achieving a ``good'' policy is exactly like mastering a given
+task. Abusing our toddler example one final time, a walking toddler learned to
+respond to the feeling of falling forward by taking another step.
+
+Are we done, then? 
+
+We just need to decide what makes one policy better than any other one.
+
+\subsection{The value of policies}
+As established earlier by the reward hypothesis, the ultimate goal of our
+learning task is to maximize the accumulated rewards received by the agent. The
+rewards the agent will perceive depend chiefly on two things:
+\begin{enumerate}
+	\item The starting state,
+	\item The policy followed by the agent.
+\end{enumerate}
+
+From now on, we talk about the \textit{value} of a given state when following a
+particular policy with the help of the value function. Even though we defined
+the Agent--Environment interface with finite MDPs; for the rest of this thesis,
+we focus on infinite processes since they generalize finite ones.
+
+\begin{dfn}{State-Value Function}{value-func}
+	The \emph{value} of the state $s$ is the expected value of the
+	\underline{discounted} sum of the accumulated rewards from time $t$ forward
+	when the agent follows the policy $\pi$,
+	\begin{equation*}
+		v^{\pi} (s) \coloneqq \mathbb{E}_{\pi} \left[\sum_{k=0}^{\infty} \gamma^{k} R_{t+k+1} \vertsep S_{t} = s\right],
+	\end{equation*}
+	for all $s \in \States$.
+\end{dfn}
+
+The constant $\gamma$ is called the \textit{discount factor}. By considering the
+discounted sum of accumulated rewards as the value function, we are modeling the
+preference for immediate rather than delayed rewards\footnote{It is essential to
+consider the discounted sum since the simple sum of rewards for an infinite MDP
+is not finite}. 
+
+The notation used in definition \ref{dfn:value-func} is a bit abusive. The
+symbol $\mathbb{E}_{\pi}$ means the expected value of the random variable $R$
+(the rewards), given that the agent follows the policy $\pi$. Recall that the
+random variable $R$ depends on the agent's actions.
+
+Figure \ref{fig:hist-miniopoly} way back in Chapter \ref{chapter:Motivation} is
+a graphical representation of $v_\pi (s)$ for the Miniopoly game for each square
+in the board! Actually, it is not \textit{exactly} the value function for the
+game Miniopoly, since the states of that game are determined not only by
+\textit{where} on the board the player is but also on other factors such as
+ownership of the square and how much money is available. The important thing is,
+as we showed earlier, the value function can be estimated! This idea is key to
+developing the algorithms that allow reinforcement learning to be used in
+practice.
+
+For the practical implementations of Reinforcement Learning, it is also handy to
+consider how deviating from the chosen policy only at the present time and
+follow it for all subsequent decisions. This can help us evaluate if the current
+policy is on track to be the best available or if we can find an action that
+would yield better results in the long run. For those action-value evaluation
+decisions, we introduce the following function.
+
+\begin{dfn}{Action-Value Function}{action-value-func}
+	We define the value of taking action $a$ in state $s$ at time $t$ and
+	following policy $\pi$ for times $t+k$ once again as the discounted sum of
+	accumulated rewards,
+	\begin{equation*}
+		q_\pi (s, a) \coloneqq \mathbb{E}_{\pi} \left[ \sum_{k=0}^{\infty} \gamma^{k} R_{t+k+1} \vertsep S_t = s, A_t = a \right].
+	\end{equation*}
+\end{dfn}
+
+One of the characteristic properties of the value functions we have introduced
+this chapter, and indeed more generally, the problems that arise from optimal
+strategies in MDPs is that they can be written recursively. In other words, to
+evaluate the value of a given state; we can ``play it out'' and find that value
+as a combination of the values of all the possible states, the agent will visit in
+the future.
+
+\begin{lemma}{Recursive evaluation}{recursive-eval}
+	The value function $v_\pi$ can be written in terms of itself as
+	\begin{equation*}
+		v_\pi (s) = \sum_{a \in \Actions} \pi(a \mid s) \sum_{s', r} p(s', r \mid s, a) \left[ r + \gamma \, v_\pi (s') \right].
+	\end{equation*}
+\end{lemma}
+
+Lemma \ref{lem:recursive-eval} will be the basis for the methods we will review
+further in this thesis. What may not be obvious is that there may exist a
+trivially-evaluable value function. The agent's last action can only come from a
+relatively small list of possible actions; the computational burden of exploring
+said list is often realistic. The second to last action taken comes from a much
+more extensive list of possible actions. However, we do not have to explore
+every combination since we already have the values computed for each terminal
+action.  Using the lemma, we can efficiently compute the value for each
+state-action pair for the second-to-last step in the process and so on for the
+$n$th-to-last. In simple terms, we can evaluate by ``starting from the end'' and
+playing back to the beginning. This relationship was first noted by Bellman
+\cite{bellman1957}, one of the pioneers of \textit{dynamic programming}.
+
+\begin{proof}[Proof of Lemma \ref{lem:recursive-eval}]
+	\begin{align}
+		\label{eq:bellman-equation-v}
+		v_\pi (s) &= \mathbb{E}_{\pi} \left[ R_{t+1} + \sum_{k=1}^{\infty} \gamma^{k} R_{t+k+1} \right] \nonumber \\
+		&= \sum_a \pi(a \mid s) \sum_{s'} \sum_r p(s', r \mid s, a) \left[ r + \gamma \mathbb{E}_\pi \left[ \sum_{k=1}^{\infty} \gamma^{k} R_{{t+k+1}} \vertsep S_{t+1} = s' \right] \right] \nonumber \\
+		&= \sum_a \pi(a \mid s) \sum_{s', r} p(s', r \mid s, a) \left[ r + \gamma v_{\pi} (s') \right] \quad \text{for all } s \in \States.
+	\end{align}
+\end{proof}
+
+Equation \eqref{eq:bellman-equation-v} is called Bellman's equation for the
+value function.
+
+\section{Striving for the best}
+As discussed, we are looking for a policy that achieves the maximum possible value
+of the value function of a given state, denoted $v_*(s)$ and defined as
+\begin{equation*}
+	v_* (s) \coloneqq \max_{\pi} v_\pi (s).
+\end{equation*}
+Notice how $v_* \in \R$.
+
+Similarly, we can also define the optimal action-value function, denoted $q_*$, as
+\begin{equation*}
+	q_* (s, a) \coloneqq \max_{\pi} q_\pi (s, a),
+\end{equation*}
+for all $s \in \States, a \in \Actions(s)$. The value $q_*$ represents the
+expected return for taking action $a$ in state $s$ at time $t$ and then
+following the optimal policy for $t+k$. This can be written succinctly as
+\begin{equation*}
+	q_{*} (s, a) = \mathbb{E} \left[ R_{t+1} + \gamma v_* (S_{t+1}) \vertsep S_t = s, A_t = a \right].
+\end{equation*}
+
+The Recursive Evaluation Lemma \ref{lem:recursive-eval} gives a recursive
+relationship any value function must satisfy. However, $v_*$ is special. It can
+be written in a special form \cite{bellman1957,SuttonBarto,raoRL4F} without
+having to reference any specific policy as:
+\begin{equation}
+	\label{eq:prop-dependencia-vq}
+	v_* (s) = \max_{a \in \Actions(s)} q_* (s, a) \quad \forall s \in \States.
+\end{equation}
+This relationship is called \textit{Bellman's optimality equation} for the value
+function. Intuitively, this relationship is very natural. It states that the
+value of a state under an optimal policy must equal the expected return for the
+best action from that state \cite[Ch.~3.6]{SuttonBarto}.
+
+Since the state-value and action-value functions are intimately related to ane
+another we can express the idea behind Bellman's Optimality equation in terms of
+the action-value function as well
+\begin{equation*}
+	q_* (s, a) = \sum_{s', r} p(s', r \mid s, a) \left[ r + \gamma \max_{a'} q_{*} (s', a') \right].
+\end{equation*}
+
+Bellman's optimality equation for the value function is, in fact, a system of
+equations, one for each state $s$. The system of equations can be solved
+explicitly when considering a deterministic policy, and the number of states is
+small. However, it becomes computationally inefficient or simply intractable
+when the number of states grows because of the curse of dimensionality, as the
+RL problem is combinatoric in nature. Solving the system of equations explicitly
+is akin to listing out every possible combination of states and actions.
+
+\begin{remark}{The Curse of Dimensionality}
+	By ``curse of dimensionality'', we refer to the fact that in combinatorial
+	problems such as listing all the action-value pairs of the RL problem,
+	whenever the number of states or actions grows linearly, the combinations
+	grow exponentially of factorially.
+\end{remark}
+
+Other methods to solve Bellman's equations are part of an area called dynamic
+programming. Dynamic programming refers to a collection of algorithms and
+heuristics that can be used to solve problems with a similar structure to the RL
+problem. Dynamic programming (DP) is prevalent in areas such as Operations
+Research and other disciplines in which the nature of the problems is episodic
+and demands having the ability to adapt \textit{dynamically}. DP problems are
+often, as in this case, practically impossible to solve in a computationally
+efficient way.
+
+Most of the methods implemented in practical applications to solve MDPs and in
+the implementations of Reinforcement Learning are based on techniques that stem
+from the application of DP concepts. In contrast, this thesis focuses on a
+technique that avoids DP completely to try instead to leverage the properties of
+other optimization problems. Namely, the ability to compute efficiently.

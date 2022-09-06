@@ -44,14 +44,12 @@
 		\RequirePackage{listings} % Code listings
 		\RequirePackage{fontspec} % For custom ttfont
 		\RequirePackage{hyperref}
-<<<<<<< HEAD
 		\RequirePackage{mathtools}
 		\RequirePackage{amsthm}
 		\RequirePackage{framed} % Shaded box
-=======
->>>>>>> ch-SupervisedLearning
 		\RequirePackage{dsfont} % For mathbb 1
 		\RequirePackage[ruled, algochapter]{algorithm2e}
+		% \RequirePackage{witharrows} % Pretty margin anotations for equations
 		% \RequirePackage{mdframed}
 
 		% % load ntheorem before newtxmath to avoid multiple definition of \openbox
@@ -139,8 +137,7 @@
 \newcommand{\makefrontmatter}{
 	\vspace*{\fill}
 	\noindent Typeset by the author in Baskervald X, Nimbus 
-	Sans and Julia Mono (github.com/cormullion/juliamono) by 
-	\LaTeX.
+	Sans and Julia Mono by \LaTeX.
 
 	\noindent This version is corresponds to commit 
 	\texttt{\gitAbbrevHash{}} on branch: \texttt{\gitBranch{}}, 

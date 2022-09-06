@@ -125,16 +125,23 @@
 
 %% Commands
 \newcommand{\R}{\mathbb{R}}
+<<<<<<< HEAD
 % \newcommand{\IP}{\mathbb{P}\brackets}
 \newcommand{\E}{\mathbb{E}\brackets}
+=======
+\newcommand{\E}[1]{\mathbb{E}\left[#1\right]}
+>>>>>>> ch-ApproxLP
 % \newcommand{\IP}{\mathbb{P}\brackets}
 \providecommand{\IP}[1]{\mathbb{P}\left[#1\right]}
 \newcommand{\vertsep}{\,\middle\vert\,} % Growable vertical bar with spacing
 \newcommand{\States}{\mathcal{S}}
 \newcommand{\Actions}{\mathcal{A}}
 \newcommand{\Rewards}{\mathcal{R}}
+<<<<<<< HEAD
 \renewcommand{\L}{\mathcal{L}}
 \newcommand{\1}{\mathds{1}}
+=======
+>>>>>>> ch-ApproxLP
 \let\vec\mathbf
 
 %%===========================%
@@ -156,7 +163,7 @@
 			colframe=frostMidBlue, % Title box outer frame color
 			colback=frostMidBlue % Title box inner color
 			}
-	}{thm}
+	}{thrm}
 
 % Theorem
 \newtcbtheorem[number within=chapter]{dfn}{Definition}%
@@ -190,7 +197,7 @@
 			colframe=auroraLila, % Title box outer frame color
 			colback=auroraLila % Title box inner color
 			}
-	}{cor}
+	}{coro}
 
 % Lemma
 \newtcbtheorem[number within=chapter]{lemma}{Lemma}%
