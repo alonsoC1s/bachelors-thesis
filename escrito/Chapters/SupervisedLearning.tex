@@ -193,10 +193,170 @@ The label for that leaf will be the tree's prediction. In algorithm
         }
         \Return{$\widehat{y}_t$} \;
     }
-    \caption{Prediction of the output value $\widehat{y}$ from tree $f_\L$.}
+    \caption{Predict output value $\widehat{y}$ with tree $f_\L$
+        \cite[Ch.~3.2]{louppe2014}.}
     \label{alg:tree-predict}
 \end{algorithm}
 
 [Maybe una imágen de muestra de el árbol particionando el espacio.]
 
 \subsection{Fitting Decission Trees}
+\citeauthor{hyafil1976} proved that fitting
+a decission tree that minimizes the generalization error is an NP-complete
+problem \cite{hyafil1976}. That means no polynomial time algorithm to solve it
+exists. As is the case with other NP-complete problems the solution methods must
+rely on heuristics. One of the most widely used algorithms for tree fitting is
+the CART (Classification and Regression Tree) algorithm developed by
+\citeauthor{breiman2017} \cite{breiman2017}; it is implemented in
+scikit-learn\footnote{The industry-standard python library for machine learning
+\cite{louppe2014}.}, available to R users via the tidymodels extension, and part
+of MLJ.jl\footnote{The most widely used machine learning library for Julia
+users.}. This thesis will focus on CART, and later on try to extend it.
+
+The CART algorithm is based on greedily finding splits based on node purity, the
+amout of misclassified observations in a given node. The \textit{purer} the
+node, the lower impurity score, the better the prediction. We denote by $\L_t$
+\begin{equation*}
+    \L_t \coloneqq \left\{ (\vec{x}, y) \mid \vec{x} \in \mathcal{X}_t \right\}.
+\end{equation*}
+Many impurity functions can be used to determine the goodness of a split, each
+with their benefits and drawbacks. We only discuss the impurity decrease at the
+moment, since it is not necessary to have a specific impurity function to
+describe the fitting algorithm nor do we have enough space to cover the
+available options and their properties.
+
+\begin{dfn}{Impurity decrease}{}
+    The \emph{impurity decrease} of a binary split splitting node $t$ into a
+    left child $t_L$ and a right child $t_R$ is
+    \begin{equation*}
+        \Delta i(s, t) \coloneqq i(t) - \frac{N_{t_L}}{|\L_t|} \, i(t_L) - \frac{N_{t_R}}{|\L_t|} \, i(t_R),
+    \end{equation*}
+    where $N_{t_L}$ and $N_{t_R}$ are the number of observations contained by
+    nodes $t_L$ and $t_R$ respectively.
+\end{dfn}
+
+It is straightforward to see the similarity of the impurity decrease definition
+with how an expected value is estimated, since $N_{t_L} / |\L_t|$ is the
+probability of a given observation falling to the left node. In simple words,
+the impurity decrease for node $t$ is simply the original impurity minus the
+expected value of the impurity of its children. Keeping in mind that the
+proportion $N_{t_L} / |\L_t|$ represent the probability of a given observation
+being in the left child of $t$, we refer to it as $p_L$; denoting $p_R$ the
+analogue for the right child.
+
+We have the tools to define a formal procedure for greedily fitting a binary
+classification tree in algorithm \ref{alg:tree-fit}. The pseudocode presented
+here is missing a litany of important considerations such as stopping criteria,
+splitting rules, and impurity functions. We are limited to presenting a broad
+picture, as exploring even some of the deficiencies mentioned would require
+entire books.
+
+\begin{algorithm}
+    \SetKwFunction{Fit}{fit}
+    \SetKwFunction{Pop}{pop}
+    \SetKwFunction{Push}{push}
+    \KwIn{The training set $\L$}
+    \KwOut{A fitted binary classification tree $f_\L$}
+    \Function{\Fit{$f_\L$}}{
+        Create an empty tree $f_\L$ with root node $t_0$ \;
+        Create an empty stack $S$ of \emph{open} nodes $(t, \L_t)$ \;
+        Append $(t_0, \L)$ to $S$ \;
+        \While{$S$ is not empty}{
+            $t, \, \L_t \gets S$.\Pop{} \;
+            \If{stopping criteria are not met}{
+                $\widehat{y}_{t} \gets$ some constant value \;
+            }\Else{
+                Find the split $s_*$ on $\L_t$ that maximizes impurity decrease
+                \[
+                    s_* = \argmax_{s \in \mathcal{Q}} \Delta i(s, t)
+                \]
+                \;
+                Partition $\L_t$ into $\L_{t_L}$ and $\L_{t_R}$ according to $s_*$ \;
+                Create the left and right children nodes $t_L, t_R$ of t \;
+                $S.$\Push{($t_R, \L_{t_R}$)} \;
+                $S.$\Push{($t_L, \L_{t_L}$)} \;
+            }
+        }
+        \Return{$f_\L$} \;
+    }
+    \caption{Greedy fit of a binary classification tree
+        \cite[Ch.~3.3]{louppe2014}.}
+    \label{alg:tree-fit}
+\end{algorithm}
+
+Splitting rules will be crucial for our development of the rest of this thesis,
+so we must discuss them even briefly. The true magic of the algorithm lies in
+the splitting strategies, and the termination criteria.
+
+\subsection{Splitting rules}
+
+\begin{dfn}{Split}{split}
+    A \emph{split} $s$ of node $t$ is a partition of $\mathcal{X}_t$. Formally, a partition is a collection of non-empty subsets of $\mathcal{X}_t$ such that,
+    \begin{enumerate}
+        \item The union of every subset equals $\mathcal{X}_t$
+        \item The intersection of any two distinct subsets is empty.
+    \end{enumerate}
+\end{dfn}
+
+The number of possible partitions of $\L_t$ into $k$ non-empty subsets is given by the Stirling number of the second kind \cite{louppe2014}
+\begin{equation*}
+    S(N_t, k) \coloneqq \frac{1}{k!} \sum_{j=0}^{k} (-1)^{k-j} \binom{k}{j} j^{N_t}.
+\end{equation*}
+Even in the case of binary partitions in which $s(N_t, k)$ reduces to $2^{N_t
+-1}-1$, the number of partitions grows exponentially and, even worse,
+factorially for the non-binary case. It is not computationally feasible to
+calculate each possible partition and choose the best. The attentive reader will
+find the similarities when describing in full detail the RL problem presented in
+Chapter \ref{chapter:ReinforcementLearning}. The best binary split $s_*$ can be found using algorithm \ref{alg:best-binary-split}.
+
+\begin{algorithm}
+    \SetKwFunction{BestSplit}{FindBestSplit}
+    \KwIn{A subset $\L_t$ of the training set $\L$}
+    \KwOut{The best binary split $s_*$ on $\L_t$}
+    \Function{\BestSplit{$\L_t$}}{
+        $\Delta \gets - \infty$ \;
+        \For{$j \gets 1, \dots, p$}{
+            Find the best binary split $s_{*}^{j}$ for the variable $X_j$ \;
+            \If{$\Delta i(s_{*}^{j}, t) > \Delta$}{
+                $\Delta \gets \Delta i(s_{*}^{j}, t)$ \;
+                $s_* \gets s_{*}^{j}$ \;
+            }
+        }
+        \Return{$s_{*}$} \;
+    }
+    \caption{Find best binary split $s_*$ for node $t$ \cite[Ch.~3.6.3]{louppe2014}.}
+    \label{alg:best-binary-split}
+\end{algorithm}
+
+It can be proved that the complexity of algorithm \ref{alg:best-binary-split} is
+constrained by the complexity of the sort operation \cite[Ch.~5]{louppe2014}.
+
+With algorithm \ref{alg:best-binary-split} we have enough background to examine the similarities of the problem that arises from fitting a classification tree and the more general reinforcement learning problem in part II.
+
+\section{Bibliographical notes}
+As mentioned, we had to skip several details that would be necessary for an
+actual implementation of the tree-fitting algorithm. They are not strictly
+mandatory for the purposes of this thesis, but are vastly interesting and
+worthwile in their own right. To clarify or expand upon the concepts presented
+here please refer to the sources used to develop this chapter:
+\begin{enumerate}
+    \item \citeauthor{breiman2017}'s book \citetitle{breiman2017}. One of the
+        cornerstone texts for this subject, and the first formal descriptions of
+        the CART algorithm \cite{breiman2017}.
+    \item The standard textbook for modern machine learning algorithms and
+        applications: \citetitle{elements2009}. This source is particularly good
+        for reviewing the foundations of statistical, supervised, learning in
+        much more depth and in a better style that could be achieved here
+        \cite{elements2009}.
+    \item \citeauthor{louppe2014}'s doctoral thesis, which is heavily cited this
+        chapter. Louppe is a core developer emeritus of the scikit-learn python
+        library, the industry-standard. His work is admirably deep, clear, and
+        has valuable insights on the real-wold considerations a practical
+        implementation would have to keep in mind \cite{louppe2014}. After
+        extensive research this source provided the most satisfying treatment of
+        classification and regression trees of all documents reviewed.
+\end{enumerate}
+
+The field of machine learning is so wide we only had a chance to develop the
+most rudimentary, esential ideas we will need. Reading the sources cited for
+this chapter is encouraged.
