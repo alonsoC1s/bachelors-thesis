@@ -44,6 +44,11 @@
 		\RequirePackage{listings} % Code listings
 		\RequirePackage{fontspec} % For custom ttfont
 		\RequirePackage{hyperref}
+		\RequirePackage{mathtools}
+		\RequirePackage{amsthm}
+		\RequirePackage{framed} % Shaded box
+		\RequirePackage{dsfont} % For mathbb 1
+		\RequirePackage[ruled, algochapter]{algorithm2e}
 		% \RequirePackage{mdframed}
 
 		% % load ntheorem before newtxmath to avoid multiple definition of \openbox
