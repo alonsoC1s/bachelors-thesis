@@ -1,83 +1,70 @@
-In Chapter \ref{chapter:Motivation} we gave a brief review of the areas that
-constitute the field of Machine Learning, and motivated an introductory example
-to Reinforcement Learning. We highlighted the differences to Supervised Machine
-Learning (supervised ML) by contrasting the way each work: supervised ML recives
-a wealth of examples from which it must extract patters, while RL receives no
-input data and so has to learn by interacting with its environment. Supervised
-ML is often tasked with classifying or predicting a response. In this thesis we
-focus only on the classification task.
+In Chapter \ref{chapter:Motivation}, we briefly reviewed the areas that
+constitute the field of Machine Learning and motivated an introductory example
+to Reinforcement Learning. We highlighted the differences between Supervised
+Machine Learning (supervised ML) and RL by contrasting the way each work.
+Supervised ML receives a wealth of examples from which it must extract patterns,
+while RL receives no input data and so has to learn by interacting with its
+environment. Supervised ML is often tasked with classifying or predicting a
+response. In this thesis, we focus only on the classification task.
 
 \section{Classification}
-Supervised ML algorithms tasked with classifying recive large amounts of
-labelled data. Through the process called ``fitting'' or ``learning'', the
+Supervised ML algorithms tasked with classifying receive large amounts of
+labeled data. Through the process called ``fitting'' or ``learning'', the
 algorithm will (hopefully) label correctly new observations never seen before.
 The classification task seeks to find a systematic way of predicting a
 phenomenon given a set of measurements.
 
 \subsection{Formalizing}
 Putting some concepts to work, picture a scenario where we have access to
-several measurements (e.g. age, weight, blood pressure, etc\dots) for a group of
-patients. Some proportion of the patients in the study group suffered a stroke,
-the rest did not. Our task is to find a systematic way of predicting whether or
-not a new patient not studied before will suffer from a stroke by measuring the
-same variables measured for the initial group.
+several measurements (e.g., age, weight, blood pressure, etc\dots) for a group
+of patients. Some patients in the study group suffered a stroke; the rest did
+not. Our task is to find a systematic way of predicting whether or not a new
+patient not studied before will suffer from a stroke by measuring the same
+variables measured for the initial group.
 
-Fundamentally, a supervised ML algorithm must first of all receive a
-\textit{training set}, a set of pre-labelled data from a knowledgeable source; in
-contrast with RL, where labelling is often not even possible or practical. This
-source of truth, the training set, is a set of observations $(\vec{x}_1, y_1),
-\dots, (\vec{x}_n, y_n)$. The vectors $\vec{x}_i = [x_1, x_2, \dots, x_p]^{\top}
-\in \R^{p}$ can be thought of as a list of measurements of every variable of
-interest for the $i$-th observation. In the case of the example trying to
-predict strokes, $x_1$ would correspond to age, $x_2$ to weight, and so on. The
-training set also contains $y_1, \dots, y_n$, one-dimensional values we call
-variables or labels in the specific case of classification. Using the standard
-parlance, following \cite{louppe2014}, the input variables are known as
-\textit{features}, input vectors as \textit{instances} or \textit{samples} and
-the output variable as \textit{target}. For our purposes we consider that the
-target variable is always categoric, not numeric or continuous. Nevertheless,
-continuous target variables are allowed, but the learning task is called
-regression, which is outside of scope for this thesis.
+Fundamentally, a supervised ML algorithm must receive a \textit{training set}, a
+set of pre-labeled data from a knowledgeable source, in contrast with RL, where
+labeling is often not even possible or practical. This source of truth, the
+training set, is a set of observations $(\vec{x}_1, y_1), \dots, (\vec{x}_n,
+y_n)$. The vectors $\vec{x}_i = [x_1, x_2, \dots, x_p]^{\top} \in \R^{p}$ can be
+thought of as a list of measurements of every variable of interest for the
+$i$-th observation. In the case of the example trying to predict strokes, $x_1$
+would correspond to age, $x_2$ to weight, and so on. The training set also
+contains $y_1, \dots, y_n$, one-dimensional values we call variables or labels
+in the specific case of classification. Using the standard parlance, following
+\cite{louppe2014}, the input variables are known as \textit{features}, input
+vectors as \textit{instances} or \textit{samples} and the output variable as
+\textit{target}. For our purposes, we consider that the target variable is
+always categoric, not numeric or continuous. Nevertheless, continuous target
+variables are allowed, but the learning task is called regression, which is
+outside this thesis's scope.
 
-In a typicall ML workflow the algorithm that will be used to make predictions is
-trained on the set we just described, and it's performance tested on a different
-set of similar data that the algorithm had no access to during its training
-period. From now on, we denote the training set as $\L$. For convenience we
-group the feature vectors into a \textit{feature matrix} $X \in \R^{p \times
-n}$, where the $i$-th column is $\vec{x}_i$. Similarly, we group the target
-variables into the vector $\vec{y} \in \R^{n}$.
+In a typical ML workflow, the algorithm used to make predictions is trained on
+the set we just described. Its performance is tested on a different set of
+similar data that the algorithm had no access to during its training period.
+From now on, we denote the training set as $\L$. For convenience we group the
+feature vectors into a \textit{feature matrix} $X \in \R^{p \times n}$, where
+the $i$-th column is $\vec{x}_i$. Similarly, we group the target variables into
+the vector $\vec{y} \in \R^{n}$.
 
 Our classification task can be framed as finding a function $f_{\L}$ we will
-call model whose output or predictions $f_{\L} (\vec{x}) = \widehat{\vec{y}}$ are
-``as good as possible''. We subscript the function $f$ with $\L$ to highlight the
-fact that the function is dependent on what data the learning set contains. We
+call model whose output or predictions $f_{\L} (\vec{x}) = \widehat{\vec{y}}$
+are ``as good as possible''. We subscript the function $f$ with $\L$ to
+highlight that the function depends on what data the learning set contains. We
 proceed to define what makes a model ``good'' at making predictions.
 
 \subsection{Evaluation}
-As it has become a recurring theme in this thesis,
-determining what makes a prediction good and finding the best possible model
-$f_\L$ is a process of optimization. Since we assume that the learning set is a
-sample of the population we aim to label with our model, it stands to reason
-that a model that makes the fewest mistakes when tasked with classifiying the
-training observations will also make the fewest mistakes when classifiying new
-observations. In reality that is not exactly the case, as often making the
-number of classification mistakes as small as possible in the training set
-results in a model that ``memorized'' the set and has no ability whatsoever to
-generalize patterns, it only reproduces known-good answers. But the idea is not
-entirely misguided, it provides a good starting point.
-
-% The process we referred to as ``fitting'' a model consists of minimizing the number of misclassifications in the training set. We refer to this the expected number of misclassifications on the training set as the training error.
-
-% \begin{dfn}{Training Error}{training-error}
-%     The classification error function describes the expected number of erroneous
-%     classifications made by the model $f_{\L}$ on the training set $\L$.
-%     \begin{equation*}
-%         \Err (f_\L) \coloneqq \frac{1}{n} \sum_{i = 1}^{n} \1(y_i \neq \widehat{y}_i),
-%     \end{equation*}
-%     where $\widehat{y}_i \coloneqq f_\L (\vec{x}_i)$ is the prediction of the
-%     model for the $i$-th observation. The symbol $\1$ refers to the indicator
-%     function which equals 1 whenever the condition inside holds and 0 otherwise.
-% \end{dfn}
+As it has become a recurring theme in this thesis, determining what makes a
+prediction suitable and finding the best possible model $f_\L$ is a process of
+optimization. Since we assume that the learning set is a sample of the
+population we aim to label with our model, it stands to reason that a model that
+makes the fewest mistakes when tasked with classifying the training observations
+will also make the fewest mistakes when classifying new observations. In
+reality, that is not precisely the case, as often making the number of
+classification mistakes as small as possible in the training set results in a
+model that ``memorized'' the set and has no ability whatsoever to generalize
+patterns. It only reproduces known-good answers. But the idea is not entirely
+misguided, it provides a good starting point.
 
 The process we referred to as ``fitting'' a model consists of finding a model
 which minimizes its expected prediction error.
@@ -89,62 +76,63 @@ which minimizes its expected prediction error.
         \Err (f_\L) = \mathbb{E} \left[ \1 (y_i \neq \widehat{y}_i)  \right].
     \end{equation*}
     Where $\widehat{y}_i \coloneqq f_\L (\vec{x}_i)$ is the model's prediction
-    for the observation $\vec{x}_i$.
+    for the observation $\vec{x}_i$, and the indicator function $\1$ equals one
+    whenever the condition inside it holds, and zero otherwise.
 \end{dfn}
 
-Minimizing this Generalization Error will allow us to classify the most new
-observatins commiting as the lowest possible number of errors overall. This
-includes observations never seen before, not only the ones we have acces to in
+Minimizing this Generalization Error will allow us to classify the newest
+observations committing as the lowest possible number of errors overall.
+Including observations never seen before, not only the ones we have access to in
 the training set. Since the distributions for observations $(\vec{x}_j, y_j)$
-are generally not known the generalization error must be estimated. Several
-techniques to solve this problem exist, but are numerous and outside of scope.
-From now on we denote $\widehat{\Err}$ an estimator of the generalization error.
+are generally not known, we must estimate the generalization error. Several
+techniques to solve this problem exist but are numerous and outside of scope.
+From now on, we denote as $\widehat{\Err}$ an estimator of the generalization
+error.
 
-The term ``fitting'' when talking about finding a suitable model is a
-consequence of how such model is found. Since the generalization error is not
-directly measurable and thus not directly minimizable, we have to use a
-reasonable approximation. We assume that a family of candidate models,
-$\mathcal{H}$ known as hypotheses, exists. Our optimization target then becomes
-to find the best model among the space of hypotheses. To be more specific, let
-$\vec{\theta}$ be the vector of hyper-parameters controlling the behaviour of a
-specific model. Then, our optimization task is to find $\theta^{*}$,
+The term ``fitting'' when discussing finding a suitable model is a consequence
+of how such a model is found. Since the generalization error is not directly
+measurable and thus not directly minimizable, we have to use a reasonable
+approximation. We assume that a family of candidate models, $\mathcal{H}$ known
+as hypotheses, exists. Our optimization target then becomes to find the best
+model among the space of hypotheses. To be more specific, let $\vec{\theta}$ be
+the vector of hyper-parameters controlling the behavior of a specific model.
+Then, our optimization task is to find $\theta^{*}$,
 \begin{equation*}
     \theta^{*} \coloneqq \argmin_{\theta} \widehat{\Err}(f_\L (\vec{x}; \theta)) \quad \forall \vec{x}.
 \end{equation*}
 
-A myriad of classification models are available, each leveraging different
+Many classification models are available, each leveraging different
 properties and resulting in different strengths and weaknesses. The optimization
-problem involved in fitting each one is different from the rest. For the
-purposes of this thesis we focus on one specific model: classification trees. We
+problem involved in fitting each one is different from the rest. For this thesis, we focus on one specific model: classification trees. We
 introduce them here and show in part II how fitting them gives way to an
-optimization process analogous to a Reinforcement Learning problem, and frame it
+optimization process analogous to a Reinforcement Learning problem and frame it
 as such so we can leverage the power of RL to fit classification trees.
 
 \section{Classification Trees}
-Classification trees and, more generally, classification and regression trees,
-are Machine Learning models as the ones described in the previous section. They
-have gained massive popularity in the recent and ongoing boom in Machine
-Learning for their numerous qualities. For instance, they can model arbitrarily
+Classification trees and, more generally, classification and regression trees
+are Machine Learning models like the ones described in the previous section.
+They have gained massive popularity in the recent and ongoing boom in machine
+learning for their numerous qualities. For instance, they can model arbitrarily
 complex relationships in data, handle both numeric and categorical data, and are
 easily interpretable as they result in simple decision rules. Most importantly,
-they are the building block of the state-of-the art algorithms for ML such as
+they are the building block of state-of-the-art algorithms for ML, such as
 XGBoost \cite{XGBoost}.
 
 Sadly, their fitting process leads to a rather complicated problem that cannot
 be solved exactly in a reasonable time. The fitting process shares many
-similarities with the RL problem, which is described in wealth of detail in
+similarities with the RL problem, which is described in a wealth of detail in
 Chapter \ref{chapter:ReinforcementLearning}. This similarity is the foundational
 idea of this thesis, and we hope to show in part II how an alternative
 methodology to fitting trees can be developed by leveraging the techniques used
-in RL. With that goal in mind, it is time to lay the foundations of the
-structure behind trees.
+in RL. With that goal in mind, it is time to lay the foundations behind trees'
+structure.
 
 \subsection{Tree models}
 Let $\Omega = \left\{ (\vec{x}_i, y_i) \right\}$ be the space of all possible
 feature-target pairs. When each feature $y$ is part of a set of categories
 $\mathcal{C} \coloneqq \left\{ c_1, c_2, \dots, c_j \right\}$, another way to
-look at the classification task is to define a partion over $\Omega$ taking
-advantage of the natural distinction our set of categories provide.
+look at the classification task is to define a partition over $\Omega$ taking
+advantage of the natural distinction our set of categories provides.
 \begin{equation*}
     \Omega = \bigcup_{i=1}^{j} \Omega_{c_i},
 \end{equation*}
@@ -158,28 +146,28 @@ such
 \begin{equation*}
     \mathcal{X} = \bigcup_{i=1}^{j} f_{\L}^{-1}(\Omega_{c_i}).
 \end{equation*}
-The classification task then, can be tought of, as learning the model $f_\L$
-that gives the partion of $\mathcal{X}$ that most closely approximates the
-partion on $\Omega$ as a result of it's preimages.
+The classification task then can be thought of as learning the model $f_\L$ that
+gives the partition of $\mathcal{X}$ that most closely approximates the
+partition on $\Omega$ as a result of its preimages.
 
 In other words, we are trying to represent $f$ as a tree (in the same way
 Computer Science thinks about trees) where any node $t$ represents a subspace
 $\mathcal{X}_t \subseteq \mathcal{X}$ of the input space such that the node
-designated as root (denoted $t_0$) correspondes to the entirety of
-$\mathcal{X}$. Internal nodes $t$ are originated via a \textit{split} $s_t$
-taken from a set of question $\mathcal{Q}$.
+designated as root (denoted $t_0$) corresponds to the entirety of $\mathcal{X}$.
+Internal nodes $t$ are originated via a \textit{split} $s_t$ taken from a set of
+question $\mathcal{Q}$.
 
-The set of questions $\mathcal{Q}$ is just what it sounds like. The question
+The set of questions $\mathcal{Q}$ is exactly what it sounds like. The question
 defining split $s_t$ might be, for example, is $x_m < 65$? Or, is the person
-recorded as observation $m$ younger than 65 years old? The space $\mathcal{X}_t$
+recorded as observation $m$ younger than 65? The space $\mathcal{X}_t$
 represented by node $t$ is made up of disjoint subspaces corresponding to each
 of $t$'s children nodes; two in the case of binary trees. 
 
-Terminal nodes (or leaves) are labelled with a a best guess value $\widehat{y}_t
+Terminal nodes (or leaves) are labeled with a best guess value $\widehat{y}_t
 \in \mathcal{C}$. The prediction process is carried out by navigating the tree,
-providing answers to the questions defining each node, until a leaf is reached.
+providing answers to the questions defining each node until a leaf is reached.
 The label for that leaf will be the tree's prediction. In algorithm
-\ref{alg:tree-predict} we show a formal description of the process.
+\ref{alg:tree-predict}, we show a formal description of the process.
 
 \begin{algorithm}
     \SetKwFunction{Predict}{predict}
@@ -200,22 +188,23 @@ The label for that leaf will be the tree's prediction. In algorithm
 
 [Maybe una imágen de muestra de el árbol particionando el espacio.]
 
-\subsection{Fitting Decission Trees}
-\citeauthor{hyafil1976} proved that fitting
-a decission tree that minimizes the generalization error is an NP-complete
-problem \cite{hyafil1976}. That means no polynomial time algorithm to solve it
-exists. As is the case with other NP-complete problems the solution methods must
-rely on heuristics. One of the most widely used algorithms for tree fitting is
-the CART (Classification and Regression Tree) algorithm developed by
-\citeauthor{breiman2017} \cite{breiman2017}; it is implemented in
-scikit-learn\footnote{The industry-standard python library for machine learning
-\cite{louppe2014}.}, available to R users via the tidymodels extension, and part
-of MLJ.jl\footnote{The most widely used machine learning library for Julia
-users.}. This thesis will focus on CART, and later on try to extend it.
+\subsection{Fitting Decision Trees}
+\citeauthor{hyafil1976} proved that fitting a decision tree that minimizes the
+generalization error is an NP-complete problem \cite{hyafil1976}. That means no
+polynomial time algorithm to solve it exists. As with other NP-complete
+problems, the solution methods must rely on heuristics. One of the most widely
+used algorithms for tree fitting is the CART (Classification and Regression
+Tree) algorithm developed by \citeauthor{breiman2017} \cite{breiman2017}; it is
+implemented in scikit-learn\footnote{The industry-standard python library for
+machine learning \cite{louppe2014}.}, available to R users via the tidymodels
+extension and part of MLJ.jl\footnote{The most widely used machine learning
+library for Julia users.}. This thesis will focus on CART and later on try to
+extend it.
 
 The CART algorithm is based on greedily finding splits based on node purity, the
-amout of misclassified observations in a given node. The \textit{purer} the
-node, the lower impurity score, the better the prediction. We denote by $\L_t$
+amount of misclassified observations in a given node. The \textit{purer} the
+node, the lower the impurity score, the better the prediction. We denote by
+$\L_t$
 \begin{equation*}
     \L_t \coloneqq \left\{ (\vec{x}, y) \mid \vec{x} \in \mathcal{X}_t \right\}.
 \end{equation*}
@@ -236,17 +225,17 @@ available options and their properties.
 \end{dfn}
 
 It is straightforward to see the similarity of the impurity decrease definition
-with how an expected value is estimated, since $N_{t_L} / |\L_t|$ is the
+with how an expected value is estimated since $N_{t_L} / |\L_t|$ is the
 probability of a given observation falling to the left node. In simple words,
 the impurity decrease for node $t$ is simply the original impurity minus the
 expected value of the impurity of its children. Keeping in mind that the
-proportion $N_{t_L} / |\L_t|$ represent the probability of a given observation
+proportion $N_{t_L} / |\L_t|$ represents the probability of a given observation
 being in the left child of $t$, we refer to it as $p_L$; denoting $p_R$ the
-analogue for the right child.
+analog for the right child.
 
 We have the tools to define a formal procedure for greedily fitting a binary
 classification tree in algorithm \ref{alg:tree-fit}. The pseudocode presented
-here is missing a litany of important considerations such as stopping criteria,
+here lacks a litany of essential considerations, such as stopping criteria,
 splitting rules, and impurity functions. We are limited to presenting a broad
 picture, as exploring even some of the deficiencies mentioned would require
 entire books.
@@ -284,9 +273,9 @@ entire books.
     \label{alg:tree-fit}
 \end{algorithm}
 
-Splitting rules will be crucial for our development of the rest of this thesis,
-so we must discuss them even briefly. The true magic of the algorithm lies in
-the splitting strategies, and the termination criteria.
+Splitting rules will be crucial for developing the rest of this thesis, so we
+must discuss them, even if only briefly. The true magic of the algorithm lies in
+the splitting strategies and the termination criteria.
 
 \subsection{Splitting rules}
 
@@ -298,16 +287,18 @@ the splitting strategies, and the termination criteria.
     \end{enumerate}
 \end{dfn}
 
-The number of possible partitions of $\L_t$ into $k$ non-empty subsets is given by the Stirling number of the second kind \cite{louppe2014}
+The number of possible partitions of $\L_t$ into $k$ non-empty subsets is given
+by the Stirling number of the second kind \cite{louppe2014}
 \begin{equation*}
     S(N_t, k) \coloneqq \frac{1}{k!} \sum_{j=0}^{k} (-1)^{k-j} \binom{k}{j} j^{N_t}.
 \end{equation*}
 Even in the case of binary partitions in which $s(N_t, k)$ reduces to $2^{N_t
 -1}-1$, the number of partitions grows exponentially and, even worse,
-factorially for the non-binary case. It is not computationally feasible to
-calculate each possible partition and choose the best. The attentive reader will
+factorially for the non-binary case. Calculating each possible partition and
+choosing the best is not computationally feasible. The attentive reader will
 find the similarities when describing in full detail the RL problem presented in
-Chapter \ref{chapter:ReinforcementLearning}. The best binary split $s_*$ can be found using algorithm \ref{alg:best-binary-split}.
+Chapter \ref{chapter:ReinforcementLearning}. The best binary split $s_*$ can be
+found using algorithm \ref{alg:best-binary-split}.
 
 \begin{algorithm}
     \SetKwFunction{BestSplit}{FindBestSplit}
@@ -331,32 +322,35 @@ Chapter \ref{chapter:ReinforcementLearning}. The best binary split $s_*$ can be 
 It can be proved that the complexity of algorithm \ref{alg:best-binary-split} is
 constrained by the complexity of the sort operation \cite[Ch.~5]{louppe2014}.
 
-With algorithm \ref{alg:best-binary-split} we have enough background to examine the similarities of the problem that arises from fitting a classification tree and the more general reinforcement learning problem in part II.
+With algorithm \ref{alg:best-binary-split}, we have enough background to examine
+the similarities between the problem that arises from fitting a classification
+tree and the more general reinforcement learning problem in part II.
 
 \section{Bibliographical notes}
-As mentioned, we had to skip several details that would be necessary for an
-actual implementation of the tree-fitting algorithm. They are not strictly
-mandatory for the purposes of this thesis, but are vastly interesting and
-worthwile in their own right. To clarify or expand upon the concepts presented
-here please refer to the sources used to develop this chapter:
+As mentioned, we had to skip several details necessary for an actual
+implementation of the tree-fitting algorithm. They are not strictly mandatory
+for the purposes of this thesis but are vastly interesting and worthwhile in
+their own right. To clarify or expand upon the concepts presented here, please
+refer to the sources used to develop this chapter:
 \begin{enumerate}
     \item \citeauthor{breiman2017}'s book \citetitle{breiman2017}. One of the
-        cornerstone texts for this subject, and the first formal descriptions of
+        cornerstone texts for this subject and the first formal descriptions of
         the CART algorithm \cite{breiman2017}.
     \item The standard textbook for modern machine learning algorithms and
         applications: \citetitle{elements2009}. This source is particularly good
-        for reviewing the foundations of statistical, supervised, learning in
+        for reviewing the foundations of statistical, supervised learning in
         much more depth and in a better style that could be achieved here
         \cite{elements2009}.
-    \item \citeauthor{louppe2014}'s doctoral thesis, which is heavily cited this
-        chapter. Louppe is a core developer emeritus of the scikit-learn python
-        library, the industry-standard. His work is admirably deep, clear, and
-        has valuable insights on the real-wold considerations a practical
-        implementation would have to keep in mind \cite{louppe2014}. After
-        extensive research this source provided the most satisfying treatment of
-        classification and regression trees of all documents reviewed.
+    \item \citeauthor{louppe2014}'s doctoral thesis, which is heavily cited in
+        this chapter. Louppe is a core developer emeritus of the scikit-learn
+        python library, the industry-standard library. His work is admirably
+        deep, clear, and has valuable insights on the real-world considerations
+        a practical implementation would have to keep in mind \cite{louppe2014}.
+        After extensive research, this source provided the most satisfying
+        treatment of classification and regression trees of all documents
+        reviewed.
 \end{enumerate}
 
-The field of machine learning is so wide we only had a chance to develop the
-most rudimentary, esential ideas we will need. Reading the sources cited for
-this chapter is encouraged.
+The field of machine learning is so vast that we only had a chance to develop
+the most rudimentary, essential ideas we will need. Reading the sources cited
+for this chapter is encouraged.
