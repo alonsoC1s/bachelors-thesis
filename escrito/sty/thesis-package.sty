@@ -40,6 +40,10 @@
 \definecolor{auroraYellow}{RGB}{235, 203, 139}
 \definecolor{auroraGreen}{RGB}{163, 190, 140}
 
+% Allow breakable theorem boxes from tcolorbox
+\tcbuselibrary{breakable, theorems}
+\tcbset{breakable}
+
 % Hyperref setup
 \hypersetup{
 	colorlinks=true,
@@ -96,6 +100,13 @@
         escapeinside={{~}{~}},
 	}
 
+% Algorithm2e configs
+\SetKwProg{Function}{function}{}{end}
+\DontPrintSemicolon
+\LinesNumbered
+\setlength{\algomargin}{0.7ex}
+% \PassOptionsToPackage{ruled, algosection}{algorithm2e}
+\SetAlgoCaptionLayout{centerline}
 
 %=================================================%
 % Math Operators, Delimiters & Math-mode commands %
@@ -110,9 +121,11 @@
 %% Operators
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\Err}{Err}
 
 %% Commands
 \newcommand{\R}{\mathbb{R}}
+% \newcommand{\IP}{\mathbb{P}\brackets}
 \newcommand{\E}{\mathbb{E}\brackets}
 % \newcommand{\IP}{\mathbb{P}\brackets}
 \providecommand{\IP}[1]{\mathbb{P}\left[#1\right]}
@@ -120,6 +133,9 @@
 \newcommand{\States}{\mathcal{S}}
 \newcommand{\Actions}{\mathcal{A}}
 \newcommand{\Rewards}{\mathcal{R}}
+\renewcommand{\L}{\mathcal{L}}
+\newcommand{\1}{\mathds{1}}
+\let\vec\mathbf
 
 %%===========================%
 %% Theorem-like Environments %
@@ -192,3 +208,11 @@
 			colback=auroraRed % Title box inner color
 			}
 	}{lem}
+
+% Shaded box
+\newenvironment{remark}[1]{%
+  \definecolor{shadecolor}{RGB}{229,233,240}
+  \begin{shaded}{\color{auroraLila}\noindent\textsc{#1}}\\%
+}{%
+  \end{shaded}%
+}
