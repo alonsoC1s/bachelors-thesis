@@ -90,6 +90,7 @@
 \lstset{language=julia,
 		basicstyle={\JuliaMono\small \color{nightDarkest}},
 		numberstyle={\tiny\color{nightDarkest}},
+		numbersep=8pt,
 		backgroundcolor=\color{backcolour},
 		breaklines=true,
 		numbers=left,
@@ -100,13 +101,45 @@
         escapeinside={{~}{~}},
 	}
 
-% Algorithm2e configs
+%=================================================%
+% Algorithm2e configuration and sytles			  %
+%=================================================%
+
+% Style commands
+\newcommand{\AlgKeywordStyle}[1]{\textbf{\color{frostDarkBlue}#1}}
+
+%% Hack to change algorithm rule colors
+\makeatletter
+	\newcommand{\setalgotoprulecolor}[1]{\colorlet{toprulecolor}{#1}}
+	\let\old@algocf@pre@ruled\@algocf@pre@ruled % Adjust top rule colour
+	\renewcommand{\@algocf@pre@ruled}{\textcolor{toprulecolor}{\old@algocf@pre@ruled}}
+
+	\newcommand{\setalgobotrulecolor}[1]{\colorlet{bottomrulecolor}{#1}}
+	\let\old@algocf@post@ruled\@algocf@post@ruled % Adjust middle rule colour
+	\renewcommand{\@algocf@post@ruled}{\textcolor{bottomrulecolor}{\old@algocf@post@ruled}}
+
+	\newcommand{\setalgomidrulecolor}[1]{\colorlet{midrulecolor}{#1}}
+	\renewcommand{\algocf@caption@ruled}{%
+	\box\algocf@capbox{\color{midrulecolor}\kern\interspacetitleruled\hrule
+		width\algocf@ruledwidth height\algotitleheightrule depth0pt\kern\interspacealgoruled}}
+\makeatother
+
 \SetKwProg{Function}{function}{}{end}
 \DontPrintSemicolon
 \LinesNumbered
-\setlength{\algomargin}{0.7ex}
-% \PassOptionsToPackage{ruled, algosection}{algorithm2e}
+\setlength{\algomargin}{0ex}
+\SetNlSkip{8pt}
+\SetNlSty{}{\tiny\color{nightDarkest}}{}
+\SetKwSty{AlgKeywordStyle}
+\SetAlCapFnt{\footnotesize\itshape\color{nightLight}}
 \SetAlgoCaptionLayout{centerline}
+% \SetCustomAlgoRuledWidth{1.1\textwidth}
+\SetAlFnt{\small}
+\setlength{\algoheightrule}{0.65pt}
+\setlength{\algotitleheightrule}{0.65pt}
+\setalgotoprulecolor{nightMid}
+\setalgomidrulecolor{nightLight}
+\setalgobotrulecolor{nightMid}
 
 %=================================================%
 % Math Operators, Delimiters & Math-mode commands %

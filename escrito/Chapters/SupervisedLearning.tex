@@ -1,3 +1,6 @@
+\chapter{Supervised Machine Learning}
+\label{chapter:SupervisedLearning}
+
 In Chapter \ref{chapter:Motivation}, we briefly reviewed the areas that
 constitute the field of Machine Learning and motivated an introductory example
 to Reinforcement Learning. We highlighted the differences between Supervised
@@ -181,8 +184,8 @@ The label for that leaf will be the tree's prediction. In algorithm
         }
         \Return{$\widehat{y}_t$} \;
     }
-    \caption{Predict output value $\widehat{y}$ with tree $f_\L$
-        \cite[Ch.~3.2]{louppe2014}.}
+    \caption[Tree prediction algorithm]{Predict output value $\widehat{y}$ with
+        tree $f_\L$ \cite[Ch.~3.2]{louppe2014}.}
     \label{alg:tree-predict}
 \end{algorithm}
 
@@ -268,8 +271,8 @@ entire books.
         }
         \Return{$f_\L$} \;
     }
-    \caption{Greedy fit of a binary classification tree
-        \cite[Ch.~3.3]{louppe2014}.}
+    \caption[Greedy tree fitting algorithm]{Greedy fit of a binary
+        classification tree \cite[Ch.~3.3]{louppe2014}.}
     \label{alg:tree-fit}
 \end{algorithm}
 
@@ -315,7 +318,8 @@ found using algorithm \ref{alg:best-binary-split}.
         }
         \Return{$s_{*}$} \;
     }
-    \caption{Find best binary split $s_*$ for node $t$ \cite[Ch.~3.6.3]{louppe2014}.}
+    \caption[Best split for node $t$ algorithm]{Find best binary split $s_*$ for
+        node $t$ \cite[Ch.~3.6.3]{louppe2014}.}
     \label{alg:best-binary-split}
 \end{algorithm}
 
