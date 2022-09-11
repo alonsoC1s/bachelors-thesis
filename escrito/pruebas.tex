@@ -35,9 +35,14 @@
 \usepackage{sty/thesis-package}
 
 \author{Alonso Martinez Cisneros}
-\title{Approximate solutions to the Reinforcement Learning 
-Problem via Linear Programming; with applications to Supervised 
-Machine Learning.}
+\title{%
+	Soluciones aproximadas al problema de Aprendizaje por Refuerzo; con
+	aplicaciones al Aprendizaje de Máquina Supervisado%
+	}
+\subtitle{%
+	Approximate solutions to the Reinforcement Learning Problem via Linear
+	Programming; with applications to Supervised Machine Learning.%
+	}
 \date{2022}
 
 \begin{document}
@@ -52,9 +57,9 @@ Machine Learning.}
 % \pagestyle{plain}
 % \pagenumbering{arabic}
 
-\include{FrontBackMatter/Dedication} \cleardoublepage
-\include{FrontBackMatter/Acknowledgments} \cleardoublepage
-\include{FrontBackMatter/Abstract} \cleardoublepage
+\include{FrontBackMatter/Dedication}
+\include{FrontBackMatter/Acknowledgments}
+\include{FrontBackMatter/Abstract}
 
 \tableofcontents
 \listofalgorithms
@@ -69,32 +74,30 @@ Machine Learning.}
 \pagenumbering{arabic}
 
 % \input{Chapters/printTest.tex}
-\include{Chapters/Intro}
+% \include{Chapters/Intro}
 
 \part{Foundations}
 \label{part:I}
 
-	\include{Chapters/Motivation}
-	\include{Chapters/Stochastic}
-	\include{Chapters/OptimizationTheory}
+	% \include{Chapters/Motivation}
+	% \include{Chapters/Stochastic}
+	% \include{Chapters/OptimizationTheory}
 	\include{Chapters/SupervisedLearning}
-	\include{Chapters/ReinforcementLearning}
+	% \include{Chapters/ReinforcementLearning}
 
 \part{Approximate solutions to the Reinforcement Learning Problem}
 \label{part:II}
 
-	\include{Chapters/ApproximateLinearP}
-	\include{Chapters/PropertiesGuarantees}
+	% \include{Chapters/ApproximateLinearP}
+	% \include{Chapters/PropertiesGuarantees}
 
 \part{Applications to Supervised Machine Learning}
 \label{part:III}
-
-	\appendix
+\appendix
 
 	\include{Chapters/MiniopolySim}
 
 \nocite{*}
-\cleardoublepage
 \printbibliography
 
 \end{document}

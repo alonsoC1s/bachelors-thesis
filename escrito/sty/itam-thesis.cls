@@ -93,6 +93,7 @@
 
 % Extendiendo clase memoir
 \LoadClass[11pt,openright]{memoir}
+\def\subtitle#1{\gdef\@subtitle{#1}}
 
 % Renovando comando de hacer titulo para hacerlo estilo tesis
 \renewcommand{\maketitle}{%
@@ -108,6 +109,8 @@
 	\end{figure}
 
 	\textbf{\LARGE \@title }\\[2em]
+
+	\textbf{\Large \@subtitle }\\[2em]
 
 	\textsc{\large Tesis}\\[1em]
 
