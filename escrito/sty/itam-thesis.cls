@@ -92,7 +92,7 @@
 \ProcessOptions\relax
 
 % Extendiendo clase memoir
-\LoadClass[11pt,openany]{memoir}
+\LoadClass[11pt,openright]{memoir}
 
 % Renovando comando de hacer titulo para hacerlo estilo tesis
 \renewcommand{\maketitle}{%
@@ -199,15 +199,15 @@
 %================%
 \makechapterstyle{OLPchapter}{%
 	% Spacing
-	\setlength{\afterchapskip}{40pt}
-	\setlength{\beforechapskip}{50pt}
-	\setlength{\midchapskip}{10pt}
+	\setlength{\afterchapskip}{10pt}
+	\setlength{\beforechapskip}{5pt}
+	\setlength{\midchapskip}{10pt}	% Space between "Chapter X" and "Title"
 	% Chapter Name (Chapter x)
 	\renewcommand*{\afterchapternum}{\par\nobreak\vskip 0pt}
 	\renewcommand*{\chapnamefont}{\fontsize{14pt}{0pt}\selectfont\scshape\bfseries\color{nightDarkest}}
 	\let\chapnumfont\chapnamefont
 	% Chapter title - Fonts and color
-	\renewcommand*{\chaptitlefont}{\normalfont\fontsize{44pt}{44pt}\selectfont\bfseries\itshape\color{nightMid}}
+	\renewcommand*{\chaptitlefont}{\normalfont\fontsize{33pt}{33pt}\selectfont\bfseries\itshape\color{nightMid}}
 	\renewcommand*{\printchaptername}{%
 		\chapnamefont\@chapapp
 	}

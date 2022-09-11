@@ -65,11 +65,11 @@ Equation \eqref{eq:bellmans-value} is important, but not that helpful in
 practice. It tells us the best possible reward a learning agent can expect in a
 learning task. In other words, the best possible reward \textit{after} the agent
 followed the best policy but tells us very little about how to obtain that
-policy. We would like to predict the total reward a given policy will
-yield. Thankfully, in chapter [CITE], we obtained an expression to calculate the
-expected reward a given policy $\pi$ will yield starting from a certain state
-$s$, that we will refer to as \textit{Bellman's recurrence equation} from now
-on. 
+policy. We would like to predict the total reward a given policy will yield.
+Thankfully, in chapter \ref{chapter:ReinforcementLearning}, we obtained an
+expression to calculate the expected reward a given policy $\pi$ will yield
+starting from a certain state $s$, that we will refer to as \textit{Bellman's
+recurrence equation} from now on. 
 
 \begin{equation}
 \label{eq:bellmans-recurrence}
@@ -96,8 +96,8 @@ we can take the hint one step further and think of the system of equations
 defined in terms of vectors and matrices. This approach will later serve to
 define Bellman's policy\footnote{or ``one-step'' \cite[pg.~9]{nadeemward2021},
 or ``expectation backup'' \cite[Lect.~3, Contraction Mapping]{silver2015}, the
-literature uses various names. We follow
-\cite{rao2022}.} and optimality operators, a powerful tool.
+literature uses various names. We follow \cite{raoRL4F}.} and optimality
+operators, a powerful tool.
 
 For now, let us consider the value function as a vector, following
 \cite[pg.~132]{raoRL4F}. Specifically,
@@ -159,7 +159,7 @@ find that,
     T_* \vec{v}_{*} = \vec{v}_{*}.
 \end{equation}
 In other words, the optimality operator $T_*$ is a non-linear operator with a
-fixed point $\vec{v}_*$ \cite[Lect. Jan 15 2019]{rao2022}.
+fixed point $\vec{v}_*$ \cite[Lect. Jan 15 2019]{raoRL4F}.
 
 As promised, Bellman's operators yield the solutions to both the optimal value
 function and the prediction problem, which come in handy to prove whether or
@@ -412,7 +412,7 @@ For the development of Bellman's Optimality Operator, we follow several sources:
         \item Basic Reinforcement Learning course at McGill University
             \cite[Lect.~2]{moisescu-parejaa}.
         \item Foundations of Reinforcement Learning with Applications in Finance
-            course notes by Ashwin Rao \cite[Lect. on Jan 15 2019]{rao2022}.
+            course notes by Ashwin Rao \cite[Lect. on Jan 15 2019]{raoRL4F}.
     \end{itemize}
     \item \citeauthor{nadeemward2021}'s thesis \cite{nadeemward2021} which
         summarizes brilliantly the dynamic programming-based numerical

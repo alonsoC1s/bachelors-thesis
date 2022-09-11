@@ -104,12 +104,13 @@ Then, our optimization task is to find $\theta^{*}$,
     \theta^{*} \coloneqq \argmin_{\theta} \widehat{\Err}(f_\L (\vec{x}; \theta)) \quad \forall \vec{x}.
 \end{equation*}
 
-Many classification models are available, each leveraging different
-properties and resulting in different strengths and weaknesses. The optimization
-problem involved in fitting each one is different from the rest. For this thesis, we focus on one specific model: classification trees. We
-introduce them here and show in part II how fitting them gives way to an
-optimization process analogous to a Reinforcement Learning problem and frame it
-as such so we can leverage the power of RL to fit classification trees.
+Many classification models are available, each leveraging different properties
+and resulting in different strengths and weaknesses. The optimization problem
+involved in fitting each one is different from the rest. For this thesis, we
+focus on one specific model: classification trees. We introduce them here and
+show in part \ref{part:II} how fitting them gives way to an optimization process
+analogous to a Reinforcement Learning problem and frame it as such so we can
+leverage the power of RL to fit classification trees.
 
 \section{Classification Trees}
 Classification trees and, more generally, classification and regression trees
@@ -125,10 +126,10 @@ Sadly, their fitting process leads to a rather complicated problem that cannot
 be solved exactly in a reasonable time. The fitting process shares many
 similarities with the RL problem, which is described in a wealth of detail in
 Chapter \ref{chapter:ReinforcementLearning}. This similarity is the foundational
-idea of this thesis, and we hope to show in part II how an alternative
-methodology to fitting trees can be developed by leveraging the techniques used
-in RL. With that goal in mind, it is time to lay the foundations behind trees'
-structure.
+idea of this thesis, and we hope to show in part \ref{part:II} how an
+alternative methodology to fitting trees can be developed by leveraging the
+techniques used in RL. With that goal in mind, it is time to lay the foundations
+behind trees' structure.
 
 \subsection{Tree models}
 Let $\Omega = \left\{ (\vec{x}_i, y_i) \right\}$ be the space of all possible
@@ -328,7 +329,7 @@ constrained by the complexity of the sort operation \cite[Ch.~5]{louppe2014}.
 
 With algorithm \ref{alg:best-binary-split}, we have enough background to examine
 the similarities between the problem that arises from fitting a classification
-tree and the more general reinforcement learning problem in part II.
+tree and the more general reinforcement learning problem in part \ref{part:II}.
 
 \section{Bibliographical notes}
 As mentioned, we had to skip several details necessary for an actual
