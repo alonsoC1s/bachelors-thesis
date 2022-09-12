@@ -101,10 +101,10 @@ operators, a powerful tool.
 
 For now, let us consider the value function as a vector, following
 \cite[pg.~132]{raoRL4F}. Specifically,
-\begin{equation*}
+\[
     % FIXME: No entiendo al 100 porqué ya no tienen sub-pi.
     \vec{v} = \left[ v (s_1), \dots , v (s_{|\States|}) \right].
-\end{equation*}
+\]
 Recall that $r(s, a)$ is the expected reward upon taking action $a$ being in
 state $s$, and $p(s' \mid s, a)$ is the probability of transitioning from state
 $s$ to state $s'$ after taking action $a$. We define:
@@ -126,9 +126,9 @@ $\States$.
 \begin{dfn}{Bellman's Policy Operator}{}
     We denote by $T_\pi$ the operator $T_\pi: \R^{|\States|} \to \R^{|\States|}$
     defined as:
-    \begin{equation*}
+    \[
         T_\pi \vec{v} = \vec{R}_\pi + \gamma \vec{P}_\pi \vec{v},
-    \end{equation*}
+    \]
     for any value function vector $\vec{v} \in \R^{|\States|}$. A
     better-motivated definition of this operator can be found in
     \cite[Ch.~5.4]{raoRL4F}.
@@ -136,9 +136,9 @@ $\States$.
 
 Using the newly defined Bellman's Policy Operator, we can rewrite Bellman's
 recurrence equation \eqref{eq:bellmans-recurrence} as
-\begin{equation*}
+\[
     T_\pi \vec{v}_\pi = \vec{v}_\pi.
-\end{equation*}
+\]
 This means $\vec{v}_\pi$ is a fixed point of the Bellman Policy Operator.
 
 Seizing the built-up momentum, let us write Bellman's optimality equation for
@@ -147,9 +147,9 @@ the value function \eqref{eq:bellmans-value} using another operator.
 \begin{dfn}{Bellman's Optimality Operator}{}
     We denote by $T_*: \R^{|\States|} \to \R^{|\States|}$ \emph{Bellman's Optimality Operator}, defined as:
     % FIXME: Aqui change r(s,a) va multiplicado con vector de 1's.
-    \begin{equation*}
+    \[
         (T_{*} \vec{v})(s) = \max_{a \in \Actions} \left\{ r(s, a) + \gamma \sum_{s' \in \States} p(s' \mid s, a) \vec{v}(s') \right\}. 
-    \end{equation*}
+    \]
 \end{dfn}
 
 Once again, rewriting \eqref{eq:bellmans-value} using the Optimality Operator we
@@ -224,9 +224,9 @@ exists an optimal policy for the RL problem we have been studying.
     achieving the maximum values: $v_*$ and $q_*$ respectively.
 
     A policy that is a candidate to be optimal can be constructed as follows:
-    \begin{equation*}
+    \[
         \pi_{*}^{D} (s) = \argmax_{a} q_{*} (s, a) \quad \forall s \in \States.
-    \end{equation*}
+    \]
 
     For now, we assume that the resulting action $a$ for any given state $s$ is
     unique.
@@ -235,9 +235,9 @@ exists an optimal policy for the RL problem we have been studying.
     functions. As established in chapter \ref{chapter:ReinforcementLearning},
     equation \eqref{eq:prop-dependencia-vq}, $v_* (s) = \max_a q_* (s, a)$, and
     therefore,
-    \begin{equation*}
+    \[
         v_* (s) = q_* (s, \pi_{*}^{D}(s)).
-    \end{equation*}
+    \]
 
     In other words, we maximize the value function if we first take the action
     prescribed by the policy $\pi_{*}^{D}$ followed by the action from the next
@@ -245,9 +245,9 @@ exists an optimal policy for the RL problem we have been studying.
     why Bellman's recurrence equations work as they do. Likewise, the
     action-value function is maximized following whatever action $\pi_{*}^{D}$
     prescribes. Formally,
-    \begin{equation*}
+    \[
         q_{\pi_{*}^{D}} (s, a) = q_* (s,a) \quad \forall s \in \States, a \in \Actions.
-    \end{equation*}
+    \]
 
     Lastly, we show that $\pi_{*}^{D}$is an optimal policy by contradiction.
 
@@ -279,14 +279,14 @@ equations.
 
 First, we note that by Theorem 6.2.2a in \cite[Ch.~6.9.1]{puterman2014},
 whenever a given policy $\vec{v}$ satisfies
-\begin{equation*}
+\[
     \vec{v} \geq T_\pi \vec{v} = \vec{R}_\pi + \gamma \vec{P}_{\pi} \vec{v}
-\end{equation*}
+\]
 for all possible policies, then, by Bellman's optimality equation
 \eqref{eq:bellmans-optimality-operators},
-\begin{equation*}
+\[
     \vec{v} \geq \vec{v}_* = T_* \vec{v}_*.
-\end{equation*}
+\]
 Where vectors $\vec{v}$ and $\vec{v}_*$ are compared component-wise. In other words, we can find an upper bound $\vec{v} \geq T_{*} \vec{v}$ by considering the following set of linear constraints:
 \begin{equation}
     \vec{v} \geq r(s, a) + \gamma \sum_{s'} p(s' \mid s, a) \vec{v}(s') \quad \forall a \in \Actions, s \in \States.
@@ -354,14 +354,14 @@ linear approximation to the value function.
 
 \begin{dfn}{Basis matrix}{}
     We define a matrix $\Phi \in \R^{|\States| \times K}$ given by:
-    \begin{equation*}
+    \[
         \Phi =
         \begin{bmatrix}
             | & \vdots & | \\
             \varphi_1 & \cdots & \varphi_K \\
             | & \vdots & |
         \end{bmatrix}.
-    \end{equation*}
+    \]
 \end{dfn}
 
 This way, use the representation for $\widehat{\vec{v}} = \Phi \vec{\beta}$,

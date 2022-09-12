@@ -63,10 +63,10 @@ keeping with the notation in \cite{SuttonBarto}.
 	\Actions(s)$, we define the \emph{dynamics function} $p: 
 	\States \times \Rewards \times \States \times \Actions(s) 
 	\to [0, 1]$ as follows:
-	\begin{equation*}
+	\[
 		p(s', r \mid s, a) \coloneqq \IP{S_t = s', R_t = r 
 		\vertsep S_{t-1} = s, A_{t-1} = a}.
-	\end{equation*}
+	\]
 \end{dfn}
 
 Hola \ref{dfn:dynamics-func}
@@ -76,9 +76,9 @@ Notice how the dynamics function is just a joint probability density function
 over the space of state-reward pairs ($\States \times \Rewards$). This means we
 can treat it as such and get valuable information about, for instance, expected
 rewards
-\begin{equation*}
+\[
 	\mathbb{E} \left[ R_t \mid S_{t-1} = s, A_{t-1} = a \right].
-\end{equation*}
+\]
 We will be talking about expected rewards often, so we define the expected
 rewards function to simplify notation further on.
 
@@ -86,9 +86,9 @@ rewards function to simplify notation further on.
 	For a state action pair $s, \in \States, a \in \Actions$ we define the
 	\emph{expected rewards function} of simply the \emph{rewards function} $r:
 	\States \times \Actions \to \R$ as
-	\begin{equation*}
+	\[
 		r(s, a) \coloneqq \sum_{r \in \Rewards} r \sum_{s' \in \States} p(s', r \mid s, a).
-	\end{equation*}
+	\]
 \end{dfn}
 
 Keep in mind that both the dynamics and the rewards function are merely tools
@@ -128,9 +128,9 @@ differently each time it encounters it.
 \begin{dfn}{Policy}{policy}
 	A \emph{policy} $\pi$ is the probability $\pi: \Actions \to [0,1]$ of taking
 	action $a$ from a given state $s$ at some time $t$,
-	\begin{equation*}
+	\[
 		\pi(a \mid s) \coloneqq \IP{A_t = a \mid S_t = s}.
-	\end{equation*}
+	\]
 \end{dfn}
 
 Our task is to find increasingly ``better'' policies. Better in the sense of the
@@ -160,9 +160,9 @@ we focus on infinite processes since they generalize finite ones.
 	The \emph{value} of the state $s$ is the expected value of the
 	\underline{discounted} sum of the accumulated rewards from time $t$ forward
 	when the agent follows the policy $\pi$,
-	\begin{equation*}
+	\[
 		v^{\pi} (s) \coloneqq \mathbb{E}_{\pi} \left[\sum_{k=0}^{\infty} \gamma^{k} R_{t+k+1} \vertsep S_{t} = s\right],
-	\end{equation*}
+	\]
 	for all $s \in \States$.
 \end{dfn}
 
@@ -198,9 +198,9 @@ decisions, we introduce the following function.
 	We define the value of taking action $a$ in state $s$ at time $t$ and
 	following policy $\pi$ for times $t+k$ once again as the discounted sum of
 	accumulated rewards,
-	\begin{equation*}
+	\[
 		q_\pi (s, a) \coloneqq \mathbb{E}_{\pi} \left[ \sum_{k=0}^{\infty} \gamma^{k} R_{t+k+1} \vertsep S_t = s, A_t = a \right].
-	\end{equation*}
+	\]
 \end{dfn}
 
 One of the characteristic properties of the value functions we have introduced
@@ -212,9 +212,9 @@ the future.
 
 \begin{lemma}{Recursive evaluation}{recursive-eval}
 	The value function $v_\pi$ can be written in terms of itself as
-	\begin{equation*}
+	\[
 		v_\pi (s) = \sum_{a \in \Actions} \pi(a \mid s) \sum_{s', r} p(s', r \mid s, a) \left[ r + \gamma \, v_\pi (s') \right].
-	\end{equation*}
+	\]
 \end{lemma}
 
 Lemma \ref{lem:recursive-eval} will be the basis for the methods we will review
@@ -245,21 +245,21 @@ value function.
 \section{Striving for the best}
 As discussed, we are looking for a policy that achieves the maximum possible value
 of the value function of a given state, denoted $v_*(s)$ and defined as
-\begin{equation*}
+\[
 	v_* (s) \coloneqq \max_{\pi} v_\pi (s).
-\end{equation*}
+\]
 Notice how $v_* \in \R$.
 
 Similarly, we can also define the optimal action-value function, denoted $q_*$, as
-\begin{equation*}
+\[
 	q_* (s, a) \coloneqq \max_{\pi} q_\pi (s, a),
-\end{equation*}
+\]
 for all $s \in \States, a \in \Actions(s)$. The value $q_*$ represents the
 expected return for taking action $a$ in state $s$ at time $t$ and then
 following the optimal policy for $t+k$. This can be written succinctly as
-\begin{equation*}
+\[
 	q_{*} (s, a) = \mathbb{E} \left[ R_{t+1} + \gamma v_* (S_{t+1}) \vertsep S_t = s, A_t = a \right].
-\end{equation*}
+\]
 
 The Recursive Evaluation Lemma \ref{lem:recursive-eval} gives a recursive
 relationship any value function must satisfy. However, $v_*$ is special. It can
@@ -277,9 +277,9 @@ best action from that state \cite[Ch.~3.6]{SuttonBarto}.
 Since the state-value and action-value functions are intimately related to ane
 another we can express the idea behind Bellman's Optimality equation in terms of
 the action-value function as well
-\begin{equation*}
+\[
 	q_* (s, a) = \sum_{s', r} p(s', r \mid s, a) \left[ r + \gamma \max_{a'} q_{*} (s', a') \right].
-\end{equation*}
+\]
 
 Bellman's optimality equation for the value function is, in fact, a system of
 equations, one for each state $s$. The system of equations can be solved

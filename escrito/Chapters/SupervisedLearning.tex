@@ -76,9 +76,9 @@ which minimizes its expected prediction error.
 \begin{dfn}{Prediction or Generalization Error}{generalization-error}
     The expected \emph{prediction} or \emph{generalization} error of a model
     $f_\L$ is the probability of misclassification of the model
-    \begin{equation*}
+    \[
         \Err (f_\L) = \mathbb{E} \left[ \1 (y_i \neq \widehat{y}_i)  \right].
-    \end{equation*}
+    \]
     Where $\widehat{y}_i \coloneqq f_\L (\vec{x}_i)$ is the model's prediction
     for the observation $\vec{x}_i$, and the indicator function $\1$ equals one
     whenever the condition inside it holds, and zero otherwise.
@@ -101,9 +101,9 @@ as hypotheses, exists. Our optimization target then becomes to find the best
 model among the space of hypotheses. To be more specific, let $\vec{\theta}$ be
 the vector of hyper-parameters controlling the behavior of a specific model.
 Then, our optimization task is to find $\theta^{*}$,
-\begin{equation*}
+\[
     \theta^{*} \coloneqq \argmin_{\theta} \widehat{\Err}(f_\L (\vec{x}; \theta)) \quad \forall \vec{x}.
-\end{equation*}
+\]
 
 Many classification models are available, each leveraging different properties
 and resulting in different strengths and weaknesses. The optimization problem
@@ -138,9 +138,9 @@ feature-target pairs. When each feature $y$ is part of a set of categories
 $\mathcal{C} \coloneqq \left\{ c_1, c_2, \dots, c_j \right\}$, another way to
 look at the classification task is to define a partition over $\Omega$ taking
 advantage of the natural distinction our set of categories provides.
-\begin{equation*}
+\[
     \Omega = \bigcup_{i=1}^{j} \Omega_{c_i},
-\end{equation*}
+\]
 where each $\Omega_{c_i}$ is defined as $\left\{ (\vec{x}_k, y_k) \mid y_k = c_k
 \right\}$.
 
@@ -148,9 +148,9 @@ Similarly, a model $f_\L$ defines a partition. This partition however is made
 over the input space $\mathcal{X} = \left\{ \vec{x}_i \mid (\vec{x}_i, y_i) \in
 \Omega \right\}$. This partition can be described as the preimages of $f_\L$ as
 such
-\begin{equation*}
+\[
     \mathcal{X} = \bigcup_{i=1}^{j} f_{\L}^{-1}(\Omega_{c_i}).
-\end{equation*}
+\]
 The classification task then can be thought of as learning the model $f_\L$ that
 gives the partition of $\mathcal{X}$ that most closely approximates the
 partition on $\Omega$ as a result of its preimages.
@@ -210,9 +210,9 @@ The CART algorithm is based on greedily finding splits based on node purity, the
 amount of misclassified observations in a given node. The \textit{purer} the
 node, the lower the impurity score, the better the prediction. We denote by
 $\L_t$
-\begin{equation*}
+\[
     \L_t \coloneqq \left\{ (\vec{x}, y) \mid \vec{x} \in \mathcal{X}_t \right\}.
-\end{equation*}
+\]
 Many impurity functions can be used to determine the goodness of a split, each
 with their benefits and drawbacks. We only discuss the impurity decrease at the
 moment, since it is not necessary to have a specific impurity function to
@@ -222,9 +222,9 @@ available options and their properties.
 \begin{dfn}{Impurity decrease}{}
     The \emph{impurity decrease} of a binary split splitting node $t$ into a
     left child $t_L$ and a right child $t_R$ is
-    \begin{equation*}
+    \[
         \Delta i(s, t) \coloneqq i(t) - \frac{N_{t_L}}{|\L_t|} \, i(t_L) - \frac{N_{t_R}}{|\L_t|} \, i(t_R),
-    \end{equation*}
+    \]
     where $N_{t_L}$ and $N_{t_R}$ are the number of observations contained by
     nodes $t_L$ and $t_R$ respectively.
 \end{dfn}
@@ -294,9 +294,9 @@ the splitting strategies and the termination criteria.
 
 The number of possible partitions of $\L_t$ into $k$ non-empty subsets is given
 by the Stirling number of the second kind \cite{louppe2014}
-\begin{equation*}
+\[
     S(N_t, k) \coloneqq \frac{1}{k!} \sum_{j=0}^{k} (-1)^{k-j} \binom{k}{j} j^{N_t}.
-\end{equation*}
+\]
 Even in the case of binary partitions in which $s(N_t, k)$ reduces to $2^{N_t
 -1}-1$, the number of partitions grows exponentially and, even worse,
 factorially for the non-binary case. Calculating each possible partition and

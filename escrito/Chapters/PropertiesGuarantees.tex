@@ -20,9 +20,9 @@ on the quality of the resulting approximation.
 
 \begin{dfn}{Vector-Weighted $\ell_1$ norm}{vectorw-l1-norm}
     The \emph{vector-weighted} 1-norm over the space $\ell_1$, denoted $\left\| \cdot \right\|_{1, \vec{c}}$, of a vector $\vec{x}$ is defined as
-    \begin{equation*}
+    \[
         \left\| \vec{x} \right\|_{1, \vec{c}} \coloneqq  \sum_i |x_i| c_i.
-    \end{equation*}
+    \]
 \end{dfn}
 
 To measure the quality of a specific policy $\pi$ we will consider the how the
@@ -54,9 +54,9 @@ extension of the weighted norm as follows.
 
 \begin{dfn}{Distribution-Weighted $\ell_1$ norm}{distributionw-l1-norm}
     Extending the vector-weighted $\ell_1$ norm we define the norm
-    \begin{equation*}
+    \[
         \left\| \vec{v} \right\|_{1, \sigma} \coloneqq \sum_{s \in \States} \sigma(s) \, |v(s)|,
-    \end{equation*}
+    \]
     for some vector $\vec{v} \sim \sigma$ where $\sigma$ is a probability
     distribution.
 \end{dfn}
@@ -67,14 +67,14 @@ randomly distributed $s \sim \sigma$.
 
 \begin{dfn}{The $\mu$ measure}{mu-measure}
     We define a measure $\mu$ as
-    \begin{equation*}
+    \[
         \mu_{\pi, \, \sigma}^{\top} \coloneqq (1 - \gamma) \sigma^{\top} \sum_{t=0}^{\infty} \gamma^{t} \vec{P}_{\pi}^{t}.
-    \end{equation*}
+    \]
     Since $\sum_{t=0}^{\infty} \gamma^{t} \vec{P}_{\pi}^{t} = (I - \gamma
     \vec{P}_\pi)^{-1}$, where $I$ is the identity matrix, we have
-    \begin{equation*}
+    \[
         \mu_{\pi, \, \sigma}^{\top} = (1 - \gamma) \sigma^{\top} (I - \gamma \vec{P}_{\pi})^{-1}.
-    \end{equation*}
+    \]
     We say $\mu$ is a measure in the sense of measure theory. It can be shown
     \Cite[pg.~864]{farias2003LP2ADP} that $\mu$ is a probability distribution.
 \end{dfn}
@@ -86,19 +86,19 @@ for the approximation procedure.
 
 \begin{lemma}{}{farias-vanroy-lem1}
     A vector $\vec{\beta}_0$ solves the following LP
-    \begin{equation*}
+    \[
     \begin{array}{rl@{}ll}
         \displaystyle \min_{\vec{\beta} \in \R^{K}} & \vec{c}^{\top} \Phi \vec{\beta} \\
         \text{S.t.} & \displaystyle \Phi \vec{\beta} (s) \geq r(s, a) + \gamma \sum_{s'} p(s' \mid s, a) \Phi \vec{\beta}(s') & \quad \forall a, s \in \Actions, \States . \\
     \end{array}
-    \end{equation*}
+    \]
     if and only if it solves
-    \begin{equation*}
+    \[
     \begin{array}{rl@{}ll}
         \displaystyle \max_{\vec{\beta} \in \R^{K}} & \left\| \vec{v}_* - \Phi \vec{\beta} \right\|_{1, \, \vec{c}} \\
         \text{S.t.} & \displaystyle \Phi \vec{\beta} (s) \geq r(s, a) + \gamma \sum_{s'} p(s' \mid s, a) \Phi \vec{\beta}(s') & \quad \forall a, s \in \Actions, \States . \\
     \end{array}
-    \end{equation*}
+    \]
 \end{lemma}
 
 Lemma \ref{lem:farias-vanroy-lem1} corresponds to Lemma 1 in
@@ -117,9 +117,9 @@ theorem corresponds to Theorem 1 in \Cite[pg.~853]{farias2003LP2ADP}.
 
 \begin{thrm}{}{farias-vanroy-thm1}
     Let $\vec{v}$ such that $\vec{v} \geq T^{*} \vec{v}$, then
-    \begin{equation*}
+    \[
        \left\| \vec{v}_{\pi_v} - \vec{v}_* \right\| \leq \frac{1}{1 - \gamma} \left\| \vec{v}  - \vec{v}_* \right\|_{1, \mu_{\pi_v, \, \sigma}}.
-    \end{equation*}
+    \]
 \end{thrm}
 
 We use the notation $\pi_v$ to mean the policy that yields the value $v$. This
@@ -143,9 +143,9 @@ function of the minimal error given the selected basis functions.
 \begin{thrm}{}{farias-vanroy-thm2}
     Let $\mu: \States \to [0,1]$ be a probability distribution over the state
     space. If $\vec{\beta}$ is an optimal solution to \eqref{lp:approx-lp},
-    \begin{equation*}
+    \[
         \left\| \vec{v}_* - \Phi \vec{\beta} \right\|_{1, \, \mu} \leq \frac{2}{1-\alpha} \min_{\vec{\beta}} \left\| \vec{v}_* - \Phi \vec{\beta} \right\|_{\infty}.
-    \end{equation*}
+    \]
 \end{thrm}
 
 Theorem \ref{thrm:farias-vanroy-thm2} tells us that whenever the optimal value
@@ -189,9 +189,9 @@ RLP (Reduced Linear Program).
 near-feasible solutions, and bounding the number of constraints to be sampled so
 that the RLP gnerates a solution that closely approximates an optimal solution
 to the ALP. We will be considering constraints of the form:
-\begin{equation*}
+\[
     \alpha_{z}^{\top} \vec{\beta} + k_z \geq 0, \quad \forall z \in Z
-\end{equation*}
+\]
 on variables $\vec{\beta} \in \R^{K}$, and a set of indices $Z$.
 
 In the case where we want to generate near-feasible solutions, we cannot
@@ -206,18 +206,18 @@ near-feasibility.
 
 \begin{thrm}{}{fariasvanroy-thm2.1}
     For any $\delta \in (0,1)$, $\varepsilon \in (0,1)$ and $m$ that satisfies
-    \begin{equation*}
+    \[
         m \geq \frac{4}{\varepsilon} \left( K \ln \frac{12}{\varepsilon} + \ln \frac{2}{\delta} \right),
-    \end{equation*}
+    \]
     a set $\mathcal{X}$ of $m$ identically, independently distributed vandom
     variables drawn from $|\States| \times |\Actions|$ according to
     distribuition $\psi$, satisfies 
-    \begin{equation*}
+    \[
         \IP{
             \sup_{\substack{\vec{\beta} \mid \alpha_{z}^{\top} \vec{\beta} + k_{z} \geq 0  \\ \forall z \in \mathcal{X} }}
             \psi \left( \left\{ y \vertsep \alpha_{y}^{\top} \vec{\beta} + k_y  < 0 \right\} \right) \leq \varepsilon
         } \geq 1 - \delta.
-    \end{equation*}
+    \]
 \end{thrm}
 
 Theorem \ref{thrm:fariasvanroy-thm2.1} provides some reassurance on the error we
