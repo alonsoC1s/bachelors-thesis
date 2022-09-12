@@ -306,10 +306,10 @@ Chapter \ref{chapter:ReinforcementLearning}. The best binary split $s_*$ can be
 found using algorithm \ref{alg:best-greedy-binary-split}.
 
 \begin{algorithm}
-    \SetKwFunction{BestSplit}{FindBestGreedyBinarySplit}
+    \SetKwFunction{GreedyBestSplit}{FindBestGreedyBinarySplit}
     \KwIn{A subset $\L_t$ of the training set $\L$}
     \KwOut{The best binary, greedy, split $s_*$ on $\L_t$}
-    \Function{\BestSplit{$\L_t$}}{
+    \Function{\GreedyBestSplit{$\L_t$}}{
         $\Delta \gets - \infty$ \;
         \For{$j \gets 1, \dots, p$}{
             Find the best greedy binary split $s_{*}^{j}$ that defines node $t$ for the feature $X_j$ \;
