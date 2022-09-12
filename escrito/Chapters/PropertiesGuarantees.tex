@@ -1,3 +1,4 @@
+% !TeX root = ../pruebas.tex
 \chapter{Properties and performance guarantees}
 \label{chapter:PropertiesGuarantees}
 
@@ -78,7 +79,7 @@ randomly distributed $s \sim \sigma$.
     \Cite[pg.~864]{farias2003LP2ADP} that $\mu$ is a probability distribution.
 \end{dfn}
 
-\section{Results}
+\section{Error bounds for the ALP}
 
 We begin with a lemma that helps illustrate the role of state-relevance weights
 for the approximation procedure.
@@ -88,14 +89,14 @@ for the approximation procedure.
     \begin{equation*}
     \begin{array}{rl@{}ll}
         \displaystyle \min_{\vec{\beta} \in \R^{K}} & \vec{c}^{\top} \Phi \vec{\beta} \\
-        \text{S.t.} & \displaystyle \Phi \vec{\beta} (s, a) \geq r(s, a) + \gamma \sum_{s'} p(s' \mid s, a) \Phi \vec{\beta}(s') & \quad \forall a, s \in \Actions, \States . \\
+        \text{S.t.} & \displaystyle \Phi \vec{\beta} (s) \geq r(s, a) + \gamma \sum_{s'} p(s' \mid s, a) \Phi \vec{\beta}(s') & \quad \forall a, s \in \Actions, \States . \\
     \end{array}
     \end{equation*}
     if and only if it solves
     \begin{equation*}
     \begin{array}{rl@{}ll}
-        \displaystyle \max_{\vec{\beta} \in \R^{K}} & \left\| \vec{v}_* - \Phi \vec{\beta} \right\|_{1, \vec{c}} \\
-        \text{S.t.} & \displaystyle \Phi \vec{\beta} (s, a) \geq r(s, a) + \gamma \sum_{s'} p(s' \mid s, a) \Phi \vec{\beta}(s') & \quad \forall a, s \in \Actions, \States . \\
+        \displaystyle \max_{\vec{\beta} \in \R^{K}} & \left\| \vec{v}_* - \Phi \vec{\beta} \right\|_{1, \, \vec{c}} \\
+        \text{S.t.} & \displaystyle \Phi \vec{\beta} (s) \geq r(s, a) + \gamma \sum_{s'} p(s' \mid s, a) \Phi \vec{\beta}(s') & \quad \forall a, s \in \Actions, \States . \\
     \end{array}
     \end{equation*}
 \end{lemma}
@@ -117,7 +118,7 @@ theorem corresponds to Theorem 1 in \Cite[pg.~853]{farias2003LP2ADP}.
 \begin{thrm}{}{farias-vanroy-thm1}
     Let $\vec{v}$ such that $\vec{v} \geq T^{*} \vec{v}$, then
     \begin{equation*}
-       \left\| \vec{v}_{*} - \vec{v}_{\pi_v} \right\| \leq \frac{1}{1 - \gamma} \left\| \vec{v}_{*} - \vec{v} \right\|_{1, \mu_{\pi_v, \, \sigma}}.
+       \left\| \vec{v}_{\pi_v} - \vec{v}_* \right\| \leq \frac{1}{1 - \gamma} \left\| \vec{v}  - \vec{v}_* \right\|_{1, \mu_{\pi_v, \, \sigma}}.
     \end{equation*}
 \end{thrm}
 
@@ -140,11 +141,10 @@ We begin with a simple bound for the error of the ALP, expressing it as a
 function of the minimal error given the selected basis functions.
 
 \begin{thrm}{}{farias-vanroy-thm2}
-    Let $e$ be in the span of the columns of $\Phi$ and $\mu: \States \to [0,1]$
-    be a probability distribution over the state space. If $\vec{\beta}$ is an
-    optimal solution to \eqref{lp:approx-lp},
+    Let $\mu: \States \to [0,1]$ be a probability distribution over the state
+    space. If $\vec{\beta}$ is an optimal solution to \eqref{lp:approx-lp},
     \begin{equation*}
-        \left\| \vec{v}_* - \Phi \vec{\beta} \right\|_{1, \mu} \leq \frac{2}{1-\alpha} \min_{\vec{\beta}} \left\| \vec{v}_* - \Phi \vec{\beta} \right\|_{\infty}.
+        \left\| \vec{v}_* - \Phi \vec{\beta} \right\|_{1, \, \mu} \leq \frac{2}{1-\alpha} \min_{\vec{\beta}} \left\| \vec{v}_* - \Phi \vec{\beta} \right\|_{\infty}.
     \end{equation*}
 \end{thrm}
 
@@ -155,6 +155,102 @@ span, then the ALP produces an exact solution.
 
 The error bounds we can achieve can be improved much futher by considering Lyapunov functions.
 
-[Aqui hay dos opciones. Introducir todo lo que falta y poner el último teorema
-de \Citeauthor{farias2003LP2ADP}, o brincar ese teorema y proceder a el paper
-sobre constraint sampling también de Farias \& Van Roy. O ambos]
+\section{Constraint Sampling}
+
+As previously mentioned, the \eqref{lp:approx-lp} has $|\States| \times
+|\Actions|$ constraints, often a prohibitive amount since this number is subject
+to the curse of dimensionality. However, since the number of variables is $K \ll
+|\States|$, most of the constraints are linearly dependent on the rest and
+therefore removing them does not affect the feasible region of the linear
+program. This allow for the Approximate Linear Program to be transformed into an
+equivalent LP with a much smaller number of constraints by only considering the
+linearly independent subset of constraints. We will refer to this new LP as the
+RLP (Reduced Linear Program).
+
+\begin{dfn}{Reduced Linear Program (RLP)}{}
+    Let $m$ be a constraint sample size such that a LP with $m$ constraints is
+    tractable. Let $\psi: \States \times \Actions \to [0, 1]$ be a probability
+    distribution over all state-action pairs, and $\mathcal{X}$ a subset of all
+    state-action pairs independently sampled according to $\psi$ such that
+    $|\mathcal{X}| = m$. Let $\mathcal{N} \subseteq \R^K$ be a subset that
+    contains $\Phi\vec{\beta}$.  The \emph{Reduced Linear Program} is defined by
+    \begin{equation}
+        \label{lp:reduced-lp}
+        \tag{RLP}
+        \begin{array}{rl@{}ll}
+            \displaystyle \min_{\vec{\beta} \in \R^{K}} & \vec{c}^{\top} \Phi \vec{\beta} \\
+            \text{S.t.} & \displaystyle \Phi \vec{\beta}(s) \geq r(s,a) + \gamma \sum_{s'} p(s' \mid s, a) \, \Phi \vec{\beta} (s') & \quad \forall (s, a) \in \mathcal{X} \\
+            & \vec{\beta} \in \mathcal{N}.
+        \end{array}
+    \end{equation}
+\end{dfn}
+
+\citeauthor{farias2004constraint} focus on two approaches: generating
+near-feasible solutions, and bounding the number of constraints to be sampled so
+that the RLP gnerates a solution that closely approximates an optimal solution
+to the ALP. We will be considering constraints of the form:
+\begin{equation*}
+    \alpha_{z}^{\top} \vec{\beta} + k_z \geq 0, \quad \forall z \in Z
+\end{equation*}
+on variables $\vec{\beta} \in \R^{K}$, and a set of indices $Z$.
+
+In the case where we want to generate near-feasible solutions, we cannot
+guarantee that all constraints will be satisfied over the feasible region. Since
+we limit the approximation to a subset of constraints, we consider a subset to
+be good if we can guarantee that if we satisfy all constraints in the subset,
+the set of unsatisfied constraints has a small measure. The next theorem
+(corresponding to theorem 2.1 in \cite[pg.~467]{farias2004constraint})
+establishes a bound on the number $m$ of, possible repetated, sampled
+constraints necessary to ensure with probability $1 - \delta$ lead to
+near-feasibility.
+
+\begin{thrm}{}{fariasvanroy-thm2.1}
+    For any $\delta \in (0,1)$, $\varepsilon \in (0,1)$ and $m$ that satisfies
+    \begin{equation*}
+        m \geq \frac{4}{\varepsilon} \left( K \ln \frac{12}{\varepsilon} + \ln \frac{2}{\delta} \right),
+    \end{equation*}
+    a set $\mathcal{X}$ of $m$ identically, independently distributed vandom
+    variables drawn from $|\States| \times |\Actions|$ according to
+    distribuition $\psi$, satisfies 
+    \begin{equation*}
+        \IP{
+            \sup_{\substack{\vec{\beta} \mid \alpha_{z}^{\top} \vec{\beta} + k_{z} \geq 0  \\ \forall z \in \mathcal{X} }}
+            \psi \left( \left\{ y \vertsep \alpha_{y}^{\top} \vec{\beta} + k_y  < 0 \right\} \right) \leq \varepsilon
+        } \geq 1 - \delta.
+    \end{equation*}
+\end{thrm}
+
+Theorem \ref{thrm:fariasvanroy-thm2.1} provides some reassurance on the error we
+could expect to commit even on the worst case sampling scenario. Even without
+applying any special knowledge about the problem, we can guarantee with a
+probability greater than $1 - \delta$ that we violate restrictions with a
+probability smaller than $\varepsilon$.
+
+\section{Closing thoughts \& Bibliographical notes}
+
+In the present chapter we analyzed with greater care the benefits the ALP and
+later the RLP would carry in practice in contrast to some of the more
+traditional methods for solving RL problems through approximate dynamic
+programming. Even though we managed to escape to a certain degree the curse of
+dimensionality, we had to accept the cost of an increased number of parameters,
+the need for heuristic approaches to setting parameters, decreased accuracy, to
+name the first that come to mind. This is no surprise as computational
+mathematics are often govenerned by the ``no free lunch'' theorem\footnote{Not
+an actual theorem per-se.}, and if we sought more computationally attainable
+methods we must accept the trade-off. How much more efficient an implementation
+of ALP would be compared to traditional methods for solving RL problems or even
+plain simple greedy approaches remains unclear. Having established the bases, in
+part \ref{part:III} we hope to answer this question for a specific problem: the
+fitting of Classification and Regresssion Trees. In the next chapter we propose
+why would framing the CART fitting problem as an RL problem might be warranted.
+
+\subsection{Bibliographical notes}
+
+This chapter is almost entirely a reproduction of results presented by
+\citeauthor{farias2003LP2ADP} in two articles: \citetitle{farias2003LP2ADP} and
+\citetitle{farias2004constraint}. The notation is changed to the one introduced
+and used throughout this thesis as the original notation is better suited to
+areas in queueing theory and inventory management. The results are also given
+some context and interpretation based on the themes and goals of this present
+thesis. For more detail and proofs on the results presented here please refer to
+\cite{farias2003LP2ADP} and \cite{farias2004constraint} respectively.

@@ -1,0 +1,171 @@
+\documentclass[colorful]{sty/itam-thesis}
+
+\usepackage{lipsum}
+
+\usepackage[
+		showframe,
+		paperwidth=17cm,
+		paperheight=22.5cm,
+		nofoot=true,
+		bindingoffset=1.1cm,
+		inner=1.6cm,
+		outer=1.8cm,
+		top=2.5cm,
+		bottom=1.5cm
+	]{geometry}
+
+\usepackage{tikz}
+\usepackage{tikzscale}
+\usetikzlibrary{backgrounds, intersections, fillbetween}
+% \usetikzlibrary{external}
+% \tikzexternalize[prefix=tikz/]
+\usepackage{import}
+
+% Bibliografía
+\usepackage{csquotes}
+\usepackage[
+	backend=biber,
+    citestyle=alphabetic,
+    style=alphabetic,
+    maxcitenames=2,
+    ]{biblatex}
+\addbibresource{BachelorsThesis.bib}
+
+% Paquete custom
+\usepackage{sty/thesis-package}
+
+\author{Alonso Martinez Cisneros}
+\title{%
+	Soluciones aproximadas al problema de Aprendizaje por Refuerzo mediante
+	Programación lineal; con aplicaciones al Aprendizaje de Máquina Supervisado%
+}
+\subtitle{%
+	Approximate solutions to the Reinforcement Learning Problem via Linear
+	Programming; with applications to Supervised Machine Learning.%
+}
+\date{2022}
+
+\begin{document}
+
+\frontmatter
+\pagenumbering{roman}
+\maketitle
+\makefrontmatter
+
+
+
+\tableofcontents
+
+\mainmatter
+
+%====================================================%
+% Start of the content proper ---------------------- %
+%====================================================%
+\pagestyle{plain}
+\pagenumbering{arabic}
+
+\part{Primera parte}
+\chapter{Primer capítulo}
+
+\section{Sección Primera}
+\lipsum[1-2]
+
+\subsection{Subsección}
+Un poco de matemáticas:
+
+A \emph{policy} is a mapping from states to actions $\pi: S \to A$.
+
+\begin{dfn}{Value function}{}
+	A \emph{value function} from a policy, written $V^{\pi}: S \to \R$ gives the
+	expected sum of discounted rewards when acting under that policy
+	\begin{equation}
+		V^{\pi} (s) = \E \left[ R_{t+k+1} \vertsep A \right].
+	\end{equation}
+\end{dfn}
+
+Ahora referenciamos a \cite{farias2003LP2ADP} para probar el hightlighting de cita. Ahora pruebo 
+los theorem-like environments.
+
+\begin{thrm}{Borel--Carathéodory}{borel-cara}
+Let a function $f$ be analytic on a \emph{closed disc} of radius $R$ center origin.
+Suppose that $r < R$. Then, we have the following inequality:
+\begin{equation}
+\|f\|_r \le \frac{2r}{R-r} \sup_{|z| \le R} \operatorname{Re} f(z) + \frac{R+r}{R-r} 
+|f(0)|.
+\end{equation}
+\end{thrm}
+
+\lipsum[2][2]
+
+\begin{thrm}{Liouville}{liouville}
+	Every holomorphic function $f$ for which there exists a positive 
+	number $M$ such that $|f(z)| \leq M$ for all $z$ in $\mathbb{C}$
+	is constant.
+\end{thrm}
+
+
+\begin{coro}{}{}
+	Non-constant holomorphic functions on $\mathbb{C}$  have unbounded 
+	images.
+\end{coro}
+
+\begin{lemma}{}{}
+	Every non-constant single-variable polynomial with complex 
+	coefficients has at least one complex root.
+\end{lemma}
+
+\subsubsection{Prueba de código}
+Finalmente, un poco de código.
+
+\begin{lstlisting}[language=julia, caption=Aplicando algoritmo de cifrado]
+# Definiendo sistema de Lorenz
+function lorenz!(du, u, p, t, σ=10, β=8//3, ρ=28)
+    du[1] = σ * (u[2] - u[1])
+    du[2] = u[1] * (ρ - u[3]) - u[2]
+    du[3] = u[1] * u[2] - β * u[3]
+end
+\end{lstlisting}
+
+\lipsum[3][1-3]
+
+\begin{lemma}{}{}
+	Let $\displaystyle \mathbf{A} \in \mathbb{R}^{m\times n}$ and 
+	$\displaystyle \mathbf{b} \in \mathbb {R}^{m}$. Then exactly one 
+	of the following two assertions is true:
+	\begin{enumerate}
+		\item There exists an $\displaystyle \mathbf{x} \in \mathbb 
+			{R} ^{n}$ such that $\mathbf{Ax} =\mathbf{b}$ and 
+			$\displaystyle \mathbf{x} \geq 0$.
+		\item There exists a $\displaystyle \mathbf{y} \in \mathbb
+			{R}^{m}$ such that $\displaystyle 
+			\mathbf{A}^{\top}\mathbf{y} \geq 0$ and $\displaystyle 
+			\mathbf{b}^{\top}\mathbf{y} <0$.
+	\end{enumerate}
+\end{lemma}
+
+\begin{algorithm}
+    \SetKwFunction{Predict}{predict}
+    \KwIn{The tree $f_\L$}
+    \KwIn{The feature vector $\vec{x}$}
+    \KwOut{The predicted class $\widehat{y}$ for $\vec{x}$}
+    \Function{\Predict{$f_\L, \vec{x}$}}{
+        $t \gets t_0$ \;
+        \While{$t$ is not a terminal node}{
+            $t \gets$ the child node $t'$ of $t$ such that $\vec{x} \in \mathcal{X}_t$ \;
+        }
+        \Return{$\widehat{y}_t$} \;
+    }
+    \caption[Tree prediction algorithm]{Predict output value $\widehat{y}$ with
+        tree $f_\L$ \cite[Ch.~3.2]{louppe2014}.}
+    \label{alg:tree-predict}
+\end{algorithm}
+
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{img/log.tikz}
+\caption{fig:pruebas}
+\end{figure}
+
+\printbibliography
+
+\end{document}

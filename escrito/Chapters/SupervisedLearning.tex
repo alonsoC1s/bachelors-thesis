@@ -17,7 +17,7 @@ algorithm will (hopefully) label correctly new observations never seen before.
 The classification task seeks to find a systematic way of predicting a
 phenomenon given a set of measurements.
 
-\subsection{Formalizing}
+\subsection{Formalizing} \label{sss:formalizing-trees}
 Putting some concepts to work, picture a scenario where we have access to
 several measurements (e.g., age, weight, blood pressure, etc\dots) for a group
 of patients. Some patients in the study group suffered a stroke; the rest did
@@ -29,12 +29,13 @@ Fundamentally, a supervised ML algorithm must receive a \textit{training set}, a
 set of pre-labeled data from a knowledgeable source, in contrast with RL, where
 labeling is often not even possible or practical. This source of truth, the
 training set, is a set of observations $(\vec{x}_1, y_1), \dots, (\vec{x}_n,
-y_n)$. The vectors $\vec{x}_i = [x_1, x_2, \dots, x_p]^{\top} \in \R^{p}$ can be
-thought of as a list of measurements of every variable of interest for the
-$i$-th observation. In the case of the example trying to predict strokes, $x_1$
-would correspond to age, $x_2$ to weight, and so on. The training set also
-contains $y_1, \dots, y_n$, one-dimensional values we call variables or labels
-in the specific case of classification. Using the standard parlance, following
+y_n)$. The vectors $\vec{x}_i = [x_{1, i}, x_{2, i}, \dots, x_{p, i}]^{\top} \in
+\R^{p}$ can be thought of as a list of measurements of every variable of
+interest for the $i$-th observation. In the case of the example trying to
+predict strokes, $x_{1, i}$ would correspond to age and $x_{2, i}$ to weight for
+the individual corresponding to observation $i$. The training set also contains
+$y_1, \dots, y_n$, one-dimensional values we call variables or labels in the
+specific case of classification. Using the standard parlance, following
 \cite{louppe2014}, the input variables are known as \textit{features}, input
 vectors as \textit{instances} or \textit{samples} and the output variable as
 \textit{target}. For our purposes, we consider that the target variable is
@@ -256,7 +257,7 @@ entire books.
         Append $(t_0, \L)$ to $S$ \;
         \While{$S$ is not empty}{
             $t, \, \L_t \gets S$.\Pop{} \;
-            \If{stopping criteria are not met}{
+            \uIf{stopping criteria are not met}{
                 $\widehat{y}_{t} \gets$ some constant value \;
             }\Else{
                 Find the split $s_*$ on $\L_t$ that maximizes impurity decrease
@@ -302,16 +303,16 @@ factorially for the non-binary case. Calculating each possible partition and
 choosing the best is not computationally feasible. The attentive reader will
 find the similarities when describing in full detail the RL problem presented in
 Chapter \ref{chapter:ReinforcementLearning}. The best binary split $s_*$ can be
-found using algorithm \ref{alg:best-binary-split}.
+found using algorithm \ref{alg:best-greedy-binary-split}.
 
 \begin{algorithm}
-    \SetKwFunction{BestSplit}{FindBestSplit}
+    \SetKwFunction{BestSplit}{FindBestGreedyBinarySplit}
     \KwIn{A subset $\L_t$ of the training set $\L$}
-    \KwOut{The best binary split $s_*$ on $\L_t$}
+    \KwOut{The best binary, greedy, split $s_*$ on $\L_t$}
     \Function{\BestSplit{$\L_t$}}{
         $\Delta \gets - \infty$ \;
         \For{$j \gets 1, \dots, p$}{
-            Find the best binary split $s_{*}^{j}$ for the variable $X_j$ \;
+            Find the best greedy binary split $s_{*}^{j}$ that defines node $t$ for the feature $X_j$ \;
             \If{$\Delta i(s_{*}^{j}, t) > \Delta$}{
                 $\Delta \gets \Delta i(s_{*}^{j}, t)$ \;
                 $s_* \gets s_{*}^{j}$ \;
@@ -319,17 +320,18 @@ found using algorithm \ref{alg:best-binary-split}.
         }
         \Return{$s_{*}$} \;
     }
-    \caption[Best split for node $t$ algorithm]{Find best binary split $s_*$ for
-        node $t$ \cite[Ch.~3.6.3]{louppe2014}.}
-    \label{alg:best-binary-split}
+    \caption[Best binary, greedy, split for node $t$.]{Best binary greedy split $s_*$ for node $t$ \cite[Ch.~3.6.3]{louppe2014}.}
+    \label{alg:best-greedy-binary-split}
 \end{algorithm}
 
-It can be proved that the complexity of algorithm \ref{alg:best-binary-split} is
-constrained by the complexity of the sort operation \cite[Ch.~5]{louppe2014}.
+It can be proved that the complexity of algorithm
+\ref{alg:best-greedy-binary-split} is constrained by the complexity of the sort
+operation \cite[Ch.~5]{louppe2014}.
 
-With algorithm \ref{alg:best-binary-split}, we have enough background to examine
-the similarities between the problem that arises from fitting a classification
-tree and the more general reinforcement learning problem in part \ref{part:II}.
+With algorithm \ref{alg:best-greedy-binary-split}, we have enough background to
+examine the similarities between the problem that arises from fitting a
+classification tree and the more general reinforcement learning problem in part
+\ref{part:II}.
 
 \section{Bibliographical notes}
 As mentioned, we had to skip several details necessary for an actual

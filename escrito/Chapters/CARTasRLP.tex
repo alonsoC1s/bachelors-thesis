@@ -1,0 +1,107 @@
+\chapter{\textsc{cart} fitting as a Reinforcement Learning Problem}
+\label{chapter:CARTasRLP}
+
+In chapter \ref{chapter:SupervisedLearning} we reviewed the basic process of
+fitting a classification tree: what it entails, the algorithms, and some
+computational complexity calculations. To some readers it might be obvious how
+the process described by algorithms \ref{alg:tree-fit} and, most importantly
+\ref{alg:best-greedy-binary-split}, are similar to the exemplary RL problems we
+have developed thus far. In this chapter we fill in the gaps and formalize how
+the CART fit procedure can be cast as a MDP and thus how the techniques
+discussed in part \ref{part:II} may be used and what we could expect from them.
+
+Let us begin by stating something that might not have been obvious when
+describing the fitting procedure in chapter \ref{chapter:SupervisedLearning}:
+the algorithms described and used in practice rarely---if ever---produce the
+best possible tree. The algorithms are, as their names suggest, greedy. As a
+reminder, when using the term greed we mean that during some optimization
+procedure such as solving an RL problem or fitting a CART we choose the best
+action available to us at the moment instead of exploring all the possible
+rammifications and then selecting the one that is most convenient at the end of
+the line. The alternative to greedy algorithms are lookahead algorithms, which
+work by ``looking ahead'' into the future and evaluating the effects a certain
+action in the present might have some steps in the future. The \emph{true} best
+fit of a tree as opposed to a greedy best would require the lookahead to be
+carried out for each split made until all subsplits reach a termination
+condition. In the following section we develop the lookahead procedure in
+detail, and set the basis for this chapter's main ideas.
+
+\section{True best splitting procedures}
+
+Algorithm \ref{alg:tree-fit} was described as the procedure for greedily fitting
+a binary classification tree, but strictly speaking that formulation can just as
+well describe a lookeahead fitting procedure. The splitting procedure described
+in algorithm \ref{alg:best-greedy-binary-split} for finding the best binary
+split is the actual greedy procedure. Let us describe formally what a
+non-greedy, lookahead-based splitting procedure might look like. To avoid
+confusion from now on we will be using explicitly the terms \emph{greedy} to
+refer to the already described fitting procedure and its resulting splits, and
+\emph{true best} to refer to the splits obtained via lookahead. 
+
+Algorithm \ref{alg:true-best-binary-split} aims to describe the procedure to
+find the true best split for a $\L_t$ a subset of the training set. Recalling
+some notation, $\mathcal{X}_t$ refers to the input space corresponding to the
+partition $\L_t$ of the training set, $X_j$ refers to the $j$-th feature
+variable(in other words, the $j$-th entry on the sample vectors). To ease the
+description of the next algorithm we introduce some new notation. We denote
+$\mathcal{X}_{t}^{j} \coloneqq \left\{ x_{j, o} \mid \vec{x}_{o} \in
+\mathcal{X}_t \right\}$ the set of values of the feature $X_J$ contained in
+$\mathcal{X}_t$. In other words, the set of observed values for the feature
+$X_j$ contained in $\L_t$ the subset of the training set. For a refresher on
+terminology and notation please refer to chapter
+\ref{chapter:SupervisedLearning} section \ref{sss:formalizing-trees}.
+
+\begin{algorithm}
+    \SetKwFunction{TrueBestSplit}{FindTrueBestBinarySplit}
+    \KwIn{A subset $\L_t$ of the training set $\L$}
+    \KwOut{The true best binary split $s_*$ on $\L_t$ and impurity decrease achieved $\Delta^{*}$.}
+    \Function{\TrueBestSplit{$\L_t$}}{
+        $\Delta_* \gets - \infty$ \;
+        \For{$j \gets 1, \dots, p$}{
+            \ForEach{observed value $x_{j, i} \in \mathcal{X}_{j}^{t}$}{
+                Set $s \gets x_{j, i}$ the split value that defines node $t$ \;
+                Partition $\L_t$ into $\L_{t_L}, \L_{t_R}$ according to $s$ removing feature $X_j$ \;
+                \If{stopping criteria are met}{
+                    \Return{$\Delta i(s, t), s$}
+                }
+                $\Delta_{L}^{*} \gets$ \TrueBestSplit{$\L_{t_L}$} \;
+                $\Delta_{R}^{*} \gets$ \TrueBestSplit{$\L_{t_R}$} \;
+                \If{$\Delta i(s, t) + \Delta_{L}^{*} + \Delta_{R}^{*} > \Delta$}{
+                    $\Delta \gets \Delta i(s, t) + \Delta_{L}^{*} + \Delta_{R}^{*}$ \;
+                    $s_{*} \gets s = x_{j, i}$
+                }
+            }
+        }
+        \Return{$\Delta_*, s_*$} \;
+    }
+    \caption[True best binary split for node $t$.]{True best binary split $s_*$ for node $t$.}
+    \label{alg:true-best-binary-split}
+\end{algorithm}
+
+Notice how the function \TrueBestSplit calls itself twice with the subsets
+$\L_{t_R}, \L_{t_L}$, created by the split $s$, as arguments. In simple words
+algorithm \ref{alg:true-best-binary-split} tries each observed value for each
+feature in it's own subset of the training set $\L_t$ as a possible splitting
+point. Then, to decide if the split is good, calculates the best maximum
+impurity decrease for the subsets defined by the left and right children of the
+node created by the current split. To calculate that maximum impurity decrease
+we once again explore every split possible for the given, strictly smaller,
+subset of $\L_t$. Since the explored subsets get progressively smaller in terms
+of observations contained it is intuitively clear that the splitting will stop
+eventually, given that we check for stopping criteria satisfaction. One example
+of a stopping criteria is, stop splitting if the current $\L_t$ has less
+than $\kappa$ samples.
+
+Even though the recursive splittin procedure does eventually stop thanks to the
+stopping criteria, the call stack for \TrueBestSplit becomes very deep very
+quickly. Once the call stack reaches a maximum dept, it starts to grow in
+breadth since we only just begun testing a single split $s$, when we must test
+for every possible one. As mentioned in chapter
+\ref{chapter:SupervisedLearning}, in the case of binary splits we would explore
+$2^{N_t -1}-1$, possible partitions. Each corresponding to a call to
+\TrueBestSplit. This amount of complexity makes all but trivial problems
+impossible to solve. 
+
+\subsection{Making connections}
+
+Casting the algorithm just reviewed in the language of RL introduced in part I.

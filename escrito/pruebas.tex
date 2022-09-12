@@ -1,7 +1,5 @@
 \documentclass[colorful]{sty/itam-thesis}
 
-\usepackage{lipsum}
-
 \usepackage[
 		showframe,
 		paperwidth=17cm,
@@ -36,13 +34,13 @@
 
 \author{Alonso Martinez Cisneros}
 \title{%
-	Soluciones aproximadas al problema de Aprendizaje por Refuerzo; con
-	aplicaciones al Aprendizaje de Máquina Supervisado%
-	}
+	Soluciones aproximadas al problema de Aprendizaje por Refuerzo mediante
+	Programación lineal; con aplicaciones al Aprendizaje de Máquina Supervisado%
+}
 \subtitle{%
 	Approximate solutions to the Reinforcement Learning Problem via Linear
 	Programming; with applications to Supervised Machine Learning.%
-	}
+}
 \date{2022}
 
 \begin{document}
@@ -73,7 +71,6 @@
 \pagestyle{plain}
 \pagenumbering{arabic}
 
-% \input{Chapters/printTest.tex}
 % \include{Chapters/Intro}
 
 \part{Foundations}
@@ -93,7 +90,12 @@
 
 \part{Applications to Supervised Machine Learning}
 \label{part:III}
+
+	\include{Chapters/CARTasRLP}
+
 \appendix
+\addcontentsline{toc}{part}{Appendices}
+
 
 	\include{Chapters/MiniopolySim}
 
