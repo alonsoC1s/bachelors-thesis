@@ -1,20 +1,82 @@
 \chapter{Stochastic Processes \& Markov Decision Processes}
-\label{chapter:Stochastic}
+\label{appendix:Stochastic}
 
-To be filled\ldots
+The following chapter contains some elementary definitions in probability and
+stochastic processes helpful to develop the main ideas in this thesis, recalled
+here to be self-contained.
 
+\subsection{Elementary Probability Theory}
 
+For the following section we assume random variables with support in $\R$ unless
+otherwise stated.
 
-\begin{dfn}{Stochastic Process}{stochastic-process}
+\begin{dfn}{Joint Probability Density}{}
+    Let $(X_1, X_2, \dots, X_n)$ be random vector where each $X_i$ is defined
+    over the same probability space $(\Omega, \mathcal{F}, \mathbb{P})$. We
+    define the \emph{joint probability distribution} of $(X_1, \dots, X_n)$ as
+    \[
+        f_{X_1, \dots, X_n} (x_1, \dots, x_n) = \IP{X_1 = x_1, \dots, X_n = x_n}.    
+    \] 
 \end{dfn}
 
-\begin{dfn}{Markov's Property}
+The joint probability density for the random vector $(X_1, X_2)$ satisfies
+the following properties:
+\begin{enumerate}
+    \item $f_{X_1, X_2} (x_1, x_2) \geq 0$ for all pairs $(x_1, x_2) \in \R^{2}$.
+    \item $\displaystyle \iint_{\R^{2}} f_{X_1, X_2} (x_1, x_2) \, \mathrm{d} x_1 \, \mathrm{d} x_2 = 1$.
+    \item $F_{X_1, X_2} (x_1, x_2) = \int_{-\infty}^{x_1} \int_{-\infty}^{x_2}
+        f_{X_1, X_2} (u_1, u_2) \, \mathrm{d} u_1 \, \mathrm{d} u_2$, where
+        $F_{X_1, X_2}$ is the joint distribution function.
+\end{enumerate}
+
+The following Lemma allows us to obtain the distribution function for a single
+random variable $X_1$ of the random vector $(X_1, X_2)$.
+
+\begin{lemma}{Marginalization}{marginalization}
+    Let $(X_1, X_2)$ be a random vector with support $\R$ with joint density
+    function $f_{X_1, X_2}$. Then, the marginal density functions can be
+    obtained as
+    \begin{enumerate}
+        \item $\displaystyle f_{X_1} (x_1) = \int_{\R} f_{X_1, X_2} (u_1, u_2) \, \mathrm{d} u_2$.
+        \item $\displaystyle f_{X_2} (x_2) = \int_{\R} f_{X_1, X_2} (u_1, u_2) \, \mathrm{d} u_1$.
+    \end{enumerate}
+\end{lemma}
+
+In the case where the random variable is discrete (has a countable support), the
+integral is replaced with a sum. Either the integral or the sum have to be
+carried out over the support of the random variable when marginalizing.
+
+For a specific example of where this is used in this thesis, consider a
+probability density function $p(s', r) \coloneqq \IP{S_{t+1} = s', R_{t+1} = r}$
+in the context of Reinforcement Learning where the random variables $S_t$ and
+$R_t$ represent states and rewards at time $t$. The support space for random
+variable $R$ is $\Rewards$ and $\States$ for $S$, the spaces of rewards and
+states respectively. Then, by Lemma
+\ref{lem:marginalization},
+\[
+    p(s') = \sum_{r \in \Rewards} p(s', r).
+\] 
+
+\subsection{Stochastic Processes}
+
+In this thesis we focus on countable stochastic processes, but the definitions
+generalize to continuous processes with ease.
+
+\begin{dfn}{Stochastic Process}{stochastic-process}
+    Let $(\Omega, \mathcal{F}, \mathbb{P})$ be a probability space. A
+    \emph{stochastic process} is a collection $\left\{ X_t \right\}$,where each
+    $X_t$ is a random variable on $(\Omega, \mathcal{F}, \mathbb{P})$, for $t
+    \in \tau$. A stochastic process is said to be \emph{countable} whenever
+    $\tau$ is countable.
+\end{dfn}
+
+\begin{dfn}{Markov's Property}{}
     Given a stochastic process made up of random states $S_t$ for times $t = 0,
     1, 2, \dots$, we say it satisfies the \emph{Markov property} (or is
     \emph{Markovian}) if the probalities of transition between $S_t$ and
     $S_{t+1}$ satisfy
     \[
-        \P \left[ S_{t+1} \mid S_t, S_{t-1}, \dots, S_0 \right] = \P \left[ S_{t+1} \mid S_t \right],
+        \IP{S_{t+1} \mid S_t, S_{t-1}, \dots, S_0 } = \IP{S_{t+1} \mid S_t},
     \]
     for all $t \geq 0$.
 \end{dfn}
@@ -23,5 +85,21 @@ Markov's property is often called the ``memoryless property'', since in essence,
 it says the history of the process does not influence the future evolution, it
 is only determined by the present state.
 
-\begin{dfn}{Markov Decision Process}{MDP}
+\begin{dfn}{Markov Decision Process \cite[Lec.~2]{silver2015}}{MDP}
+    A countable \emph{Markov Decision Process} (abbreviated MDP) is a tuple
+    $(\States, \Actions, p, \Rewards)$, consisting of:
+    \begin{itemize}
+        \item A non-empty, countable set of states $\States$ (known as the state
+            space) along with a subset $\mathcal{T} \subseteq \States$ known as
+            terminal states. 
+        \item A non-empty, countable set of actions $\Actions$ called the action
+            space.
+        \item A probability density function $p$ that describes the probability
+            of transitions $\IP{S_{t+1} = s' \mid S_t = s, A_t = a}$.
+        \item A set $\Rewards$ of possible rewards.
+    \end{itemize}
 \end{dfn}
+
+A Markov Decision Process is used to formalize the idea of a system where
+transitions between states is a markovian stochastic process with the addition
+of a set of actions that determines said transitions. 

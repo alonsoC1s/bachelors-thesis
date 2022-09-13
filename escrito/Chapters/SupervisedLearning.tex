@@ -34,7 +34,7 @@ y_n)$. The vectors $\vec{x}_i = [x_{1, i}, x_{2, i}, \dots, x_{p, i}]^{\top} \in
 interest for the $i$-th observation. In the case of the example trying to
 predict strokes, $x_{1, i}$ would correspond to age and $x_{2, i}$ to weight for
 the individual corresponding to observation $i$. The training set also contains
-$y_1, \dots, y_n$, one-dimensional values we call variables or labels in the
+$y_1, \dots, y_n$, one-dimensional values we call responses or labels in the
 specific case of classification. Using the standard parlance, following
 \cite{louppe2014}, the input variables are known as \textit{features}, input
 vectors as \textit{instances} or \textit{samples} and the output variable as
@@ -54,13 +54,13 @@ the vector $\vec{y} \in \R^{n}$.
 Our classification task can be framed as finding a function $f_{\L}$ we will
 call model whose output or predictions $f_{\L} (\vec{x}) = \widehat{\vec{y}}$
 are ``as good as possible''. We subscript the function $f$ with $\L$ to
-highlight that the function depends on what data the learning set contains. We
+highlight that the function depends on what data the training set contains. We
 proceed to define what makes a model ``good'' at making predictions.
 
 \subsection{Evaluation}
 As it has become a recurring theme in this thesis, determining what makes a
 prediction suitable and finding the best possible model $f_\L$ is a process of
-optimization. Since we assume that the learning set is a sample of the
+optimization. Since we assume that the training set is a sample of the
 population we aim to label with our model, it stands to reason that a model that
 makes the fewest mistakes when tasked with classifying the training observations
 will also make the fewest mistakes when classifying new observations. In
@@ -85,7 +85,7 @@ which minimizes its expected prediction error.
 \end{dfn}
 
 Minimizing this Generalization Error will allow us to classify the newest
-observations committing as the lowest possible number of errors overall.
+observations committing the lowest possible number of errors overall.
 Including observations never seen before, not only the ones we have access to in
 the training set. Since the distributions for observations $(\vec{x}_j, y_j)$
 are generally not known, we must estimate the generalization error. Several
@@ -141,7 +141,7 @@ advantage of the natural distinction our set of categories provides.
 \[
     \Omega = \bigcup_{i=1}^{j} \Omega_{c_i},
 \]
-where each $\Omega_{c_i}$ is defined as $\left\{ (\vec{x}_k, y_k) \mid y_k = c_k
+where each $\Omega_{c_i}$ is defined as $\left\{ (\vec{x}_i, y_i) \mid y_i = c_k
 \right\}$.
 
 Similarly, a model $f_\L$ defines a partition. This partition however is made
@@ -233,10 +233,7 @@ It is straightforward to see the similarity of the impurity decrease definition
 with how an expected value is estimated since $N_{t_L} / |\L_t|$ is the
 probability of a given observation falling to the left node. In simple words,
 the impurity decrease for node $t$ is simply the original impurity minus the
-expected value of the impurity of its children. Keeping in mind that the
-proportion $N_{t_L} / |\L_t|$ represents the probability of a given observation
-being in the left child of $t$, we refer to it as $p_L$; denoting $p_R$ the
-analog for the right child.
+expected value of the impurity of its children.
 
 We have the tools to define a formal procedure for greedily fitting a binary
 classification tree in algorithm \ref{alg:tree-fit}. The pseudocode presented
@@ -297,7 +294,7 @@ by the Stirling number of the second kind \cite{louppe2014}
 \[
     S(N_t, k) \coloneqq \frac{1}{k!} \sum_{j=0}^{k} (-1)^{k-j} \binom{k}{j} j^{N_t}.
 \]
-Even in the case of binary partitions in which $s(N_t, k)$ reduces to $2^{N_t
+Even in the case of binary partitions in which $S(N_t, k)$ reduces to $2^{N_t
 -1}-1$, the number of partitions grows exponentially and, even worse,
 factorially for the non-binary case. Calculating each possible partition and
 choosing the best is not computationally feasible. The attentive reader will

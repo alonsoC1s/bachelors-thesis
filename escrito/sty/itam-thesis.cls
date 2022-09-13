@@ -31,7 +31,7 @@
 		% Required packages %
 		%===================%
 		\RequirePackage{xcolor}
-		\RequirePackage[dirty=dirty]{gitinfo2}
+		\RequirePackage[dirty="The working tree is dirty"]{gitinfo2}
 		\RequirePackage{amsmath}
 		\RequirePackage{mathtools} % coloneqq
 		\RequirePackage{graphicx}
@@ -49,6 +49,8 @@
 		\RequirePackage{framed} % Shaded box
 		\RequirePackage{dsfont} % For mathbb 1
 		\RequirePackage[ruled, algochapter]{algorithm2e}
+		\RequirePackage{hologo} % XeLaTeX logo
+		\RequirePackage{url}
 		% \RequirePackage{witharrows} % Pretty margin anotations for equations
 		% \RequirePackage{mdframed}
 
@@ -138,14 +140,20 @@
 }
 
 \newcommand{\makefrontmatter}{
+
+	\vspace*{0.4\textheight}
+	\begin{center}
+		% \vspace*{5cm}
+		\resizebox{1cm}{!}{$\aleph$}
+	\end{center}
+
 	\vspace*{\fill}
 	\noindent Typeset by the author in Baskervald X, Nimbus 
-	Sans and Julia Mono by \LaTeX.
+	Sans and Julia Mono by \hologo{XeTeX}.
 
 	\noindent This version is corresponds to commit 
 	\texttt{\gitAbbrevHash{}} on branch: \texttt{\gitBranch{}}, 
-	committed on \textit{\gitAuthorDate{}}. The working tree is 
-	\gitDirty{}
+	committed on \textit{\gitAuthorDate{}}. \gitDirty{}
 
 	\newpage
 

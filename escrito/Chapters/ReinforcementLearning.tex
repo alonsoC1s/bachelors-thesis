@@ -18,9 +18,9 @@ To be precise, say that the game starts at some time $t=0$ and ends at $t=T$. We
 discretize this period of time into $t \in \{0, 1, 2, \ldots \}$ At each of
 these points $t$ in time, the agent finds itself at some state $S_t \in
 \States$, where $\States$ represents the set of all possible states. This
-defines exactly what we called a stochastic process back in 
-Chapter~\ref{chapter:Stochastic}: a series of random variables $\{ S_t \}_{t =
-0, 1 \ldots}$. 
+defines a stochastic process: a series of random variables $\{ S_t \}_{t = 0, 1
+\ldots}$. Stochastic processes are covered in appendix
+\ref{appendix:Stochastic}.
 
 Likewise, at each time step $t$, the agent chooses how to interact with an action
 $A_t \in \Actions(s)$, where $\Actions(s)$ is the set of all \textit{available}
@@ -69,9 +69,6 @@ keeping with the notation in \cite{SuttonBarto}.
 	\]
 \end{dfn}
 
-Hola \ref{dfn:dynamics-func}
-Using the notation 
-
 Notice how the dynamics function is just a joint probability density function
 over the space of state-reward pairs ($\States \times \Rewards$). This means we
 can treat it as such and get valuable information about, for instance, expected
@@ -118,7 +115,7 @@ learning can be framed as an optimization process is formalized as the
 \end{remark}
 
 The other subtle concept involved in our concept of learning is the
-ability to make mistakes and learn from them.
+ability to make mistakes and avoid them in the future.
 
 Formally, the learning agent acts according to a given policy, a rule of
 correspondence between states and actions. This rule is not necessarily
@@ -161,7 +158,7 @@ we focus on infinite processes since they generalize finite ones.
 	\underline{discounted} sum of the accumulated rewards from time $t$ forward
 	when the agent follows the policy $\pi$,
 	\[
-		v^{\pi} (s) \coloneqq \mathbb{E}_{\pi} \left[\sum_{k=0}^{\infty} \gamma^{k} R_{t+k+1} \vertsep S_{t} = s\right],
+		v_{\pi} (s) \coloneqq \mathbb{E}_{\pi} \left[\sum_{k=0}^{\infty} \gamma^{k} R_{t+k+1} \vertsep S_{t} = s\right],
 	\]
 	for all $s \in \States$.
 \end{dfn}
