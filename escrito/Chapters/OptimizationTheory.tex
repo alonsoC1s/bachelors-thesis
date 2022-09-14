@@ -23,9 +23,13 @@ search problems are often embedded in a geometrical context.
 
 For an introductory problem, picture a company designing boxes. They have
 conducted a study and isolated a relationship that describes their profits as a
-function of the volume of their best-selling box. That relationship is plotted
+function of the area of cardboard needed to make their boxes. This was initially
+suspected as the area of cardboard used to make the box determines the volume,
+and their pricing shemes make some boxes more profitable than others. That
+relationship was now confirmed as a result of some analysis, a plot can be found
 in figure \ref{fig:1d-profits}. This company wants to maximize profit by
-modifying the variable they can control: the volume of the box.
+modifying the variable they can control: the area of cardboard, and indirectly
+the volume of the box.
 
 Picture for a moment that the graph shown in figure \ref{fig:1d-profits} is
 unknown to the company (optimizing agent or agent henceforth), as graphical
@@ -35,11 +39,11 @@ maximizes profit is very straightforward. But since the optimizing agent does
 not have this luxury, it must come up with a different strategy. The agent
 recalled that derivatives have a very useful geometric interpretation, they give
 the slope of a function at a point. The agent can start by guessing a value for
-the volume, and then find the point where it equals zero. The logic behind the
-search for a zero is simple: if a function is continuous and ``goes up'' on a
-certain subset of numbers, and then ``goes down'' for the numbers right next, a
-peak is necessarily in between those two regions. That peak corresponds to the
-point where the derivative equals zero.
+the area of cardboard, and then find the point where the derivative equals zero.
+The logic behind the search for a zero is simple: if a function is continuous
+and ``goes up'' on a certain subset of numbers, and then ``goes down'' for the
+numbers right next, a peak is necessarily in between those two regions. That
+peak corresponds to the point where the derivative equals zero.
 
 \begin{wrapfigure}{I}{0.5\textwidth}
    \centering
@@ -51,15 +55,15 @@ point where the derivative equals zero.
 With this in mind, the agent devises an ``educated guess'' algorithm to find the
 point where the derivative equals zero, which is exactly where the peak of the
 profits function is, as exemplified in figure \ref{fig:1d-profits}. The guessing
-starts at the point where volume equals 10. The agent evaluates the derivative
-there, and finds that it is less than zero. In other words, the profits would
-diminish if he were to try a volume less than 10. So, the agent decreases the
-volume to another point that is smaller by $\alpha$. The agent continues this
-process changing the value $\alpha$ as it goes. Figure \ref{fig:gd-points} shows
-the points this agent tried while trying to achieve a maximum. The color of the
-point gets lighter as it approaches the maximum. The markers show the direction
-in where the next exploration point will be, the stopping point is marked by the
-circle.
+starts at the point where cardboard area equals 10. The agent evaluates the
+derivative there, and finds that it is less than zero. In other words, the
+profits would diminish if it were to try to use less than 10 cubic cm of
+cardboard. So, the agent decreases the area to another point that is smaller by
+$\alpha$. The agent continues this process changing the value $\alpha$ as it
+goes. Figure \ref{fig:gd-points} shows the points this agent tried while trying
+to achieve a maximum. The color of the point gets lighter as it approaches the
+maximum. The markers show the direction in where the next exploration point will
+be, the stopping point is marked by the circle.
 
 Most computational methods for optimization rely on the same basic ideas as our
 ``educated guess'' algorithm. Since exact solutions are too computationally
@@ -90,9 +94,9 @@ By using the Gradient Descent Operator, we can define a succession
 $\{\vec{a}_n\}$ of points in $\R^{n}$. The succession is defined as
 $\vec{a}_{n+1} = \vec{a}_n - \alpha_n \nabla f(\vec{a}_n)$. By thinking of the
 process in terms of operators, finding optimal points (as they may not be
-unique) is simply finding points that satisfy
+unique) is simply finding points $a_*$ that satisfy
 \[
-    D \a_* = a_*.
+    D a_* = a_*.
 \]
 In other words, \emph{fixed points} of the operator $D$. It can be proved that
 such a fixed point exists whenever $f$ satisfies a certain set of conditions,
@@ -113,6 +117,53 @@ Some defining characteristics of the problem gradient descent solves are:
 [Aqui algo de simplex quizá, para introducir el concepto de restricciones. Creo
 que con eso basta]
 
+\section{Working with constraints}
+
+After using gradient descent to maximize their profits, the box-making company
+wants to include more factors into their analysis to replicate their success at
+making their operation more efficient. They have noticed that their profits
+apart from being dependent on the volume of their best-selling box, they depend
+on their other product: envelopes. The company has some knowledge that has to
+be incorporated into the search for profit maximization:
+\begin{itemize}
+    \item Each envelope produced uses 100 square centimeters of cardboard.
+    \item Month to month they can only buy 10,000 square centimeters of cardboard.
+    \item The biggest boxes they can make are 10 cubic meters big.
+    \item The machine can produce a maximum of 8,000 envelopes
+\end{itemize}
+
+
+\begin{wrapfigure}{I}{0.5\textwidth}
+   \centering
+   \includegraphics[width=0.5\textwidth]{img/feasible-region.tikz} 
+   \caption{Combinations of box volume and number of envelopes the company can produce}
+   \label{fig:feasible-region}
+\end{wrapfigure}
+
+The search space the company has to explore now is not like the one in the
+previous example. We are only interested in combinations of box volume and
+cardboard amount that satisfy the conditions laid out by the company. In figure
+\ref{fig:feasible-region} the optimizing agent (the company) plotted all the
+possible combinations of the amount of cardboard they can use for their boxes,
+and the number of envelopes they will produce. Points inside the blue area
+satisfy the conditions, while points outside do not. The region in blue is
+called the \emph{feasible region} for this problem. The solution must lie inside
+the feasible region, we are not interested in looking outside.
+
+When the profit function can be expressed as multiples of cardboard area for
+boxes plus number of envelopes this optimization problem is called a
+\emph{linear program}. Linear programs have desirable properties, such as: the
+existence and location of their solutions, and the amount of computational power
+they need to be solved. The classic algorithm called \emph{simplex} uses clever
+geometric manimpulations to explore the corners of the feasible region
+efficiently. The main results reviewed in this thesis establish that a
+Reinforcement Learning Problem like the Miniopoly example in chapter
+\ref{chapter:Motivation} can be cast as a linear program. The rest of this
+thesis deals with the specifics like
+\begin{itemize}
+    \item How to choose an objective function?
+    \item What constraints the solutions?
+\end{itemize}
 
 % \begin{remark}{Greedy}
 %     Hola   

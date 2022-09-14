@@ -1,4 +1,6 @@
 using PGFPlotsX
+using LaTeXStrings
+using Polyhedra
 
 include("../nord.jl")
 
@@ -7,22 +9,25 @@ pgfplotsx()
 
 sqrsize = (250, 250)
 
+default(
+    legend = false,
+    size = sqrsize,
+)
+
 # profits(x) = -(x-5)^2 + 25
 profits(x) = (15x^2 - 24x + 5)*exp(-x)
 profits_prime(x) = exp(-x) * (-29 + 54x - 15x^2) 
 
 # fig:1d-profits
 plot(profits, 1, 10,
-    legend = :none,
-    xlabel = "Box volume",
+    xlabel = L"Cardboard area in $cm^2$",
     ylabel = "Profit",
-    size = sqrsize,
 )
 
 savefig("escrito/img/1d-profits.tikz")
 
 
-# Gradient descent point convergence
+# fig:gd-points
 function GradientDescentSimple(func, fprime, x0, alpha, tol=1e-5, max_iter=1000)
     xk = x0
     fk = func(xk)
@@ -59,12 +64,10 @@ shapes[end] = :circle
 
 scatter(log_x, zeros(size(log_x)),
     zcolor = exp.(log_y .+ 10),
-    size = (350, 150),
     ylims = (-0.5, 0.5),
-    legend = :none,
     # colorbar = true,
     yticks = :none,
-    xlabel = "Box volume",
+    xlabel = "Cardboard area",
     guidefont = font(9, "Computer Modern"),
     tickfont = font(7, "Computer Modern"),
     markershape = shapes,
@@ -72,3 +75,22 @@ scatter(log_x, zeros(size(log_x)),
 )
 
 savefig("escrito/img/gd-points.pdf")
+
+# fig:feasible-region
+h = HalfSpace([1, 0], 10) ∩
+    HalfSpace([0, 1], 10) ∩
+    HalfSpace([1, 1], 13) ∩
+    HalfSpace([-1, 0], 0) ∩
+    HalfSpace([0, -1], 0)
+
+p = polyhedron(h)
+
+plot(p, ratio=:equal,
+    xlabel = "Cardboard for boxes",
+    ylabel = "Number of envelopes",
+    xlims = (-1, 11),
+    ylims = (-1, 11),
+    alpha = 0.6,
+)
+
+savefig("escrito/img/feasible-region.tikz")
