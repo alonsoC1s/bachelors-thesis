@@ -180,3 +180,35 @@ The Exact Linear Program for this problem is
 \end{equation}
 
 Ahora nomás falta definir las basis functions $\Phi$ y describir el ALP.
+
+For now we refrain from selecting a basis $\Pi$ of functions. The choice of this
+basis is highly heuristic and relies on experience with the specific problem
+being solved as pointed out by \citeauthor{farias2003LP2ADP} in
+\cite{farias2003LP2ADP}. Likewise, the specific parameters reviewed in chapter
+\ref{chapter:PropertiesGuarantees} for the Reduced Linear Program are selected
+on a case-by-case basis \cite{farias2004constraint}. Both the basis functions
+and the parameters to carry out constraint sampling can be considered
+hyperparameters like tree depth and minimum nodes per leaf in the example of
+tree fitting. As such, these may be optimized by cross validation to obtain the
+best possible results to the problem at hand.  
+
+\section{Closing thoughts}
+
+The idea of applying Reinforcement Learning to the tree fitting procedure is not
+particularly novel. The approach has been explored for instance by
+\citeauthor{xiong} in \cite{xiong}. In their article the authors try to learn
+optimal splitting strategies with a Recurrent Neural Network controller trained
+by RL to maximize impurity decrease with the Gini impurity function. They
+baptize their algorithm as RLBDT (Reinforcement Learning Based Decission Trees).
+The article concludes that RLBDT outperforms the traditional greedy fitting
+procedure described in CART (algorithm \ref{alg:tree-fit} using the splitting
+strategy in algorithm \ref{alg:best-greedy-binary-split}).
+
+Previous work laid out by \citeauthor{xiong} suggests there is some merit to the
+idea of using RL for the problem described in this chapter. However, the
+approach taken, which is utilizing Recurrent Neural Networks, is very different
+from the approach we took. This chapter was developed almost entirely without
+external references, leveraging only the concepts reviewed earlier. In the next
+and final chapter of this thesis we discuss an implementation of CART and the
+Approximate Linear Programming Based Decission Trees (ALPBDT) in Julia, and run
+some test to compare the implementations.
