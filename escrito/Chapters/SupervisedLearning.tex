@@ -7,22 +7,24 @@ to Reinforcement Learning. We highlighted the differences between Supervised
 Machine Learning (supervised ML) and RL by contrasting the way each work.
 Supervised ML receives a wealth of examples from which it must extract patterns,
 while RL receives no input data and so has to learn by interacting with its
-environment. Supervised ML is often tasked with classifying or predicting a
+environment. Statistically speaking, supervised ML is often tasked with classifying or predicting a
 response. In this thesis, we focus only on the classification task.
 
 \section{Classification}
+
 Supervised ML algorithms tasked with classifying receive large amounts of
 labeled data. Through the process called ``fitting'' or ``learning'', the
 algorithm will (hopefully) label correctly new observations never seen before.
 The classification task seeks to find a systematic way of predicting a
 phenomenon given a set of measurements.
 
-\subsection{Formalizing} \label{sss:formalizing-trees}
+\subsection{A formal description} \label{sss:formalizing-trees}
+
 Putting some concepts to work, picture a scenario where we have access to
 several measurements (e.g., age, weight, blood pressure, etc\dots) for a group
 of patients. Some patients in the study group suffered a stroke; the rest did
 not. Our task is to find a systematic way of predicting whether or not a new
-patient not studied before will suffer from a stroke by measuring the same
+patient, not seen before, will suffer from a stroke by measuring the same
 variables measured for the initial group.
 
 Fundamentally, a supervised ML algorithm must receive a \textit{training set}, a
@@ -39,7 +41,7 @@ specific case of classification. Using the standard parlance, following
 \cite{louppe2014}, the input variables are known as \textit{features}, input
 vectors as \textit{instances} or \textit{samples} and the output variable as
 \textit{target}. For our purposes, we consider that the target variable is
-always categoric, not numeric or continuous. Nevertheless, continuous target
+always categoric, not numeric nor continuous. Nevertheless, continuous target
 variables are allowed, but the learning task is called regression, which is
 outside this thesis's scope.
 
@@ -52,26 +54,29 @@ the $i$-th column is $\vec{x}_i$. Similarly, we group the target variables into
 the vector $\vec{y} \in \R^{n}$.
 
 Our classification task can be framed as finding a function $f_{\L}$ we will
-call model whose output or predictions $f_{\L} (\vec{x}) = \widehat{\vec{y}}$
+call model whose output or predictions $f_{\L} (\vec{x}) = \widehat{y}$
 are ``as good as possible''. We subscript the function $f$ with $\L$ to
 highlight that the function depends on what data the training set contains. We
 proceed to define what makes a model ``good'' at making predictions.
 
 \subsection{Evaluation}
+
 As it has become a recurring theme in this thesis, determining what makes a
 prediction suitable and finding the best possible model $f_\L$ is a process of
 optimization. Since we assume that the training set is a sample of the
 population we aim to label with our model, it stands to reason that a model that
 makes the fewest mistakes when tasked with classifying the training observations
 will also make the fewest mistakes when classifying new observations. In
-reality, that is not precisely the case, as often making the number of
+reality, this is not precisely the case, as often making the number of
 classification mistakes as small as possible in the training set results in a
 model that ``memorized'' the set and has no ability whatsoever to generalize
 patterns. It only reproduces known-good answers. But the idea is not entirely
 misguided, it provides a good starting point.
 
 The process we referred to as ``fitting'' a model consists of finding a model
-which minimizes its expected prediction error.
+which minimizes its expected prediction error, also called generalization error.
+We hope that by minimizing this error we can extract as much information from
+the training set without hard-coding the labels for future observations.
 
 \begin{dfn}{Prediction or Generalization Error}{generalization-error}
     The expected \emph{prediction} or \emph{generalization} error of a model
@@ -90,7 +95,7 @@ Including observations never seen before, not only the ones we have access to in
 the training set. Since the distributions for observations $(\vec{x}_j, y_j)$
 are generally not known, we must estimate the generalization error. Several
 techniques to solve this problem exist but are numerous and outside of scope.
-From now on, we denote as $\widehat{\Err}$ an estimator of the generalization
+From now on, we denote by $\widehat{\Err}$ an estimator of the generalization
 error.
 
 The term ``fitting'' when discussing finding a suitable model is a consequence
@@ -99,21 +104,24 @@ measurable and thus not directly minimizable, we have to use a reasonable
 approximation. We assume that a family of candidate models, $\mathcal{H}$ known
 as hypotheses, exists. Our optimization target then becomes to find the best
 model among the space of hypotheses. To be more specific, let $\vec{\theta}$ be
-the vector of hyper-parameters controlling the behavior of a specific model.
-Then, our optimization task is to find $\theta^{*}$,
+the vector of hyper-parameters controlling the behavior of a specific model in
+$\mathcal{H}$.  Then, our optimization task is to find $\theta^{*}$,
 \[
-    \theta^{*} \coloneqq \argmin_{\theta} \widehat{\Err}(f_\L (\vec{x}; \theta)) \quad \forall \vec{x}.
+    \theta^{*} \coloneqq \argmin_{\theta} \widehat{\Err}\left(f_\L (\vec{x}; \theta) \right) \quad \text{ for all } \vec{x} \in \mathcal{X}.
 \]
+where the vectors of features come from the input space $\mathcal{X}$ defined
+clearly in the next section.
 
 Many classification models are available, each leveraging different properties
 and resulting in different strengths and weaknesses. The optimization problem
-involved in fitting each one is different from the rest. For this thesis, we
-focus on one specific model: classification trees. We introduce them here and
-show in part \ref{part:II} how fitting them gives way to an optimization process
-analogous to a Reinforcement Learning problem and frame it as such so we can
-leverage the power of RL to fit classification trees.
+involved in fitting each one may be different from the rest. For this thesis, we
+focus on one specific model called classification trees. We introduce them here
+and show in part \ref{part:II} how fitting them gives way to an optimization
+process analogous to a Reinforcement Learning problem and frame it as such so we
+can leverage the power of RL to fit classification trees.
 
 \section{Classification Trees}
+
 Classification trees and, more generally, classification and regression trees
 are Machine Learning models like the ones described in the previous section.
 They have gained massive popularity in the recent and ongoing boom in machine
@@ -125,19 +133,20 @@ XGBoost \cite{XGBoost}.
 
 Sadly, their fitting process leads to a rather complicated problem that cannot
 be solved exactly in a reasonable time. The fitting process shares many
-similarities with the RL problem, which is described in a wealth of detail in
-Chapter \ref{chapter:ReinforcementLearning}. This similarity is the foundational
-idea of this thesis, and we hope to show in part \ref{part:II} how an
-alternative methodology to fitting trees can be developed by leveraging the
-techniques used in RL. With that goal in mind, it is time to lay the foundations
-behind trees' structure.
+similarities with the RL problem, which is described in detail in Chapter
+\ref{chapter:ReinforcementLearning}. This similarity is the foundational idea of
+this thesis, and we hope to show in part \ref{part:II} how an alternative
+methodology to fitting trees can be developed by leveraging the techniques used
+in RL. With that goal in mind, it is time to lay the foundations behind how trees are structured.
 
 \subsection{Tree models}
+
 Let $\Omega = \left\{ (\vec{x}_i, y_i) \right\}$ be the space of all possible
 feature-target pairs. When each feature $y$ is part of a set of categories
 $\mathcal{C} \coloneqq \left\{ c_1, c_2, \dots, c_j \right\}$, another way to
 look at the classification task is to define a partition over $\Omega$ taking
-advantage of the natural distinction our set of categories provides.
+advantage of the natural distinction our set of categories provides. That
+partition can be described as:
 \[
     \Omega = \bigcup_{i=1}^{j} \Omega_{c_i},
 \]
@@ -151,19 +160,19 @@ such
 \[
     \mathcal{X} = \bigcup_{i=1}^{j} f_{\L}^{-1}(\Omega_{c_i}).
 \]
-The classification task then can be thought of as learning the model $f_\L$ that
+The classification task then can be thought of as fitting the model $f_\L$ that
 gives the partition of $\mathcal{X}$ that most closely approximates the
 partition on $\Omega$ as a result of its preimages.
 
-In other words, we are trying to represent $f$ as a tree (in the same way
+In other words, we are trying to represent $f_\L$ as a tree (in the same way
 Computer Science thinks about trees) where any node $t$ represents a subspace
 $\mathcal{X}_t \subseteq \mathcal{X}$ of the input space such that the node
 designated as root (denoted $t_0$) corresponds to the entirety of $\mathcal{X}$.
 Internal nodes $t$ are originated via a \textit{split} $s_t$ taken from a set of
-question $\mathcal{Q}$.
+questions $\mathcal{Q}$.
 
 The set of questions $\mathcal{Q}$ is exactly what it sounds like. The question
-defining split $s_t$ might be, for example, is $x_m < 65$? Or, is the person
+defining split $s_t$ might be, for example, is $x_{m, 1} < 65$? Or, is the person
 recorded as observation $m$ younger than 65? The space $\mathcal{X}_t$
 represented by node $t$ is made up of disjoint subspaces corresponding to each
 of $t$'s children nodes; two in the case of binary trees. 
@@ -172,7 +181,9 @@ Terminal nodes (or leaves) are labeled with a best guess value $\widehat{y}_t
 \in \mathcal{C}$. The prediction process is carried out by navigating the tree,
 providing answers to the questions defining each node until a leaf is reached.
 The label for that leaf will be the tree's prediction. In algorithm
-\ref{alg:tree-predict}, we show a formal description of the process.
+\ref{alg:tree-predict}, we show a formal description of the process of using an
+already fitted tree $f_\L$ to predict the label of a new observation. Recall
+that a node $t$ defines an associated subset $\mathcal{X}_t$ of the input space.
 
 \begin{algorithm}
     \SetKwFunction{Predict}{predict}
@@ -182,9 +193,10 @@ The label for that leaf will be the tree's prediction. In algorithm
     \Function{\Predict{$f_\L, \vec{x}$}}{
         $t \gets t_0$ \;
         \While{$t$ is not a terminal node}{
-            $t \gets$ the child node $t'$ of $t$ such that $\vec{x} \in \mathcal{X}_t$ \;
+            $q \gets$ the question in $\mathcal{Q}$ that defines node $t$.
+            $t \gets$ the child node $t'$ of $t$ that corresponds to evaluating $\vec{x}$ at question $q$  \;
         }
-        \Return{$\widehat{y}_t$} \;
+        \Return{$\widehat{y}_t$ the value at node $t$} \;
     }
     \caption[Tree prediction algorithm]{Predict output value $\widehat{y}$ with
         tree $f_\L$ \cite[Ch.~3.2]{louppe2014}.}
@@ -213,6 +225,15 @@ $\L_t$
 \[
     \L_t \coloneqq \left\{ (\vec{x}, y) \mid \vec{x} \in \mathcal{X}_t \right\}.
 \]
+
+\begin{remark}{Greedy}
+    When using the term greedy, we refer to a heuristic used in optimization
+    algorithms. The heuristic consists of evaluating the immediately available
+    actions without looking ahead to analyze if some action ignores the path
+    that will actually lead to the best results down the line. Greedy algorithms
+    are used often since looking ahead is often very computationally taxing.
+\end{remark}
+
 Many impurity functions can be used to determine the goodness of a split, each
 with their benefits and drawbacks. We only discuss the impurity decrease at the
 moment, since it is not necessary to have a specific impurity function to
@@ -220,13 +241,16 @@ describe the fitting algorithm nor do we have enough space to cover the
 available options and their properties.
 
 \begin{dfn}{Impurity decrease}{}
-    The \emph{impurity decrease} of a binary split splitting node $t$ into a
-    left child $t_L$ and a right child $t_R$ is
+    The \emph{impurity decrease}, under an impurity function $i: \mathcal{Q} \to
+    \R$, of a binary split of node $t$ into a left child $t_L$ and a right child
+    $t_R$ is denoted $\Delta(i)$. It is defined as: 
     \[
         \Delta i(s, t) \coloneqq i(t) - \frac{N_{t_L}}{|\L_t|} \, i(t_L) - \frac{N_{t_R}}{|\L_t|} \, i(t_R),
     \]
     where $N_{t_L}$ and $N_{t_R}$ are the number of observations contained by
-    nodes $t_L$ and $t_R$ respectively.
+    nodes $t_L$ and $t_R$, respectively. The impurity decrease is defined as a
+    function of both $t$ and $s$ since the split $s$ is what defines the
+    children of $t$: $t_R$ and $t_L$.
 \end{dfn}
 
 It is straightforward to see the similarity of the impurity decrease definition
@@ -254,8 +278,8 @@ entire books.
         Append $(t_0, \L)$ to $S$ \;
         \While{$S$ is not empty}{
             $t, \, \L_t \gets S$.\Pop{} \;
-            \uIf{stopping criteria are not met}{
-                $\widehat{y}_{t} \gets$ some constant value \;
+            \uIf{stopping criteria are met for $t$}{
+                Set $\widehat{y}_{t} \gets$ a constant value for node $t$ \;
             }\Else{
                 Find the split $s_*$ on $\L_t$ that maximizes impurity decrease
                 \[
@@ -264,6 +288,7 @@ entire books.
                 \;
                 Partition $\L_t$ into $\L_{t_L}$ and $\L_{t_R}$ according to $s_*$ \;
                 Create the left and right children nodes $t_L, t_R$ of t \;
+                Append node $t$ defined by split $s_*$ to the tree $f_\L$ \;
                 $S.$\Push{($t_R, \L_{t_R}$)} \;
                 $S.$\Push{($t_L, \L_{t_L}$)} \;
             }
@@ -284,23 +309,24 @@ the splitting strategies and the termination criteria.
 \begin{dfn}{Split}{split}
     A \emph{split} $s$ of node $t$ is a partition of $\mathcal{X}_t$. Formally, a partition is a collection of non-empty subsets of $\mathcal{X}_t$ such that,
     \begin{enumerate}
-        \item The union of every subset equals $\mathcal{X}_t$
+        \item The union of all subset equals $\mathcal{X}_t$
         \item The intersection of any two distinct subsets is empty.
     \end{enumerate}
 \end{dfn}
 
-The number of possible partitions of $\L_t$ into $k$ non-empty subsets is given
-by the Stirling number of the second kind \cite{louppe2014}
+The number of possible partitions of $\L_t$, with $N_t$ elements, into $k$
+non-empty subsets is given by the Stirling number of the second kind
+\cite{louppe2014}
 \[
     S(N_t, k) \coloneqq \frac{1}{k!} \sum_{j=0}^{k} (-1)^{k-j} \binom{k}{j} j^{N_t}.
 \]
 Even in the case of binary partitions in which $S(N_t, k)$ reduces to $2^{N_t
--1}-1$, the number of partitions grows exponentially and, even worse,
-factorially for the non-binary case. Calculating each possible partition and
-choosing the best is not computationally feasible. The attentive reader will
-find the similarities when describing in full detail the RL problem presented in
-Chapter \ref{chapter:ReinforcementLearning}. The best binary split $s_*$ can be
-found using algorithm \ref{alg:best-greedy-binary-split}.
+-1}-1$, the number of partitions grows exponentially for the binary case. For
+the non-binary case, even worse, it grows factorially. Calculating each possible
+partition and choosing the best is not computationally feasible. The attentive
+reader will find the similarities when describing in full detail the RL problem
+presented in Chapter \ref{chapter:ReinforcementLearning}. The best binary split
+$s_*$ can be found using algorithm \ref{alg:best-greedy-binary-split}.
 
 \begin{algorithm}
     \SetKwFunction{GreedyBestSplit}{FindBestGreedyBinarySplit}
@@ -309,7 +335,7 @@ found using algorithm \ref{alg:best-greedy-binary-split}.
     \Function{\GreedyBestSplit{$\L_t$}}{
         $\Delta \gets - \infty$ \;
         \For{$j \gets 1, \dots, p$}{
-            Find the best greedy binary split $s_{*}^{j}$ that defines node $t$ for the feature $X_j$ \;
+            Find the best greedy binary split $s_{*}^{j}$ defining node $t$ for the feature $X_j$ \;
             \If{$\Delta i(s_{*}^{j}, t) > \Delta$}{
                 $\Delta \gets \Delta i(s_{*}^{j}, t)$ \;
                 $s_* \gets s_{*}^{j}$ \;
@@ -323,7 +349,8 @@ found using algorithm \ref{alg:best-greedy-binary-split}.
 
 It can be proved that the complexity of algorithm
 \ref{alg:best-greedy-binary-split} is constrained by the complexity of the sort
-operation \cite[Ch.~5]{louppe2014}.
+operation used to order the values of $\Delta$ and retrieve the largest
+\cite[Ch.~5]{louppe2014}.
 
 With algorithm \ref{alg:best-greedy-binary-split}, we have enough background to
 examine the similarities between the problem that arises from fitting a
