@@ -24,8 +24,8 @@ described in detail in \cite[Chapter~4]{SuttonBarto}. The somewhat novel
 technique described in this thesis was developed in the first decade of the
 2000s and is not part of the standard toolbox for solving RL problems since it
 was developed initially in the area of management science and particularly for
-the problem of probabilistic inventory management, following the previous work,
-laid out since the 1980s. 
+the problem of probabilistic inventory management, following previous work,
+laid out since the 1960s. 
 
 Specifically, the technique to be laid out in this part of the thesis was
 developed by \citeauthor*{farias2003LP2ADP}, as a continuation of previous work
@@ -46,16 +46,12 @@ functions subindexed by $*$ to accentuate the fact that they are optimal in the
 sense that they satisfy Bellman's optimality equations, which are
 \eqref{eq:bellmans-value} and \eqref{eq:bellmans-action-value} for $v_*$ and
 $q_*$ respectively. 
-\begin{equation}
-\label{eq:bellmans-value}
-v_{*}(s) = \max_{a} \sum_{s', r} p(s', r \mid s, a) \left[ r + \gamma v_{*} (s')
-\right],
-\end{equation}
-\begin{equation}
-\label{eq:bellmans-action-value}
-q_{*}(s, a) = \sum_{s', r} p(s', r \mid s, a) \left[ r + \gamma \max_{a'} q_{*}
-(s', a') \right],
-\end{equation}
+\begin{align}
+v_{*}(s) &= \max_{a} \sum_{s', r} p(s', r \mid s, a) \left[ r + \gamma v_{*} (s')
+\right], \label{eq:bellmans-value} \\
+q_{*}(s, a) &= \sum_{s', r} p(s', r \mid s, a) \left[ r + \gamma \max_{a'} q_{*}
+(s', a') \right], \label{eq:bellmans-action-value}
+\end{align}
 for all $s \in \States, a \in \Actions$.
 
 Equation \eqref{eq:bellmans-value} is important, but not that helpful in
@@ -66,13 +62,17 @@ policy. We would like to predict the total reward a given policy will yield.
 Thankfully, in chapter \ref{chapter:ReinforcementLearning}, we obtained an
 expression to calculate the expected reward a given policy $\pi$ will yield
 starting from a certain state $s$, that we will refer to as \textit{Bellman's
-recurrence equation} from now on. 
-
+recurrence equation} from now on: 
 \begin{equation}
 \label{eq:bellmans-recurrence}
 % TODO: Transcribir (4.4) de S&B.
 v_\pi (s) = \sum_{a \in \Actions} \pi(a \mid s) \sum_{s', r} p(s', r \mid s, a) \left[ r + \gamma v_{\pi}(s') \right].
 \end{equation}
+
+The identity \ref{eq:bellmans-recurrence} was proved earlier in chapter
+\ref{chapter:ReinforcementLearning} in Lemma \ref{lem:recursive-eval}, the
+Recursive Evaluation Lemma. We named the Lemma that way for reasons that will
+become apparent soon.
 
 Using \eqref{eq:bellmans-recurrence} we can obtain an exact solution for $v_\pi$
 solving one equation for each state $s \in \States$. This is often called the
@@ -85,7 +85,7 @@ v_\pi(s) &= \sum_{a} \pi(a \mid s) \sum_{s', r} p(s', r \mid s, a) \left[ r + \g
 &= \sum_{a} \pi(a \mid s) \left[ \sum_{s', r} r p(s', r \mid s, a) + \gamma \sum_{s', r} v_\pi (s') p(s', r \mid s,a) \right] \nonumber \\
 &= \sum_a \pi(a \mid s) \underbrace{\sum_{r} r \sum_{s'} p(s', r \mid s, a)}_{r(s,a) \text{(by dfn. \ref{dfn:rewards-func})}} +
     \gamma \sum_{a} \pi(a \mid s) \sum_{s', r} v_\pi (s') p(s', r \mid s, a) \nonumber \\
-&= \sum_{a} \pi(a \mid s) \left[ r(s,a) + \gamma \sum_{s'} p(s' \mid s, a) v_\pi (s') \right] \tag{\ref{eq:bellmans-recurrence}$\prime$}.
+&= \sum_{a} \pi(a \mid s) \left[ r(s,a) + \gamma \sum_{s'} p(s' \mid s, a) v_\pi (s') \right] \tag{\ref*{eq:bellmans-recurrence}$\prime$}.
 \end{align}
 
 Since \eqref{eq:bellmans-recurrence-prime} defines one equation for each state,
@@ -100,19 +100,20 @@ For now, let us consider the value function as a vector, following
 \[
     \vec{v} = \left[ v (s_1), \dots , v (s_{|\States|}) \right].
 \]
-Recall that $r(s, a)$ is the expected reward upon taking action $a$ being in
-state $s$, and $p(s' \mid s, a)$ is the probability of transitioning from state
-$s$ to state $s'$ after taking action $a$. We define:
+As shorthand notation we define $\vec{v}(s) \coloneqq v(s)$. Recall that $r(s,
+a)$ is the expected reward upon taking action $a$ being in state $s$, and $p(s'
+\mid s, a)$ is the probability of transitioning directly from state $s$ to state
+$s'$ after taking action $a$. We define:
 \begin{align*}
-    \vec{R}_\pi (s) &= \sum_{a \in \Actions} \pi(a \mid s) \, r(s,a), \\
-    \vec{P}_\pi (s, s') &= \sum_{a \in \Actions} \pi(a \mid s) \sum_{s' \in \States} p(s' \mid s, a),
+    R_\pi (s) &= \sum_{a \in \Actions} \pi(a \mid s) \, r(s,a), \\
+    P_\pi (s, s') &= \sum_{a \in \Actions} \pi(a \mid s) \sum_{s' \in \States} p(s' \mid s, a),
 \end{align*}
 which result from a slightly rearranged version of
 \eqref{eq:bellmans-recurrence-prime}.
 
 We denote by $\vec{R}_\pi$ the vector $\left[ R_\pi(s_1), \dots, R_\pi
 (s_{|\States|}) \right]$ and $\vec{P}_\pi$ the stochastic matrix $\left[
-P_\pi(s_i, s_{i'}) \right]$ that defines the transition probabilities from any
+P_\pi(s_i, s_j) \right]$ that defines the transition probabilities from any
 state $s_i$ to every other distinct state $s_j$ with $i, j \in \left\{ 1, \dots,
 |\States| \right\}$. As promised, this is the key to what will become one of our
 most powerful tools: Bellman's policy operator.  This will enable us to study
@@ -147,8 +148,7 @@ us write Bellman's optimality equation for the value function
     \]
 \end{dfn}
 
-Once again, rewriting \eqref{eq:bellmans-value} using the Optimality Operator we
-find that,
+Using the Optimality Operator, \eqref{eq:bellmans-value} can be rewritten as
 \begin{equation}
     \label{eq:bellmans-optimality-operators}
     T_* \vec{v}_{*} = \vec{v}_{*}.
@@ -163,22 +163,29 @@ we have no idea how to solve them.
 
 With our toolbox almost complete, it is time to advance our search for
 optimality. As previously mentioned, there are several approaches to solving
-Bellman's equations are based on dynamic programming, yielding several
-algorithms we don't review in detail in this thesis as they are outside of
-scope. The literature for those techniques is excellent. If interested in a
+Bellman's equations (\eqref{eq:bellmans-value} and
+\eqref{eq:bellmans-action-value}) are based on dynamic programming, yielding
+several algorithms we do not review in detail in this thesis as they are outside
+of scope. The literature for those techniques is excellent. If interested in a
 more detailed treatment of said algorithms, please review \cite{SuttonBarto} and
 \cite{raoRL4F}.
 
 \subsection{Approaching optimality}
+
 So far, our goal has been to find the ``best'' policy, but what does it mean for
 a policy to be the best? We can not compare policies directly, but we can
 compare the value function's value for each of them. The optimal, the
 ``best'' policy is the one that maximizes the value function.
 
-We say that a given policy $\pi$ is in a certain sense \textit{better} than the
-policy $\pi'$, which we write as $\pi \geq \pi'$, whenever $v_\pi(s) \geq
-v_{\pi'} (s)$ for every $s \in \States$. This is called a partial ordering over
-the space of policies. Even better, the equality is only satisfied when both
+\begin{dfn}{Optimal Policy}{optimal-policy}
+    We say that a given policy $\pi$ is in a certain sense \textit{better} than
+    the policy $\pi'$, which we write as $\pi \geq \pi'$, whenever $v_\pi(s)
+    \geq v_{\pi'} (s)$ for every $s \in \States$. This is called a partial
+    ordering over the space of policies. A policy $\pi_*$ is optimal if
+    $\pi_*(s) \geq \pi (s)$ for all $s$ and all other policies $\pi$.
+\end{dfn}
+
+The equality in definition \ref{dfn:optimal-policy} is only satisfied when both
 policies are optimal, as stated in the following Lemma which correspondes to Lemma 4.10.2 in \cite[pg.~115]{raoRL4F}.
 
 \begin{lemma}{}{equality-on-optimality}
@@ -214,7 +221,7 @@ exists an optimal policy for the RL problem we have been studying.
 \end{thrm}
 
 \begin{proof}
-    We follow the proof in \cite[Pg.~115]{raoRL4F} closely.
+    We follow the proof in \cite[pg.~115]{raoRL4F} closely.
 
     As a consequence of Lemma \ref{lem:equality-on-optimality}, we only need to
     find a policy that maximizes both the value and action value functions,
@@ -239,43 +246,63 @@ exists an optimal policy for the RL problem we have been studying.
     In other words, we maximize the value function if we first take the action
     prescribed by the policy $\pi_{*}^{D}$ followed by the action from the next
     time steps that maximize the value function, and so on. This is precisely
-    why Bellman's recurrence equations work as they do. Likewise, the
-    action-value function is maximized following whatever action $\pi_{*}^{D}$
-    prescribes. Formally,
+    why Bellman's recurrence equations work as they do. Likewise, since the
+    state-value and action-value can be expressed in terms of each other as
+    reviewed in chapter \ref{chapter:ReinforcementLearning} the action-value
+    function is maximized following whatever action $\pi_{*}^{D}$ prescribes.
+    Formally,
     \[
         q_{\pi_{*}^{D}} (s, a) = q_* (s,a) \quad \forall s \in \States, a \in \Actions.
     \]
 
-    Lastly, we show that $\pi_{*}^{D}$is an optimal policy by contradiction.
+    Lastly, we show that $\pi_{*}^{D}$ is an optimal policy by contradiction.
 
     Suppose that $\pi_{*}^{D}$ is not an optimal policy. That means that there
     exists some other policy $\pi$ such that $\pi > \pi_{*}^{D}$. In the partial
     order defined previously, that means that $v_{\pi} (s) > v_{\pi_{*}^{D}}
-    (s)$ for some state $s$!. This contradicts the definition of the
+    (s)$ for some state $s$! This contradicts the definition of the
     optimal value function $v_* (s) = \max_\pi v_\pi (s)$ for all $s$. Therefore
     $\pi_{*}^{D}$ must be an optimal policy.
 \end{proof}
 
-A much more exciting and aesthetically pleasing way of proving theorem \ref{thrm:opt-policy-existence} is by using the properties of Bellman's operators.
+Notice how the optimal policy was constructed by prescribing to the state $s$
+whichever action maximizes the value function at that state. In other words, the
+policy constructed was \emph{greedy}. A much more exciting and aesthetically
+pleasing way of proving theorem \ref{thrm:opt-policy-existence} is by using the
+properties of Bellman's operators. Theorem 5.4.1 in \cite[pg.~130]{raoRL4F},
+reproduced below, allows us to conclude similar things to Theorem
+\ref{thrm:opt-policy-existence}.
 
-\begin{proof}[Alternative proof of theorem \ref{thrm:opt-policy-existence}.]
-    Aqui se usa el operador de Bellman y se muestra que es contracción, luego se
-    aplica el teorema de punto fijo de Banach. Lo pongo? En realidad no es
-    necesario para el desarrollo del argumento principal. Quizas solo comentarlo
-    basta.
-\end{proof}
+\begin{thrm}{Policy Evaluation Convergence Theorem}{pect}
+    The value function $\vec{v}_\pi$ is the \underline{unique} fixed-point of
+    the Bellman Policy Operator $T_\pi$, and
+    \[
+        \lim_{t \to \infty} (T_\pi)^{i} \vec{v}_0  \to \vec{v}_\pi,
+    \]
+    for any starting $\vec{v}_0$.
+\end{thrm}
+
+The proof of Theorem \ref{thrm:pect} can be found in \cite[pg.~131]{raoRL4F}. We
+do not include the proof it it requieres a considerable amount of preliminaries
+and is extensive. Nonetheless, we think it is a very pleasing application of
+Banach's Fixed-Point Theorem.
 
 Theorem \ref{thrm:opt-policy-existence} guarantees the existence of an optimal
 policy in theory. But we are interested in finding such a policy in practice,
-preferably in a way that is computable this century. 
+preferably in a way that is computable this century. Luckily, Theorem
+\ref{thrm:pect} provides an update rule that converges to the stationary point
+of Bellman's Policy Operator and thus the optimal value function. That approach
+is called \emph{value iteration} and is described in detail in
+\cite{SuttonBarto,raoRL4F}, we focus on other approaches.
 
 \section{Approximate Linear Programming}
 
 Having established the necessary context, we can at last address the main
 objective of this Chapter, and indeed the whole thesis: avoiding the use of
-inefficient dynamic programming and use linear programming to solve Bellman's
-equations. We recall Theorem 6.2.2 in \cite[Ch.~6.9.1]{puterman2014}, adapter
-to our notation, as this is the basis for the LP formulation.
+inefficient dynamic programming and use linear programming (LP) to solve
+Bellman's equations. We reproduce Theorem 6.2.2 in
+\cite[Ch.~6.9.1]{puterman2014}, adapted to our notation, as this is the basis
+for the LP formulation.
 
 \begin{thrm}{}{6.2.2-puterman}
     Suppose there exists a value function $\vec{v}$ for which
