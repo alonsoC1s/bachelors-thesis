@@ -193,8 +193,8 @@ that a node $t$ defines an associated subset $\mathcal{X}_t$ of the input space.
     \Function{\Predict{$f_\L, \vec{x}$}}{
         $t \gets t_0$ \;
         \While{$t$ is not a terminal node}{
-            $q \gets$ the question in $\mathcal{Q}$ that defines node $t$.
-            $t \gets$ the child node $t'$ of $t$ that corresponds to evaluating $\vec{x}$ at question $q$  \;
+            $q \gets$ the question in $\mathcal{Q}$ that defines node $t$. \;
+            $t \gets$ the child node $t'$ that corresponds to evaluating $\vec{x}$ at question $q$  \;
         }
         \Return{$\widehat{y}_t$ the value at node $t$} \;
     }
