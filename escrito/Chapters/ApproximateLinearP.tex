@@ -228,9 +228,10 @@ exists an optimal policy for the RL problem we have been studying.
     achieving the maximum values: $v_*$ and $q_*$ respectively.
 
     A policy that is a candidate to be optimal can be constructed as follows:
-    \[
+    \begin{equation}
+        \label{eq:greedy-policy-construction}
         \pi_{*}^{D} (s) = \argmax_{a} q_{*} (s, a) \quad \forall s \in \States.
-    \]
+    \end{equation}
 
     For now, we assume that the resulting action $a$ for any given state $s$ is
     unique.
@@ -352,7 +353,7 @@ Utilizing the vector notation introduced earlier, we can find a Linear Program f
 \tag{ELP}
 \begin{array}{rl@{}ll}
     \displaystyle \min_{\vec{v} \in \R^{|\States|}} & \vec{c}^{\top} \vec{v} \\
-    \text{Subject to} & \vec{v} \geq \vec{R}_a + \gamma \sum_{s'} \vec{P}_a \, v(s') & \quad \forall a \in \Actions \\
+    \text{Subject to} & \vec{v} \geq \vec{R}_a + \gamma \sum_{s'} \vec{P}_a \, \vec{v}(s') & \quad \forall a \in \Actions \\
     & \vec{v} \text{ unconstrained.} &
 \end{array}
 \end{equation}

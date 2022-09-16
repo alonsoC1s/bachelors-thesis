@@ -298,10 +298,19 @@ define the optimal action-value function, denoted $q_*$, as
 \]
 for all $s \in \States, a \in \Actions(s)$. The value $q_*$ represents the
 expected return for taking action $a$ in state $s$ at time $t$ and then
-following the optimal policy for $t+k$. This can be written as
+following the optimal policy for $t+k$. Formally this can be written as
 \[
-	q_{*} (s, a) = \mathbb{E} \left[ R_{t+1} + \gamma v_* (S_{t+1}) \vertsep S_t = s, A_t = a \right].
+	q_{*} (s, a) = \mathbb{E} \left[ R_{t+1} + \gamma v_* (S_{t+1}) \vertsep S_t = s, A_t = a \right],
 \]
+Which can be further simplified by using our previously defined state-value function as:
+\begin{equation}
+	\label{eq:q-by-v}
+	q_\pi (s, a) = r(s, a) + \gamma \sum_{s'} p(s', r \mid s, a) \, v_\pi (s),
+\end{equation}
+for any policy $\pi$. In particular, for the optimal state-value and action-value functions, we have:
+\begin{equation}
+	q_*	(s, a) = r(s, a) + \gamma \sum_{s'} p(s', r \mid s, a) \, v_* (s).
+\end{equation}
 
 The Recursive Evaluation Lemma \ref{lem:recursive-eval} gives a recursive
 relationship any value function must satisfy. However, $v_*$ is special. It can
