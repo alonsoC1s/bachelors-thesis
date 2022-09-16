@@ -70,6 +70,7 @@ scatter(log_x, zeros(size(log_x)),
     xlabel = "Cardboard area",
     guidefont = font(9, "Computer Modern"),
     tickfont = font(7, "Computer Modern"),
+    size = (250, 100),
     markershape = shapes,
     markersize = 8,
 )
@@ -86,8 +87,8 @@ h = HalfSpace([1, 0], 10) ∩
 p = polyhedron(h)
 
 plot(p, ratio=:equal,
-    xlabel = "Cardboard for boxes",
-    ylabel = "Number of envelopes",
+    xlabel = L"Cardboard for boxes ($m^2$)",
+    ylabel = "Thousands of envelopes",
     xlims = (-1, 11),
     ylims = (-1, 11),
     alpha = 0.6,

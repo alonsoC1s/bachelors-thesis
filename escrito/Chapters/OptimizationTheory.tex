@@ -1,18 +1,18 @@
 \chapter{Optimization Theory}
 \label{chapter:OptimizationTheory}
 
-As promised in this thesis' introduction in chapter \ref{chapter:Intro}, the
-Reinforcement Learning Problem is primarliy a problem in optimization. The
-entire framing of finding increasingly best ways to navigate the probleem
-described is based on the theory of mathematical optimization. This chapter aims
-to provide a suitable framing for the remaining chapters, spinning a narrative
-thread that connects all the problems to come. We focus less on specific results
-and more on their meaning and geometric interpretation.
+As promised in chapter \ref{chapter:Intro}, the Reinforcement Learning Problem
+is primarliy a problem in optimization. The entire framing of finding
+increasingly better ways to navigate the problem described is based on the theory
+of mathematical optimization. This chapter aims to provide a suitable framing
+for the remaining chapters, spinning a narrative thread that connects all the
+problems to come. We focus less on specific results and more on their meaning
+and geometric interpretation.
 
-\section{Optimization as a geometry problem}
+\section{Optimization as a geometric problem}
 
 In the broadest possible terms, optimizations problems are seach problems. Such
-search problems are often embedded in a geometrical context.
+search problems are often embedded in a geometric context.
 
 \begin{wrapfigure}{I}{0.5\textwidth}
    \centering
@@ -24,26 +24,34 @@ search problems are often embedded in a geometrical context.
 For an introductory problem, picture a company designing boxes. They have
 conducted a study and isolated a relationship that describes their profits as a
 function of the area of cardboard needed to make their boxes. This was initially
-suspected as the area of cardboard used to make the box determines the volume,
-and their pricing shemes make some boxes more profitable than others. That
-relationship was now confirmed as a result of some analysis, a plot can be found
-in figure \ref{fig:1d-profits}. This company wants to maximize profit by
-modifying the variable they can control: the area of cardboard, and indirectly
-the volume of the box.
+suspected, since the area of cardboard used to make the box determines the
+volume.  Because of the company's pricing schemes, boxes with a certain volume
+are more profitable than others. Recently, a relationship was confirmed as a
+result of some analysis, a plot can be found in figure \ref{fig:1d-profits}. As
+a result of the analysis, the relationship between cardboard area to make a box
+and the company's profits was established to be a function $f: \R \to \R$. This
+function takes as its ownly argument a real value that corresponds to the area
+of cardboard used to make boxes, and returns a profit value. This company wants
+to maximize profit by modifying the variable they can control: the area of
+cardboard, and indirectly the volume of the box.
 
 Picture for a moment that the graph shown in figure \ref{fig:1d-profits} is
 unknown to the company (optimizing agent or agent henceforth), as graphical
-representations are often not possible in other problems. By plotting the profit
-function that is represented by some $f: \R \to \R$ finding the point that
-maximizes profit is very straightforward. But since the optimizing agent does
-not have this luxury, it must come up with a different strategy. The agent
-recalled that derivatives have a very useful geometric interpretation, they give
-the slope of a function at a point. The agent can start by guessing a value for
-the area of cardboard, and then find the point where the derivative equals zero.
-The logic behind the search for a zero is simple: if a function is continuous
-and ``goes up'' on a certain subset of numbers, and then ``goes down'' for the
-numbers right next, a peak is necessarily in between those two regions. That
-peak corresponds to the point where the derivative equals zero.
+representations are often not possible even if the exact nature of a
+relationship is known. For instance, if the profits dependended on more than two
+variables, a truthful graphical representation would not be available. By
+plotting the profit function obtained from the analysis, finding the point that
+maximizes profit is very straightforward. But since the optimizing agent may not
+have this luxury, the agent must come up with a different strategy. The agent
+then recalls that derivatives have a very useful geometric interpretation, they
+give the slope of a function at a point. The agent can start by guessing a value
+for the area of cardboard, and then find the point where the derivative equals
+zero. Given that we have an explicit profits function we can calculate this
+derivative, even if a graphical representation can not be given. The logic
+behind the search for a zero is simple: if a function is continuous, has a
+unique peak, and ``goes up'' on a certain subset of numbers, and then ``goes
+down'' for the numbers right next, a peak is necessarily in between those two
+regions. That peak corresponds to the point where the derivative equals zero.
 
 \begin{wrapfigure}{I}{0.5\textwidth}
    \centering
@@ -57,7 +65,7 @@ point where the derivative equals zero, which is exactly where the peak of the
 profits function is, as exemplified in figure \ref{fig:1d-profits}. The guessing
 starts at the point where cardboard area equals 10. The agent evaluates the
 derivative there, and finds that it is less than zero. In other words, the
-profits would diminish if it were to try to use less than 10 cubic cm of
+profits would diminish if it were to try to use less than 10 square cm of
 cardboard. So, the agent decreases the area to another point that is smaller by
 $\alpha$. The agent continues this process changing the value $\alpha$ as it
 goes. Figure \ref{fig:gd-points} shows the points this agent tried while trying
@@ -67,13 +75,13 @@ be, the stopping point is marked by the circle.
 
 Most computational methods for optimization rely on the same basic ideas as our
 ``educated guess'' algorithm. Since exact solutions are too computationally
-expensive to calculate, or even impossible on some instances, optimization
+expensive to calculate, or even impossible in some instances, optimization
 algorithms take starting points in the seach space where an optimal point would
 be found, and explore that space iteratively by means of some mechanism where
-each new iteration is closer to an optimal point than the previous one. In the
-case of the algorithm described so far the mechanism to approach optimality is
-based on the observation that peaks correspond to zeroes of the derivative of
-the function being optimized (objective function).
+almost each new iteration is closer to an optimal point than the previous one.
+In the case of the algorithm described so far the mechanism to approach
+optimality is based on the observation that peaks correspond to zeroes of the
+derivative of the function being optimized (objective function).
 
 The algorithm we have been calling ``educated guess'' is in fact known as the
 gradient descent. A ``gradient'' is the generalization of the concept of a
@@ -90,21 +98,24 @@ crucial ideas in chapter \ref{chapter:ApproximateLinearP}.
     \]
 \end{dfn}
 
-By using the Gradient Descent Operator, we can define a succession
-$\{\vec{a}_n\}$ of points in $\R^{n}$. The succession is defined as
+By using the Gradient Descent Operator, we can define a sequence
+$\{\vec{a}_n\}$ of points in $\R^{n}$. The sequence is defined as
 $\vec{a}_{n+1} = \vec{a}_n - \alpha_n \nabla f(\vec{a}_n)$. By thinking of the
 process in terms of operators, finding optimal points (as they may not be
 unique) is simply finding points $a_*$ that satisfy
 \[
     D a_* = a_*.
 \]
-In other words, \emph{fixed points} of the operator $D$. It can be proved that
-such a fixed point exists whenever $f$ satisfies a certain set of conditions,
-but reviewing it now would be besides the point. 
+When some $a_*$ satisfies the condition above, we say that $a_*$ is a
+\emph{fixed-point} of operator $D$. In other words, the optimization problem the
+box-making company faces can be reduced to looking for fixed points of operator
+$D$ in some geometric space. It can be proved that such a fixed point exists
+whenever $f$ satisfies a certain set of conditions, but reviewing them now would
+be beside the point. 
 
 Some defining characteristics of the problem gradient descent solves are:
 \begin{itemize}
-    \item The objective function must be differentiable and unchanging
+    \item The objective function $f$ must be differentiable and unchanging
         throughout the process.
     \item The space being searched for optimal solutions is free of any
         restrictions.
@@ -113,30 +124,34 @@ Some defining characteristics of the problem gradient descent solves are:
         In the case described here, if an optimal solution exists it is fixed and
         cannot be altered.
 \end{itemize}
-
-[Aqui algo de simplex quizá, para introducir el concepto de restricciones. Creo
-que con eso basta]
+The Reinforcement Learning Problem presented earlier is an example of a problem
+that can not be solved using the same techniques used in the last example. One
+of the main reasons why, is the fact that the RL problem involves sequential
+decission taking. Making a decission at some point can change the outcome of the
+process drastically. For instance, when playing chess, some moves are so crucial
+that may determine exactly the outcome of the game.
 
 \section{Working with constraints}
 
 After using gradient descent to maximize their profits, the box-making company
 wants to include more factors into their analysis to replicate their success at
-making their operation more efficient. They have noticed that their profits
-apart from being dependent on the volume of their best-selling box, they depend
-on their other product: envelopes. The company has some knowledge that has to
-be incorporated into the search for profit maximization:
+making their operation more efficient. They have noticed that their profits,
+apart from being dependent on the amount of cardboard needed to make their
+best-selling box, depend on the number of envelopes they make. The company has
+some knowledge that has to be incorporated into the search for profit
+maximization:
 \begin{itemize}
     \item Each envelope produced uses 100 square centimeters of cardboard.
     \item Month to month they can only buy 10,000 square centimeters of cardboard.
-    \item The biggest boxes they can make are 10 cubic meters big.
-    \item The machine can produce a maximum of 8,000 envelopes
+    \item The biggest boxes they can make use 10 square meters of cardboard.
+    \item The machine can produce a maximum of 10,000 envelopes per month.
 \end{itemize}
 
 
 \begin{wrapfigure}{I}{0.5\textwidth}
    \centering
    \includegraphics[width=0.5\textwidth]{img/feasible-region.tikz} 
-   \caption{Combinations of box volume and number of envelopes the company can produce}
+   \caption{Combinations of box volume and number of envelopes the company can produce.}
    \label{fig:feasible-region}
 \end{wrapfigure}
 
@@ -152,23 +167,15 @@ the feasible region, we are not interested in looking outside.
 
 When the profit function can be expressed as multiples of cardboard area for
 boxes plus number of envelopes this optimization problem is called a
-\emph{linear program}. Linear programs have desirable properties, such as: the
-existence and location of their solutions, and the amount of computational power
-they need to be solved. The classic algorithm called \emph{simplex} uses clever
-geometric manimpulations to explore the corners of the feasible region
-efficiently. The main results reviewed in this thesis establish that a
-Reinforcement Learning Problem like the Miniopoly example in chapter
-\ref{chapter:Motivation} can be cast as a linear program. The rest of this
-thesis deals with the specifics like
+\emph{linear program}. Practical inear programs have desirable properties, such
+as: the existence and location of their solutions, and the affordable amount of
+computational power they need to be solved. The classic algorithm called
+\emph{simplex} uses clever geometric manimpulations to explore the corners of
+the feasible region efficiently. The main results reviewed in this thesis
+establish that a Reinforcement Learning Problem like the Miniopoly example in
+chapter \ref{chapter:Motivation} can be cast as a linear program. The rest of
+this thesis deals with the specifics like
 \begin{itemize}
-    \item How to choose an objective function?
-    \item What constraints the solutions?
+    \item How to choose an objective function? 
+    \item What constrains optimal solutions?
 \end{itemize}
-
-% \begin{remark}{Greedy}
-%     Hola   
-% \end{remark}
-
-% \begin{remark}{Big `O' notation}
-%     Hola
-% \end{remark}
