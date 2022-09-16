@@ -45,7 +45,7 @@ when the robot receives a reward signal from the environment.
 % only $\Actions(s)$ is dependent on $s$?
 
 The adjective ``Markov'' in Markov Decision Process is precisely what makes the
-set of actions special. As covered in Chapter~\ref{chapter:Stochastic}, a Markov
+set of actions special. As covered in appendix \ref{appendix:Stochastic}, a Markov
 process is often used to describe stochastic transitions between a set
 of---emphasis on terminology here---\textit{states}. In the example on
 Chapter~\ref{chapter:Motivation} the states were the literal squares in the
@@ -90,11 +90,15 @@ function defined earlier.
 
 \begin{dfn}{Expected rewards function}{rewards-func}
 	For a state action pair $s, \in \States, a \in \Actions$ we define the
-	\emph{expected rewards function} of simply the \emph{rewards function} $r:
+	\emph{expected rewards function} or simply, the \emph{rewards function} $r:
 	\States \times \Actions \to \R$ as
-	\[
-		r(s, a) \coloneqq \sum_{r \in \Rewards} r \sum_{s' \in \States} p(s', r \mid s, a) = \mathbb{E} \left[ R_t \mid S_{t-1} = s, A_{t-1} = a \right].
-	\]
+	\begin{align*}
+		r(s, a) &\coloneqq \sum_{r \in \Rewards} r \sum_{s' \in \States} p(s', r \mid s, a) = \mathbb{E} \left[ R_t \mid S_{t-1} = s, A_{t-1} = a \right], \\
+		&= \sum_r p(s' \mid s, a).
+	\end{align*}
+	The last identity corresponds to marginalizing the transition function.
+	Marginalization of a probability distribution is covered in appendix
+	\ref{appendix:Stochastic}, Lemma \ref{lem:marginalization}.
 \end{dfn}
 
 Keep in mind that both the dynamics and the rewards function are merely tools
@@ -189,7 +193,7 @@ symbol $\mathbb{E}_{\pi}$ means the expected value of the random variable $R$
 (the rewards), given that the agent follows the policy $\pi$. Recall that the
 random variable $R$ depends on the agent's actions.
 
-Figure \ref{fig:violinplot} way back in Chapter \ref{chapter:Motivation} is
+Figure \ref{fig:violinplot}, way back in Chapter \ref{chapter:Motivation}, is
 a graphical representation of $v_\pi (s)$ for the Miniopoly game for each square
 in the board! Actually, it is not \textit{exactly} the value function for the
 game Miniopoly, since the states of that game are determined not only by
@@ -204,7 +208,7 @@ consider how deviating from the chosen policy only at the present time and
 follow it for all subsequent decisions affects the accumulated rewards. This can
 help us evaluate if the current policy is on track to be the best available or
 if we can find an action that would yield better results in the long run. To
-evaluate the impacts on the value of a state by choosing action $a$ w introduce
+evaluate the impacts on the value of a state by choosing action $a$ we introduce
 the following function. 
 
 \begin{dfn}{Action-Value Function}{action-value-func}
@@ -253,33 +257,44 @@ playing back to the beginning. This relationship was first noted by Bellman
 		v_\pi (s) &= \mathbb{E}_\pi \left[ G_t \vertsep S_t = s \right] \nonumber \\
 		&= \mathbb{E}_\pi \left[ R_{t+1} + \gamma G_{t+1} \vertsep S_t = s \right] \nonumber \\
 		\label{eq:paso-2}
-		&= \mathbb{E}_\pi [R_{t+1}] + \gamma \mathbb{E}_\pi \left[ G_{t+1} \vertsep S_{t} = s \right].
+		&= \mathbb{E}_\pi [R_{t+1} \mid S_t = s] + \gamma \mathbb{E}_\pi \left[ G_{t+1} \vertsep S_{t} = s \right].
 	\end{align}
 
 	To calculate the expected value of $R_{t+1}$ with the functions defined
 	earlier, we use the following argument. We need to calculate
 	\[
-		\mathbb{E}_\pi [R_{t+1} \mid S_t = s] = \sum_{r} r \IP{R_{t+1} = r \mid S_t = s},
+		\mathbb{E}_\pi [R_{t+1} \mid S_t = s] = \sum_{r} r \cdot \IP{R_{t+1} = r \mid S_t = s},
 	\]
 	but the probability on the right hand side is not immediately available. We
 	calculate it by using the definition of conditional probability and
 	marginalizing probabilities:
-	\begin{align*}
-		p(s', r \mid s, a) &\coloneqq \IP{S_{t+1} = s', R_{t+1} = r \mid S_t = s, A_t = a}, \\
-		\pi(a \mid s) p(s', r \mid s, a) &= \IP{S_{t+1} = s', R_{t+1} = r \mid S_{t} = s}, \\
-		\sum_{a} \pi(a \mid s) p(s', r \mid s, a) &= \IP{S_{t+1} = s', R_{t+1} = r \mid S_{t} = s}, \\
-		\sum_{a, s'} \pi(a \mid s) p(s', r \mid s, a) &= \IP{R_{t+1} = r \mid S_{t} = s} , \\
-		\sum_{a} \pi(a \mid s) \sum_{s'} p(s', r \mid s, a) &=  \\
-		\sum_{a} \pi(a \mid s) \sum_{s', r} p(s', r \mid s, a) \, r &= \mathbb{E}_\pi \left[ R_{t+1} \vertsep S_t = s \right].
-	\end{align*}
-
-	By similar arguments and applying the last identify to \eqref{eq:paso-2} and
-	then factoring, we get:
 	\begin{align}
-		\label{eq:bellman-equation-v}
-		v_\pi (s) &= \sum_a \pi(a \mid s) \sum_{s', r} p(s', r \mid s, a) \left[ r + \gamma \mathbb{E}_\pi [G_{t+1} \mid S_{t+1} = s'] \right], \nonumber \\
-		&= \sum_a \pi(a \mid s) \sum_{s', r} p(s', r \mid s, a) \left[ r + \gamma v_\pi (s') \right].
+		p(s', r \mid s, a) &\coloneqq \IP{S_{t+1} = s', R_{t+1} = r \mid S_t = s, A_t = a}, \nonumber \\
+		\pi(a \mid s) p(s', r \mid s, a) &= \IP{S_{t+1} = s', R_{t+1} = r, \, A_t = a \mid S_{t} = s}, \nonumber \\
+		\sum_{a} \pi(a \mid s) p(s', r \mid s, a) &= \IP{S_{t+1} = s', R_{t+1} = r \mid S_{t} = s}, \nonumber \\
+		\sum_{a, s'} \pi(a \mid s) p(s', r \mid s, a) &= \IP{R_{t+1} = r \mid S_{t} = s} , \nonumber\\
+		\sum_{a} \pi(a \mid s) \sum_{s'} p(s', r \mid s, a) &=  \IP{R_{t+1} = r \mid S_{t} = s} \nonumber \\
+		\sum_{a} \pi(a \mid s) \sum_{s', r} p(s', r \mid s, a) \, r &= \mathbb{E}_\pi \left[ R_{t+1} \vertsep S_t = s \right]. \label{eq:cacho-uno}
 	\end{align}
+
+	We can find $\mathbb{E}_\pi [G_{t+1} \mid S_t = s]$ by similar arguments.
+	The transition from state $s$ to state $s'$ given that an action $a$ was
+	taken happens with probability
+	\[
+		\sum_a \pi(a \mid s) \sum_{s', r} p(s', r \mid s, a).
+	\]
+	Therefore,
+	\begin{align}
+		\label{eq:cacho-dos}
+		\mathbb{E}_\pi [G_{t+1} \mid S_t = s] &= \sum_a \pi(a \mid s) p(s', r \mid s, a) \mathbb{E}_\pi \left[ G_{t+1} \mid S_{t+1} = s' \right], \nonumber \\
+		&= \sum_a \pi(a \mid s) p(s', r \mid s, a) v_\pi (s').
+	\end{align}
+
+	Combining \eqref{eq:cacho-uno} and \eqref{eq:cacho-dos}, making a substitution in \eqref{eq:paso-2} and factoring, we get:
+	\begin{equation}
+		\label{eq:bellman-equation-v}
+		v_\pi (s) = \sum_a \pi(a \mid s) \sum_{s', r} p(s', r \mid s, a) \left[ r + \gamma v_\pi (s') \right].
+	\end{equation}
 Equation \eqref{eq:bellman-equation-v} is called Bellman's equation for the
 value function.
 \end{proof}
