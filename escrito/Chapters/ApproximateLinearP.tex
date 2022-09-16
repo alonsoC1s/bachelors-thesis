@@ -342,7 +342,7 @@ Finding the smallest upper bound leads to the following optimization problem:
 \begin{equation}
 \begin{array}{rl@{}ll}
     \displaystyle \min_{v: \States \to \R} & v(s) \\
-    \text{Subject to} & v(s) \geq r(s,a) + \gamma \sum_{s'} p(s' \mid s, a) \, v(s') & \quad \forall a \in \Actions, s \in \States. \\
+    \text{Subject to} & \displaystyle v(s) \geq r(s,a) + \gamma \sum_{s'} p(s' \mid s, a) \, v(s') & \quad \forall a \in \Actions, s \in \States. \\
     & v(s) \text{ unconstrained,} & \quad \forall s \in \States.
 \end{array}
 \end{equation}
@@ -358,7 +358,7 @@ Utilizing the vector notation introduced earlier, we can find a Linear Program f
 \end{array}
 \end{equation}
 With $\vec{R}_a \in \R^{|\States|}$ defined as $[r(s_1, a), r(s_2, a), \dots,
-r(s_{|\States|, a})]^{\top}$ and $\vec{P}_{i,j}^{a} = p(j \mid i, a)$.
+r(s_{|\States|}, a)]^{\top}$ and $\vec{P}_{i,j}^{a} = p(j \mid i, a)$.
 
 Professor \citeauthor{farias2002thesis} refers to Linear Program
 \eqref{lp:exact-lp} as the \textit{exact Linear Program}

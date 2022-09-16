@@ -6,8 +6,8 @@ fitting a classification tree: what it entails, the algorithms, and some
 computational complexity calculations. To some readers it might be obvious how
 the process described by algorithms \ref{alg:tree-fit} and, most importantly
 \ref{alg:best-greedy-binary-split}, are similar to the exemplary RL problems we
-have developed thus far. In this chapter we fill in the gaps and formalize how
-the CART fit procedure can be cast as a MDP and thus how the techniques
+have developed so far. In this chapter we fill in the gaps and formalize how
+the CART fit procedure can be cast as an MDP and thus how the techniques
 discussed in part \ref{part:II} may be used and what we could expect from them.
 
 Let us begin by stating something that might not have been obvious when
@@ -18,7 +18,7 @@ reminder, when using the term greed we mean that during some optimization
 procedure such as solving an RL problem or fitting a CART we choose the best
 action available to us at the moment instead of exploring all the possible
 rammifications and then selecting the one that is most convenient at the end of
-the line. The alternative to greedy algorithms are lookahead algorithms, which
+the time. The alternative to greedy algorithms are lookahead algorithms, which
 work by ``looking ahead'' into the future and evaluating the effects a certain
 action in the present might have some steps in the future. The \emph{true} best
 fit of a tree as opposed to a greedy best would require the lookahead to be
@@ -39,16 +39,20 @@ refer to the already described fitting procedure and its resulting splits, and
 \emph{true best} to refer to the splits obtained via lookahead. 
 
 Algorithm \ref{alg:true-best-binary-split} aims to describe the procedure to
-find the true best split for a $\L_t$ a subset of the training set. Recalling
-some notation, $\mathcal{X}_t$ refers to the input space corresponding to the
-partition $\L_t$ of the training set, $X_j$ refers to the $j$-th feature
-variable(in other words, the $j$-th entry on the sample vectors). To ease the
-description of the next algorithm we introduce some new notation. We denote
-$\mathcal{X}_{t}^{j} \coloneqq \left\{ x_{j, o} \mid \vec{x}_{o} \in
-\mathcal{X}_t \right\}$ the set of values of the feature $X_J$ contained in
-$\mathcal{X}_t$. In other words, the set of observed values for the feature
-$X_j$ contained in $\L_t$ the subset of the training set. For a refresher on
-terminology and notation please refer to chapter
+find the true best split for some $\L_t$, a subset of the training set.
+Recalling some notation, $\mathcal{X}_t$ refers to the input space corresponding
+to the partition $\L_t$ of the training set, $X_j$ refers to the $j$-th feature
+variable (in other words, the $j$-th entry of the sample vectors $\vec{x} \in
+\R^{p}$). To ease the description of the next algorithm we introduce some new
+notation. We denote $\mathcal{X}_{t}^{j} \coloneqq \left\{ x_{j, o} \mid
+\vec{x}_{o} \in \mathcal{X}_t \right\}$ the set of values of the feature $X_j$
+contained in $\mathcal{X}_t$. 
+
+Recalling the setting of chapter \ref{chapter:ReinforcementLearning}, the
+elements of the training set are tuples $(\vec{x}_i, y_i)$. The vectors
+$\vec{x}_i \in \R^{p}$ can be conceptualized as lists of measured values for $p$
+variables of interest carried out for an the $i$-th individual.  The rest of
+notation used in the algorithm below, please refer to chapter
 \ref{chapter:SupervisedLearning} section \ref{sss:formalizing-trees}.
 
 \begin{algorithm}
@@ -58,9 +62,9 @@ terminology and notation please refer to chapter
     \KwOut{The true best binary split $s_*$ on $\L_t$ and impurity decrease achieved $\Delta_{*}$.}
     \Function{\TrueBestSplit{$\L_t$}}{
         $\Delta_* \gets - \infty$ \;
-        \For{$j \gets 1, \dots, p$}{
-            \ForEach{observed value $x_{j, i} \in \mathcal{X}_{j}^{t}$}{
-                Set $s \gets x_{j, i}$ the split value that defines node $t$ \;
+        \ForEach{feature $X_j$ with $j \in  \{1, \dots, p\}$}{
+            \ForEach(\tcc*[f]{Iterate over the observed values of feature the $X_j$ contained in $\L_t$.}){$x_{j, l} \in \mathcal{X}_{t}^{j}$}{
+                Set $s \gets x_{j, l}$ the split value that separates node $t$ \;
                 \If{stopping criteria are met}{
                     \Return{$(\Delta i(s, t), s)$}
                 }
@@ -68,7 +72,7 @@ terminology and notation please refer to chapter
                 $\Delta_{L}^{*} \gets$ \TrueBestSplit{$\L_{t_L}$}.\Value{} \;
                 $\Delta_{R}^{*} \gets$ \TrueBestSplit{$\L_{t_R}$}.\Value{} \;
                 \If{$\Delta i(s, t) + \Delta_{L}^{*} + \Delta_{R}^{*} > \Delta$ \label{value-calculation}}{
-                    $\Delta \gets \Delta i(s, t) + \Delta_{L}^{*} + \Delta_{R}^{*}$ \;
+                    $\Delta_* \gets \Delta i(s, t) + \Delta_{L}^{*} + \Delta_{R}^{*}$ \;
                     $s_{*} \gets s = x_{j, i}$
                 }
             }
@@ -82,7 +86,7 @@ terminology and notation please refer to chapter
 Notice how the function \TrueBestSplit calls itself twice with the subsets
 $\L_{t_R}$ and $\L_{t_L}$, created by the split $s$, as arguments. In simple words
 algorithm \ref{alg:true-best-binary-split} tries each observed value for each
-feature in it's own subset of the training set $\L_t$ as a possible splitting
+feature in its own subset of the training set $\L_t$ as a possible splitting
 point. Then, to decide if the split is good, calculates the best maximum
 impurity decrease for the subsets defined by the left and right children of the
 node created by the current split. To calculate that maximum impurity decrease
@@ -94,18 +98,20 @@ of a stopping criteria is, stop splitting if the current $\L_t$ has less
 than $\kappa$ samples.
 
 Even though the recursive splitting procedure does eventually stop thanks to the
-stopping criteria, the call stack for \TrueBestSplit becomes very deep very
-quickly. Once the call stack reaches a maximum dept, it starts to grow in
-breadth since we only just begun testing a single split $s$, when we must test
-for every possible one. As mentioned in chapter
-\ref{chapter:SupervisedLearning}, in the case of binary splits we would explore
-$2^{N -1}-1$, possible partitions. Each corresponding to a call to
-\TrueBestSplit. This amount of complexity makes all but trivial problems
-impossible to solve. 
+stopping criteria, the call stack for \TrueBestSplit becomes very high very
+quickly. Once the call stack reaches a maximum depth, provided it does not
+exceed the computer's maximum stack size, it starts to grow in breadth since we
+only just begun testing a single split $s$, when we must test for every possible
+one. If the problem is complex and the call stack would need to grow higher than
+the maximum call stack size for the computer, the program would crash and return
+nothing useful. As mentioned in chapter \ref{chapter:SupervisedLearning}, in the
+case of binary splits we would explore $2^{|\L| -1}-1$, possible partitions.
+Each corresponding to a call to \TrueBestSplit. This amount of complexity makes
+all but trivial problems impossible to solve. 
 
 \subsection{Making connections}
 
-The original tree fitting algorithm \ref{alg:tree-fit} described in
+The original tree fitting algorithm \ref{alg:tree-fit} described in chapter
 \ref{chapter:SupervisedLearning} calls to find the split $s_*$ on $\L_t$ that
 maximizes impurity decrease
 \begin{equation}
@@ -172,7 +178,13 @@ So far we have avoided explicitly describing an impurity function. The selection
 
 We refer to the Gini index as an impurity index since it is a measure of how
 varied the observations in a given node are. A small value indicates that a node
-contains predominantly observations from a single class.
+contains predominantly observations from a single class. Given that we want to
+make nodes purer so we can make better predictions, we would like the values of
+the gini index to be smaller rather than bigger. In contrast, in the traditional
+treatment of the RL problem given in chapters
+\ref{chapter:ReinforcementLearning} and \ref{chapter:ApproximateLinearP}, the
+bigger the value function the better. Fortunately, the ALP approach developed in
+chapter \ref{chapter:ApproximateLinearP} can be used without modifications.
 
 % In the same chapter we reviewed how we \emph{approximate} the solution to that
 % maximization problem by adopting a greedy strategy captured in the function
@@ -211,13 +223,13 @@ contains predominantly observations from a single class.
 
 Now that we have shown how the CART fitting procedure and an RLP are analogous
 and motivated why the structure of the value function in this context warants
-the use of RL techniques, let us proceed to define carefully the state and
+the use of RL techniques. Let us proceed to define carefully the state and
 action spaces for this particular problem.
 
 \section{Sketching implementations}
 
 To implement ALP to solve the CART fitting procedure we must explicitly define
-some of the things we need to know to solve a RL problem.
+some of the things we need to know to solve an RL problem.
 
 As discussed last section, the set of states $\States$ is the set of all
 possible partitions of the training set $\L$, which we will denote by $B_{\L}$.
@@ -228,24 +240,64 @@ as $\mathcal{Q} = \{ \text{is } x \leq x_{j, i} \text{ ?} \mid x_{j, i} \in
 \mathcal{X}_{j}^{t}, \; \forall j = 1, \dots, p \}$.  The innermost loop in
 algorithm \ref{alg:true-best-binary-split} is ennumerating all the actions in
 the set of available actions. Since choosing a split $\dot{s}$ on a given subset
-$\L_t$ always results in the same partion into $\L_{t_L}$ and $\L_{t_R}$ being
+$\L_t$ always results in the same partition into $\L_{t_L}$ and $\L_{t_R}$ being
 made, the transition function $p(s' \mid s, a)$ is not necessary for this
 problem. Finally, the expected reward function for a state $s$ and action $a$,
 $r(s, a)$, is precisely the impurity decrease function $\Delta i(\dot{s}, t)$
 for a split $\dot{s}$ and node $t$. The value function is the impurity function
 $i(t)$.
 
-The Exact Linear Program for this problem is
-\begin{equation}
+Given the equivalences we just established, we proceed to reformulate the Exact Linear program \ref{lp:exact-lp}, presented in chapter \ref{chapter:ApproximateLinearP}. The ELP was formulated, using the general form of the state-value and rewards functions, by transforming:
+\begin{equation*}
 \begin{array}{rl@{}ll}
-    \displaystyle \min & \displaystyle \sum_{t \in B_\L} i(t) \\
+    \displaystyle \min_{v: \States \to \R} & v(s) \\
+    \text{Subject to} & \displaystyle v(s) \geq r(s,a) + \gamma \sum_{s'} p(s' \mid s, a) \, v(s') & \quad \forall a \in \Actions, s \in \States, \\
+    & v(s) \text{ unconstrained,} & \quad \forall s \in \States,
+\end{array}
+\end{equation*}
+into the following expression, which is a Linear Program
+\begin{equation*}
+\tag{ELP}
+\begin{array}{rl@{}ll}
+    \displaystyle \min_{\vec{v} \in \R^{|\States|}} & \vec{c}^{\top} \vec{v} \\
+    \text{Subject to} & \vec{v} \geq \vec{R}_a + \gamma \sum_{s'} \vec{P}_a \, \vec{v}(s') & \quad \forall a \in \Actions \\
+    & \vec{v} \text{ unconstrained.} &
+\end{array}
+\end{equation*}
+
+The Exact Linear Program for this problem can be formulated using the impurity decrease and impurity by transforming the following optimization problem:
+\begin{equation}
+\label{eq:pre-cart-lp}
+\begin{array}{rl@{}ll}
+    \displaystyle \min_{i: B_\L \to \R} & \displaystyle \sum_{t \in B_\L} i(t) \\
     \text{Subject to} & \displaystyle i(\dot{s}) \geq \Delta i(\dot{s}, t') + \sum_{t'} i(t') & \quad \forall t' \in B_\L, \dot{s} \in \mathcal{Q}. \\
+    & i(t) \text{ unconstrained,} & \quad \forall t \in B_\L.
 \end{array}
 \end{equation}
 
+We can transform the optimization problem in \eqref{eq:pre-cart-lp} expressing
+it in terms of vectors and matrices as we did in chapter
+\ref{chapter:ApproximateLinearP}. We consider the impurity function as a vector
+$\vec{i}$,
+\[
+    \vec{i} = \left[ i(t_1), \dots, i(t_{|B_L|}) \right].  
+\]
+We also introduce $\vec{Di}_{\dot{s}} \in \R^{|B_\L|}$ defined as $[\Delta i(t_1, \dot{s}), \dots, \Delta i(t_{|B_\L|}, \dot{s})]^{\top}$.
+
+By using the notation just introduced, we can write \eqref{eq:pre-cart-lp} as:
+\begin{equation}
+\tag{CART-ELP}
+\label{lp:cart-elp}
+\begin{array}{rl@{}ll}
+    \displaystyle \min_{\vec{i} \in \R^{|B_\L|}} & \vec{c}^{\top} \vec{i} \\
+    \text{Subject to} & \displaystyle \vec{i} \geq \vec{Di}_{\dot{s}} + \gamma \sum_{t'} \vec{i} & \quad \forall \dot{s} \in \mathcal{Q}, \\
+    & \vec{i} \text{ unconstrained.} &
+\end{array}
+\end{equation}
+This formulation is nothing more than the original ELP using the equivalences between state-value and rewards functions established this chapter.
 
 For now we refrain from selecting a basis $\Phi$ of functions. The choice of
-this basis is heuristic and relies on experience with the specific problem being
+this basis is heuristic and relies on experience with the specific problem to be
 solved as pointed out by \citeauthor{farias2003LP2ADP} in
 \cite{farias2003LP2ADP}. Likewise, the specific parameters reviewed in chapter
 \ref{chapter:PropertiesGuarantees} for the Reduced Linear Program, such as
@@ -254,7 +306,7 @@ sampling distribuition, are selected on a case-by-case basis
 carry out constraint sampling can be considered hyperparameters like tree depth
 and minimum nodes per leaf in the example of tree fitting. As such, these may be
 optimized by cross validation \cite[Ch.~2.1]{intro2statslearning} to obtain the
-best possible results to the problem at hand.  
+best possible results for the problem at hand.  
 
 \section{Closing thoughts}
 
