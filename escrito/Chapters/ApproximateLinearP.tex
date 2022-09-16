@@ -39,6 +39,7 @@ further ado, let us get to the details right after developing the necessary
 background.
 
 \section{Exact Dynamic Programming}
+
 In Chapter \ref{chapter:ReinforcementLearning}, we showed that using Bellman's
 optimality equations, we can obtain optimal policies if we have access to the
 optimal value ($v_*$) or action-value ($q_{*}$) functions. We denote these
@@ -69,7 +70,7 @@ recurrence equation} from now on:
 v_\pi (s) = \sum_{a \in \Actions} \pi(a \mid s) \sum_{s', r} p(s', r \mid s, a) \left[ r + \gamma v_{\pi}(s') \right].
 \end{equation}
 
-The identity \ref{eq:bellmans-recurrence} was proved earlier in chapter
+The identity \eqref{eq:bellmans-recurrence} was proved earlier in chapter
 \ref{chapter:ReinforcementLearning} in Lemma \ref{lem:recursive-eval}, the
 Recursive Evaluation Lemma. We named the Lemma that way for reasons that will
 become apparent soon.
@@ -119,7 +120,7 @@ state $s_i$ to every other distinct state $s_j$ with $i, j \in \left\{ 1, \dots,
 most powerful tools: Bellman's policy operator.  This will enable us to study
 how \textit{any} $v$ acts on the set of states $\States$.
 
-\begin{dfn}{Bellman's Policy Operator}{}
+\begin{dfn}{Bellman's Policy Operator}{bellmans-pol-operator}
     We denote by $T_\pi$ the operator $T_\pi: \R^{|\States|} \to \R^{|\States|}$
     defined as:
     \[
@@ -140,11 +141,11 @@ Using the same arguments that led to \eqref{eq:bellmans-recurrence-prime}, let
 us write Bellman's optimality equation for the value function
 \eqref{eq:bellmans-value} using another operator.
 
-\begin{dfn}{Bellman's Optimality Operator}{}
-    We denote by $T_*: \R^{|\States|} \to \R^{|\States|}$ \emph{Bellman's Optimality Operator}, defined as:
+\begin{dfn}{Bellman's Optimality Operator}{bellmans-opt-operator}
+    We denote by $T_*: \R^{|\States|} \to \R^{|\States|}$ \emph{Bellman's Optimality Operator}, defined for each $s \in \States$ as:
     % FIXME: Aqui change r(s,a) va multiplicado con vector de 1's.
     \[
-        (T_{*} \vec{v})(s) = \max_{a \in \Actions} \left\{ r(s, a) + \gamma \sum_{s' \in \States} p(s' \mid s, a) \vec{v}(s') \right\}. 
+        (T_{*} \vec{v})(s) = \max_{a \in \Actions} \left\{ r(s, a) + \gamma \sum_{s' \in \States} p(s' \mid s, a) v(s') \right\}. 
     \]
 \end{dfn}
 
@@ -186,7 +187,8 @@ compare the value function's value for each of them. The optimal, the
 \end{dfn}
 
 The equality in definition \ref{dfn:optimal-policy} is only satisfied when both
-policies are optimal, as stated in the following Lemma which correspondes to Lemma 4.10.2 in \cite[pg.~115]{raoRL4F}.
+policies are optimal, as stated in the following Lemma which correspondes to
+Lemma 4.10.2 in \cite[pg.~115]{raoRL4F}.
 
 \begin{lemma}{}{equality-on-optimality}
     For any two optimal policies $\pi^{*}_{1}$ and $\pi^{*}_{2}$, for all $s \in
@@ -207,7 +209,8 @@ Wielding Lemma \ref{lem:equality-on-optimality} we can prove that there always
 exists an optimal policy for the RL problem we have been studying.
 
 \begin{thrm}{}{opt-policy-existence}
-    For a Reinforcement Problem based on a discrete-time, finite-space Markov Decision Process, the following hold:
+    For a Reinforcement Problem based on a discrete-time, finite-space Markov
+    Decision Process, the following hold:
     \begin{itemize}
         \item There exists an optimal policy $\pi_*$. That is, $v_{\pi_*} (s)
             \geq v_{\pi}(s)$ for all other policies $\pi$ and all states $s \in
@@ -261,7 +264,7 @@ exists an optimal policy for the RL problem we have been studying.
     Suppose that $\pi_{*}^{D}$ is not an optimal policy. That means that there
     exists some other policy $\pi$ such that $\pi > \pi_{*}^{D}$. In the partial
     order defined previously, that means that $v_{\pi} (s) > v_{\pi_{*}^{D}}
-    (s)$ for some state $s$! This contradicts the definition of the
+    (s)$ for at least one state $s$! This contradicts the definition of the
     optimal value function $v_* (s) = \max_\pi v_\pi (s)$ for all $s$. Therefore
     $\pi_{*}^{D}$ must be an optimal policy.
 \end{proof}
@@ -315,28 +318,31 @@ for the LP formulation.
 
 By Theorem \ref{thrm:6.2.2-puterman} whenever a given policy $\vec{v}$ satisfies
 \[
-    \vec{v} \geq T_* \vec{v} = \max_{a} \left\{ r(s, a) + \gamma \sum_{s'} p(s' \mid s, a) \vec{v}(s') \right\},
+    \vec{v} \geq T_* \vec{v}
 \]
-then, by Bellman's optimality equation
-\eqref{eq:bellmans-optimality-operators},
+which then, by Bellman's optimality equation
+\eqref{eq:bellmans-optimality-operators} gives
 \[
-    \vec{v} \geq \vec{v}_* = T_* \vec{v}_*.
+    \vec{v} \geq \vec{v}_* = T_* \vec{v}_*,
 \]
-Where vectors $\vec{v}$ and $\vec{v}_*$ are compared component-wise. In other
-words, we can find an upper bound $\vec{v} \geq T_{*} \vec{v}$ by considering
-the following set of linear constraints:
+where vectors $\vec{v}$ and $\vec{v}_*$ are compared component-wise. In other
+words, we can try to find an upper bound $\vec{v} \geq T_{*} \vec{v}$ by
+considering Definition \ref{dfn:bellmans-opt-operator} which gives the following
+set of linear constraints:
 \[
     v(s) \geq \max_{a} \left\{ r(s, a) + \gamma \sum_{s'} p(s' \mid s, a) \, v(s') \right\} \quad \forall s \in \States.
 \]
 In particular
 \begin{equation}
+    \label{eq:upper-bound-v}
     v(s) \geq r(s, a) + \gamma \sum_{s'} p(s' \mid s, a) \, v(s') \quad \forall s \in \States, a \in \Actions.
 \end{equation}
 
 Since the solution to \eqref{eq:bellmans-optimality-operators} is guaranteed to
-exist by Theorem \ref{thrm:opt-policy-existence} and be such that $\vec{v}_* =
-T_* \vec{v}_*$, we can approach it by finding the smallest vector upper bound
-given that we can generate upper bounds as discussed just before.
+exist by Theorem \ref{thrm:opt-policy-existence} and satisfy: $\vec{v}_* = T_*
+\vec{v}_*$, we can approach it by finding the smallest vector upper bound.  We
+can generate upper bounds to the optimal value function by using
+\eqref{eq:upper-bound-v}.
 
 Finding the smallest upper bound leads to the following optimization problem:
 \begin{equation}
@@ -353,25 +359,29 @@ Utilizing the vector notation introduced earlier, we can find a Linear Program f
 \tag{ELP}
 \begin{array}{rl@{}ll}
     \displaystyle \min_{\vec{v} \in \R^{|\States|}} & \vec{c}^{\top} \vec{v} \\
-    \text{Subject to} & \vec{v} \geq \vec{R}_a + \gamma \sum_{s'} \vec{P}_a \, \vec{v}(s') & \quad \forall a \in \Actions \\
+    \text{Subject to} & \vec{v} \geq \vec{R}_a + \gamma \vec{P}_a \, \vec{v} & \quad \forall a \in \Actions \\
     & \vec{v} \text{ unconstrained.} &
 \end{array}
 \end{equation}
 With $\vec{R}_a \in \R^{|\States|}$ defined as $[r(s_1, a), r(s_2, a), \dots,
-r(s_{|\States|}, a)]^{\top}$ and $\vec{P}_{i,j}^{a} = p(j \mid i, a)$.
+r(s_{|\States|}, a)]^{\top}$ and $\vec{P}_{i,j}^{a} = p(s_j \mid s_i, a)$.
 
 Professor \citeauthor{farias2002thesis} refers to Linear Program
 \eqref{lp:exact-lp} as the \textit{exact Linear Program}
 \cite[Ch.~2.3]{farias2002thesis}. This LP (linear program) has $|\States|$
 variables and $|\States| \times |\Actions|$ constraints. This makes it
-tremendously vulnerable to the curse of dimensionality. Solving this LP for the
-number of states in a modern RL problem becomes prohibitively computationally
-expensive, even when the average-case complexity of solving an LP is polynomial
+tremendously vulnerable to the curse of dimensionality, since we have as many
+variables to optimize as states. Solving this LP for the number of states in a
+modern RL problem becomes prohibitively computationally expensive, even when the
+average-case complexity of solving an LP is polynomial
 \cite[pg.~147]{kochenderfer2022}, much better than listing the $|\States|!$
 states.
 
-To surmount this prohibitive cost, we turn to one of math's most proliferous
-ideas: linear approximations.
+To overcome this prohibitive cost, we turn to one of math's most proliferous
+ideas: linear approximations. By approximating the function $v$ with a linear
+basis we hope to reduce the number of variables, but the number of constraints
+will remain the same. Chapter \ref{chapter:PropertiesGuarantees} proposes a way
+to reduce the number of constraints.
 
 \subsection{Linear everything}
 
@@ -422,14 +432,13 @@ This way, use the representation for $\widehat{\vec{v}} = \Phi \vec{\beta}$,
 where $\vec{\beta}$ is a vector of parameters that will fit this representation.
 Armed with this one last tool, let us take another look at the exact LP
 \eqref{lp:exact-lp}, substituting the function for the approximation wherever
-pertinent.
-
+pertinent:
 \begin{equation}
 \label{lp:approx-lp}
 \tag{ALP}
 \begin{array}{rl@{}ll}
     \displaystyle \min_{\vec{\beta} \in \R^{K}} & \vec{c}^{\top} \Phi \vec{\beta} \\
-    \text{S.t.} & \displaystyle \Phi \vec{\beta}(s) \geq r(s,a) + \gamma \sum_{s'} p(s' \mid s, a) \, \Phi \vec{\beta} (s') & \quad \forall a \in \Actions, s \in \States. \\
+    \text{S.t.} & \displaystyle \Phi \vec{\beta} \geq \vec{R}_a + \gamma \vec{P}_a \, \Phi \vec{\beta} & \quad \forall a \in \Actions, \\
     & \vec{\beta} \text{ unconstrained}.
 \end{array}
 \end{equation}
