@@ -1,17 +1,16 @@
-% !TeX root = ../pruebas.tex
 \chapter{Properties and performance guarantees}
 \label{chapter:PropertiesGuarantees}
 
 As previously mentioned, the Approximate Linear Programming (ALP) approach to
 solving the RL problem is based on work by \citeauthor{farias2003LP2ADP}. This
-next chapter is devoted to reproducing and discussing some of the main results
+chapter is devoted to reproducing and discussing some of the main results
 presented in \cite{farias2003LP2ADP}. The proofs are left out in favour of more
 verbose explanations of what the results might entail. This chapter aims to
 demistify some of the claims made about linear program \eqref{lp:approx-lp}
 being ``easier'' to solve.
 
 Recall that in the definition of \eqref{lp:approx-lp} we referred to the vector
-$\vec{c}$ as the \emph{state-relevance wights}. The choife of state-relevance
+$\vec{c}$ as the \emph{state-relevance wights}. The choice of state-relevance
 weights does not influence the solution of \eqref{lp:exact-lp}, but it does
 affect \eqref{lp:approx-lp}. The results discussed below demonstrate the impact
 on the quality of the resulting approximation.
@@ -19,36 +18,21 @@ on the quality of the resulting approximation.
 \section{Preliminaries}
 
 \begin{dfn}{Vector-Weighted $\ell_1$ norm}{vectorw-l1-norm}
-    The \emph{vector-weighted} 1-norm over the space $\ell_1$, denoted $\left\| \cdot \right\|_{1, \vec{c}}$, of a vector $\vec{x}$ is defined as
+    The \emph{vector-weighted} 1-norm over the space $\ell_1$, denoted $\left\|
+    \cdot \right\|_{1, \vec{c}}$, of a vector $\vec{x}$ is defined as
     \[
         \left\| \vec{x} \right\|_{1, \vec{c}} \coloneqq  \sum_i |x_i| c_i.
     \]
+    Vector $\vec{c}$ must be non-negative in each entry, and the same size as
+    $\vec{x}$.
 \end{dfn}
 
-To measure the quality of a specific policy $\pi$ we will consider the how the
-value $v_\pi(s)$ compares to the optimal $v_* (s)$ when the initial state $s$ is
-random variable with probability distribution $\sigma$. Intuitively, how far are
-the expected total discounted rewards from the optimal when following policy
-$\pi$.
-
-\begin{dfn}{Expected increase in value following $\pi$}{expected-value-increase}
-    The expected increase in value following a policy $\pi$ is defined as
-    \begin{equation}
-        \label{eq:expected-value-increase}
-        \E_{s \sim \sigma} \left[ v_* (s) - v_\pi (s) \right] = \left\| \vec{v
-        }_* - \vec{v}_\pi \right\|_{1, \sigma}.
-    \end{equation}
-    The notation $s \sim \sigma$ means that $s$ is a particular realization of the
-    random variable $S$, which is distributed according to $\sigma$.
-\end{dfn}
-
-The attentive reader might have noticed a slightly abusive notation: $\| \cdot
-\|_{1, \sigma}$. We defined the weighted $\ell_1$ norm for vectors, but $\sigma$
-is not a vector. This is justified; since, as reviewed in chapter
-\ref{chapter:ApproximateLinearP}, vectors $\vec{v}_*$ and $\vec{v}_\pi$ are
-column vectors in which each entry is the state-value function evaluated at a
-single state $s$. By extension, we can imagine that the vector $\sigma$ used in
-\eqref{eq:expected-value-increase} is a column vector where each entry is the
+We defined the weighted $\ell_1$ norm for vectors, but it will become useful to
+define it for probability distributions. This is justified; since, as reviewed
+in chapter \ref{chapter:ApproximateLinearP}, vectors $\vec{v}_*$ and
+$\vec{v}_\pi$ are column vectors in which each entry is the state-value function
+evaluated at a single state $s$. By extension, for a distribuiton $\sigma$, we
+can imagine that the vector $\sigma$ is a column vector where each entry is the
 probability of some $s \in \States$ happening. Formally, we define this
 extension of the weighted norm as follows.
 
@@ -61,12 +45,30 @@ extension of the weighted norm as follows.
     distribution.
 \end{dfn}
 
+To measure the quality of a specific policy $\pi$ we will consider the how the
+value $v_\pi(s)$ compares to the optimal value $v_* (s)$ when the initial state
+$s$ is a random variable with probability distribution $\sigma$. Intuitively,
+how far are the expected total discounted rewards from the optimal when
+following policy $\pi$.
+
+\begin{dfn}{Expected increase in value following $\pi$}{expected-value-increase}
+    The expected increase in value following a policy $\pi$ is defined as
+    \begin{equation}
+        \label{eq:expected-value-increase}
+        \E_{s \sim \sigma} \left[ v_* (s) - v_\pi (s) \right] = \left\| \vec{v
+        }_* - \vec{v}_\pi \right\|_{1, \sigma}.
+    \end{equation}
+    The notation $s \sim \sigma$ means that $s$ is a particular realization of the
+    random variable $S$, which is distributed according to $\sigma$.
+\end{dfn}
+
 Next, we define a probability measure that captures the probability of the agent
 being in some state given that it is following policy $\pi$ and starte on some
 randomly distributed $s \sim \sigma$.
 
 \begin{dfn}{The $\mu$ measure}{mu-measure}
-    We define a measure $\mu$ as
+    We define a measure represented by the vector $\mu$, where each entry
+    $\mu(s)$ is the measure evaluated at that $s$, as
     \[
         \mu_{\pi, \, \sigma}^{\top} \coloneqq (1 - \gamma) \sigma^{\top} \sum_{t=0}^{\infty} \gamma^{t} \vec{P}_{\pi}^{t}.
     \]
@@ -111,9 +113,10 @@ tuning $\vec{c}$ we can give more or less attention to different regions of the
 state space $\States$.
 
 Since the state-relevance vector imposes a restriction on how good our
-approximations can be. How good an approximation can we hope to find? The
-following theorem establishes bounds in the quality of approximations. Said
-theorem corresponds to Theorem 1 in \Cite[pg.~853]{farias2003LP2ADP}.
+approximations can be. It is natural to question what is the upper bound on the
+quality of the approximation. The following theorem establishes bounds in the
+quality of approximations. Said theorem corresponds to Theorem 1 in
+\Cite[pg.~853]{farias2003LP2ADP}.
 
 \begin{thrm}{}{farias-vanroy-thm1}
     Let $\vec{v}$ such that $\vec{v} \geq T^{*} \vec{v}$, then
@@ -179,7 +182,7 @@ RLP (Reduced Linear Program).
         \tag{RLP}
         \begin{array}{rl@{}ll}
             \displaystyle \min_{\vec{\beta} \in \R^{K}} & \vec{c}^{\top} \Phi \vec{\beta} \\
-            \text{S.t.} & \displaystyle \Phi \vec{\beta}(s) \geq r(s,a) + \gamma \sum_{s'} p(s' \mid s, a) \, \Phi \vec{\beta} (s') & \quad \forall (s, a) \in \mathcal{X} \\
+            \text{S.t.} & \displaystyle \Phi \vec{\beta} \geq \vec{R}_a + \gamma \vec{P}_a \Phi \vec{\beta} & \quad \forall a \in \mathcal{X} \\
             & \vec{\beta} \in \mathcal{N}.
         \end{array}
     \end{equation}
@@ -187,7 +190,7 @@ RLP (Reduced Linear Program).
 
 \citeauthor{farias2004constraint} focus on two approaches: generating
 near-feasible solutions, and bounding the number of constraints to be sampled so
-that the RLP gnerates a solution that closely approximates an optimal solution
+that the RLP generates a solution that closely approximates an optimal solution
 to the ALP. We will be considering constraints of the form:
 \[
     \alpha_{z}^{\top} \vec{\beta} + k_z \geq 0, \quad \forall z \in Z
@@ -232,17 +235,19 @@ In the present chapter we analyzed with greater care the benefits the ALP and
 later the RLP would carry in practice in contrast to some of the more
 traditional methods for solving RL problems through approximate dynamic
 programming. Even though we managed to escape to a certain degree the curse of
-dimensionality, we had to accept the cost of an increased number of parameters,
-the need for heuristic approaches to setting parameters, decreased accuracy, to
-name the first that come to mind. This is no surprise as computational
-mathematics are often govenerned by the ``no free lunch'' theorem\footnote{Not
-an actual theorem per-se.}, and if we sought more computationally attainable
-methods we must accept the trade-off. How much more efficient an implementation
-of ALP would be compared to traditional methods for solving RL problems or even
-plain simple greedy approaches remains unclear. Having established the bases, in
-part \ref{part:III} we hope to answer this question for a specific problem: the
-fitting of Classification and Regresssion Trees. In the next chapter we propose
-why would framing the CART fitting problem as an RL problem might be warranted.
+dimensionality, we had to accept the cost of an increased number of parameters
+(choosing a distribution $\psi$, a number $m$ of constraints, and a subset
+$\mathcal{N}$), the need for heuristic approaches to setting parameters,
+decreased accuracy, to name the first that come to mind. This is no surprise as
+computational mathematics are often govenerned by the ``no free lunch''
+theorem\footnote{Not an actual theorem per-se.}, and if we sought more
+computationally attainable methods we must accept the trade-off. How much more
+efficient an implementation of ALP would be compared to traditional methods for
+solving RL problems or even plain simple greedy approaches remains unclear.
+Having established the bases, in part \ref{part:III} we hope to answer this
+question for a specific problem: the fitting of Classification and Regresssion
+Trees. In the next chapter we propose why would framing the CART fitting problem
+as an RL problem might be warranted.
 
 \subsection{Bibliographical notes}
 
