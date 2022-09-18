@@ -2,17 +2,18 @@
 \label{chapter:SupervisedLearning}
 
 In Chapter \ref{chapter:Motivation}, we briefly reviewed the areas that
-constitute the field of Machine Learning and motivated an introductory example
-to Reinforcement Learning. We highlighted the differences between Supervised
-Machine Learning (supervised ML) and RL by contrasting the way each work.
-Supervised ML receives a wealth of examples from which it must extract patterns,
-while RL receives no input data and so has to learn by interacting with its
-environment. Statistically speaking, supervised ML is often tasked with classifying or predicting a
-response. In this thesis, we focus only on the classification task.
+constitute the field of \ac{ml} and motivated an introductory example to
+Reinforcement Learning. We highlighted the differences between Supervised
+\ac{ml} (supervised \ac{ml}) and \ac{rl} by contrasting the way each work.
+Supervised \ac{ml} receives a wealth of examples from which it must extract
+patterns, while \ac{rl} receives no input data and so has to learn by
+interacting with its environment. Statistically speaking, supervised \ac{ml} is
+often tasked with classifying or predicting a response. In this thesis, we focus
+only on the classification task.
 
 \section{Classification}
 
-Supervised ML algorithms tasked with classifying receive large amounts of
+Supervised \ac{ml} algorithms tasked with classifying receive large amounts of
 labeled data. Through the process called ``fitting'' or ``learning'', the
 algorithm will (hopefully) label correctly new observations never seen before.
 The classification task seeks to find a systematic way of predicting a
@@ -27,26 +28,26 @@ not. Our task is to find a systematic way of predicting whether or not a new
 patient, not seen before, will suffer from a stroke by measuring the same
 variables measured for the initial group.
 
-Fundamentally, a supervised ML algorithm must receive a \textit{training set}, a
-set of pre-labeled data from a knowledgeable source, in contrast with RL, where
-labeling is often not even possible or practical. This source of truth, the
-training set, is a set of observations $(\vec{x}_1, y_1), \dots, (\vec{x}_n,
-y_n)$. The vectors $\vec{x}_i = [x_{1, i}, x_{2, i}, \dots, x_{p, i}]^{\top} \in
-\R^{p}$ can be thought of as a list of measurements of every variable of
-interest for the $i$-th observation. In the case of the example trying to
-predict strokes, $x_{1, i}$ would correspond to age and $x_{2, i}$ to weight for
-the individual corresponding to observation $i$. The training set also contains
-$y_1, \dots, y_n$, one-dimensional values we call responses or labels in the
-specific case of classification. Using the standard parlance, following
-\cite{louppe2014}, the input variables are known as \textit{features}, input
-vectors as \textit{instances} or \textit{samples} and the output variable as
-\textit{target}. For our purposes, we consider that the target variable is
+Fundamentally, a supervised \ac{ml} algorithm must receive a \textit{training
+set}, a set of pre-labeled data from a knowledgeable source, in contrast with
+\ac{rl}, where labeling is often not even possible or practical. This source of
+truth, the training set, is a set of observations $(\vec{x}_1, y_1), \dots,
+(\vec{x}_n, y_n)$. The vectors $\vec{x}_i = [x_{1, i}, x_{2, i}, \dots, x_{p,
+i}]^{\top} \in \R^{p}$ can be thought of as a list of measurements of every
+variable of interest for the $i$-th observation. In the case of the example
+trying to predict strokes, $x_{1, i}$ would correspond to age and $x_{2, i}$ to
+weight for the individual corresponding to observation $i$. The training set
+also contains $y_1, \dots, y_n$, one-dimensional values we call responses or
+labels in the specific case of classification. Using the standard parlance,
+following \cite{louppe2014}, the input variables are known as \textit{features},
+input vectors as \textit{instances} or \textit{samples} and the output variable
+as \textit{target}. For our purposes, we consider that the target variable is
 always categoric, not numeric nor continuous. Nevertheless, continuous target
 variables are allowed, but the learning task is called regression, which is
 outside this thesis's scope.
 
-In a typical ML workflow, the algorithm used to make predictions is trained on
-the set we just described. Its performance is tested on a different set of
+In a typical \ac{ml} workflow, the algorithm used to make predictions is trained
+on the set we just described. Its performance is tested on a different set of
 similar data that the algorithm had no access to during its training period.
 From now on, we denote the training set as $\L$. For convenience we group the
 feature vectors into a \textit{feature matrix} $X \in \R^{p \times n}$, where
@@ -118,26 +119,27 @@ involved in fitting each one may be different from the rest. For this thesis, we
 focus on one specific model called classification trees. We introduce them here
 and show in part \ref{part:II} how fitting them gives way to an optimization
 process analogous to a Reinforcement Learning problem and frame it as such so we
-can leverage the power of RL to fit classification trees.
+can leverage the power of \ac{rl} to fit classification trees.
 
 \section{Classification Trees}
 
 Classification trees and, more generally, classification and regression trees
-are Machine Learning models like the ones described in the previous section.
-They have gained massive popularity in the recent and ongoing boom in machine
-learning for their numerous qualities. For instance, they can model arbitrarily
-complex relationships in data, handle both numeric and categorical data, and are
-easily interpretable as they result in simple decision rules. Most importantly,
-they are the building block of state-of-the-art algorithms for ML, such as
+are \ac{ml} models like the ones described in the previous section.  They have
+gained massive popularity in the recent and ongoing boom in machine learning for
+their numerous qualities. For instance, they can model arbitrarily complex
+relationships in data, handle both numeric and categorical data, and are easily
+interpretable as they result in simple decision rules. Most importantly, they
+are the building block of state-of-the-art algorithms for \ac{ml}, such as
 XGBoost \cite{XGBoost}.
 
 Sadly, their fitting process leads to a rather complicated problem that cannot
 be solved exactly in a reasonable time. The fitting process shares many
-similarities with the RL problem, which is described in detail in Chapter
+similarities with the \ac{rl} problem, which is described in detail in Chapter
 \ref{chapter:ReinforcementLearning}. This similarity is the foundational idea of
 this thesis, and we hope to show in part \ref{part:II} how an alternative
 methodology to fitting trees can be developed by leveraging the techniques used
-in RL. With that goal in mind, it is time to lay the foundations behind how trees are structured.
+in \ac{rl}. With that goal in mind, it is time to lay the foundations behind how
+trees are structured.
 
 \subsection{Tree models}
 
@@ -210,18 +212,17 @@ already fitted tree $f_\L$ to predict the label of a new observation.
 generalization error is an NP-complete problem \cite{hyafil1976}. That means no
 polynomial time algorithm to solve it exists. As with other NP-complete
 problems, the solution methods must rely on heuristics. One of the most widely
-used algorithms for tree fitting is the CART (Classification and Regression
-Tree) algorithm developed by \citeauthor{breiman2017} \cite{breiman2017}; it is
-implemented in scikit-learn\footnote{The industry-standard python library for
-machine learning \cite{louppe2014}.}, available to R users via the tidymodels
-extension and part of MLJ.jl\footnote{The most widely used machine learning
-library for Julia users.}. This thesis will focus on CART and later on try to
-extend it.
+used algorithms for tree fitting is the \acl{cart} algorithm developed by
+\citeauthor{breiman2017} \cite{breiman2017}; it is implemented in
+scikit-learn\footnote{The industry-standard python library for machine learning
+\cite{louppe2014}.}, available to R users via the tidymodels extension and part
+of MLJ.jl\footnote{The most widely used machine learning library for Julia
+users.}. This thesis will focus on \ac{cart} and later on try to extend it.
 
-The CART algorithm is based on greedily finding splits based on node purity, the
-amount of misclassified observations in a given node. The \textit{purer} the
-node, the lower the impurity score, the better the prediction. We denote by
-$\L_t$
+The \ac{cart} algorithm is based on greedily finding splits based on node
+purity, the amount of misclassified observations in a given node. The
+\textit{purer} the node, the lower the impurity score, the better the
+prediction. We denote by $\L_t$
 \[
     \L_t \coloneqq \left\{ (\vec{x}, y) \mid \vec{x} \in \mathcal{X}_t \right\}.
 \]
@@ -325,9 +326,10 @@ Even in the case of binary partitions in which $S(N_t, k)$ reduces to $2^{N_t
 -1}-1$, the number of partitions grows exponentially for the binary case. For
 the non-binary case, even worse, it grows factorially. Calculating each possible
 partition and choosing the best is not computationally feasible. The attentive
-reader will find the similarities when describing in full detail the RL problem
-presented in Chapter \ref{chapter:ReinforcementLearning}. The best binary split
-$s_*$ can be found using algorithm \ref{alg:best-greedy-binary-split}.
+reader will find the similarities when describing in full detail the \ac{rl}
+problem presented in Chapter \ref{chapter:ReinforcementLearning}. The best
+binary split $s_*$ can be found using algorithm
+\ref{alg:best-greedy-binary-split}.
 
 \begin{algorithm}
     \SetKwFunction{GreedyBestSplit}{FindBestGreedyBinarySplit}
@@ -380,7 +382,7 @@ refer to the sources used to develop this chapter:
 \begin{enumerate}
     \item \citeauthor{breiman2017}'s book \citetitle{breiman2017}. One of the
         cornerstone texts for this subject and the first formal descriptions of
-        the CART algorithm \cite{breiman2017}.
+        the \ac{cart} algorithm \cite{breiman2017}.
     \item The standard textbook for modern machine learning algorithms and
         applications: \citetitle{elements2009}. This source is particularly good
         for reviewing the foundations of statistical, supervised learning in

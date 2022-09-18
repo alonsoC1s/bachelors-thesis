@@ -142,6 +142,34 @@
 \setalgomidrulecolor{nightLight}
 \setalgobotrulecolor{nightMid}
 
+
+%=================================================%
+% Acronyms                                        %
+%=================================================%
+
+\DeclareAcronym{rl}{
+	short = rl,
+	long = Reinforcement Learning
+}
+\DeclareAcronym{ml}{
+	short = ml,
+	long = Machine Learning
+}
+\DeclareAcronym{cart}{
+	short = cart,
+	long = Classification And Regression Trees
+}
+\DeclareAcronym{md}{
+	short = mdp,
+	long = Markov Decission Process
+}
+
+
+\acsetup{
+	index,
+	short-format = \scshape
+}
+
 %=================================================%
 % Math Operators, Delimiters & Math-mode commands %
 %=================================================%
@@ -171,6 +199,9 @@
 \newcommand{\1}{\mathds{1}}
 \let\vec\mathbf
 \renewcommand\qedsymbol{\large\color{auroraRed}{$\blacksquare$}}
+
+%% Allow aligned environments to break page
+\allowdisplaybreaks
 
 %%===========================%
 %% Theorem-like Environments %

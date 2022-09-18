@@ -19,8 +19,6 @@
 % \tikzexternalize[prefix=tikz/]
 \usepackage{import}
 
-\usepackage{wrapfig}
-
 % Bibliografía
 \usepackage{csquotes}
 \usepackage[
@@ -73,15 +71,15 @@
 \pagestyle{plain}
 \pagenumbering{arabic}
 
-% \include{Chapters/Intro}
+\include{Chapters/Intro}
 
 \part{Foundations}
 \label{part:I}
 
-	% \include{Chapters/Motivation}
-	% \include{Chapters/OptimizationTheory}
-	% \include{Chapters/SupervisedLearning}
-	% \include{Chapters/ReinforcementLearning}
+	\include{Chapters/Motivation}
+	\include{Chapters/OptimizationTheory}
+	\include{Chapters/SupervisedLearning}
+	\include{Chapters/ReinforcementLearning}
 
 \part{Approximate solutions to the Reinforcement Learning Problem}
 \label{part:II}
@@ -92,15 +90,14 @@
 \part{Applications to Supervised Machine Learning}
 \label{part:III}
 
-	% \include{Chapters/CARTasRLP}
-	% \include{Chapters/ALPBDT}
-
+	\include{Chapters/CARTasRLP}
+	\include{Chapters/ALPBDT}
 
 \appendix
 \addcontentsline{toc}{part}{Appendices}
 
-	% \include{Chapters/MiniopolySim}
-	% \include{Chapters/Stochastic}
+	\include{Chapters/MiniopolySim}
+	\include{Chapters/Stochastic}
 
 \nocite{*}
 \printbibliography

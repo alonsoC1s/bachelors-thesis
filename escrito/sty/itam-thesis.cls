@@ -51,6 +51,8 @@
 		\RequirePackage[ruled, algochapter]{algorithm2e}
 		\RequirePackage{hologo} % XeLaTeX logo
 		\RequirePackage{url}
+		\RequirePackage{wrapfig} % Wrap figures
+		\RequirePackage{acro} % Acronyms
 		% \RequirePackage{witharrows} % Pretty margin anotations for equations
 		% \RequirePackage{mdframed}
 

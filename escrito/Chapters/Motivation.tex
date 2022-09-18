@@ -16,15 +16,14 @@ discipline can be divided into the following sub-fields of research:
 	\item Machine Learning.
 \end{itemize}
 
-This work is explicitly concerned with Machine Learning. Particularly with a
+This work is explicitly concerned with \ac{ml}. Particularly with a
 subset of the field known as Reinforcement Learning. Some authors, such as
-\cite[Ch.~1]{SuttonBarto} divide the field of Machine Learning (ML)
-into three parts: Supervised learning, unsupervised learning, and reinforcement 
-learning. Both supervised and unsupervised learning relies heavily on
-statistics-based techniques such as regression models and statistical inference.
-The techniques used in reinforcement learning (RL) rely on different models of
-what learning is and tries to go beyond finding association rules for a simple,
-well-defined problem.
+\cite[Ch.~1]{SuttonBarto} divide the field of \ac{ml} into three parts:
+Supervised learning, unsupervised learning, and reinforcement learning. Both
+supervised and unsupervised learning relies heavily on statistics-based
+techniques such as regression models and statistical inference.  The techniques
+used in \ac{rl} rely on different models of what learning is and tries to go
+beyond finding association rules for a simple, well-defined problem.
 
 In contrast to supervised learning, where a learning agent is given data labeled
 by a knowledgeable source and must ``learn'' to classify based on those initial
@@ -50,12 +49,12 @@ to safety by trial and error. As with supervised learning, it cannot be given
 millions of examples of ``valid paths'' for extrapolation. This agent learns by
 interacting with the environment itself.
 
-In a certain sense, RL leverages our intuitions about the nature of learning.
-All the main elements are there: cause and effect, goals, and consequences to
-decisions made, but as we will see, it also encodes more subtle concepts. For
-instance, delayed gratification and planning ahead. It also has the novelty of 
-being goal-oriented rather than task-oriented, as most Machine Learning
-techniques often are. For example, a self-driving car, ``trained'' via
+In a certain sense, \ac{rl} leverages our intuitions about the nature of
+learning.  All the main elements are there: cause and effect, goals, and
+consequences to decisions made, but as we will see, it also encodes more subtle
+concepts. For instance, delayed gratification and planning ahead. It also has
+the novelty of being goal-oriented rather than task-oriented, as most Machine
+Learning techniques often are. For example, a self-driving car, ``trained'' via
 supervised learning might train on millions of examples of what constitutes a
 valid steering wheel move and is expected to extrapolate to situations outside
 the training data. Meanwhile, for a self-driving car, learning by being
@@ -63,6 +62,7 @@ evaluated is learning how to drive as an activity consisting of hundreds of
 little tasks, all to be mastered simultaneously.
 
 \section{Formalizing ideas}
+
 Now, mathematically speaking, what does it \textit{mean} for a 
 machine to ``learn''?
 
@@ -84,6 +84,7 @@ successive time it tries to complete the task.  The idea of a continuously
 improving score is the foundation of mathematical optimization.
 
 \subsection{Optimization Theory}
+
 As the name suggests, mathematical optimization
 is concerned with finding an ``optimal'' (whatever ``optimal'' means) solution
 to problems where an unambiguous score might be given to different solutions.
@@ -145,6 +146,7 @@ off into smaller branches.
 [AQUI DIAGRAMA DE ARBOL]
 
 \section{A slightly more nuanced example}
+
 One of the significant achievements and claims to fame for reinforcement
 learning in the past decades has been its use in some of the most famous matches
 in several classic board games. Chess was ``mastered'' when Kasparov, then chess
@@ -152,15 +154,16 @@ grandmaster, was beaten by Deep Blue in 1997 \cite{silverchess}. Other board
 games with enormous state spaces, such as Go, the game that originated in China,
 proved to be too complex for the techniques used by Deep Blue. Deep Blue was
 mainly based on hard-coded openings and endgames taken from other grandmaster
-games, which differs significantly from the RL approach. Go was much later
+games, which differs significantly from the \ac{rl} approach. Go was much later
 attacked by another robot player named AlphaGo, developed by researchers from a
 company named DeepMind \cite{silver2017mastering}. AlphaGo defeated Lee Sedol,
 the reigning human champion, in 2016. AlphaGo was one of the most notorious
-applications of RL and made the field even more popular. Since RL has proved to
-be very good for these kinds of tasks in the past, let us explore an example
-with a more straightforward board game.
+applications of \ac{rl} and made the field even more popular. Since \ac{rl} has
+proved to be very good for these kinds of tasks in the past, let us explore an
+example with a more straightforward board game.
 
 \subsection{Duopoly, oligopoly, \ldots}
+
 Consider a simplified version of a popular game whose name I avoid using as it
 might be copyrighted. This game consists of a circuit with predefined squares,
 some available for sale, in which a player is at any given moment. In order to
@@ -176,9 +179,9 @@ action, such as allowing the player to spin once more in the same turn or
 complete the circuit by going directly to the starting square, and so on.
 
 Going forward, picture a robot being ``trained'' to become a super player via
-the RL techniques we are slowly developing. At each turn, the robot spins and
-moves forward however many squares the spinner indicates. If the robot lands on
-any square with a number, it might acquire that square for itself. From that
+the \ac{rl} techniques we are slowly developing. At each turn, the robot spins
+and moves forward however many squares the spinner indicates. If the robot lands
+on any square with a number, it might acquire that square for itself. From that
 moment on, if the opponent lands on that square, the robot player will be paid
 rent. If the robot lands on that same square, it may build hotels on it, so the
 next time the opponent lands there, the rent will be much higher. The robot also
@@ -336,8 +339,8 @@ robot noticed this because the violin corresponding to square 5 is noticeably
 higher than the others. Simple as this example might be, the essence is similar
 to the powerful programs that defeat world champions of chess and Go. The full
 details of the simulation can be found in appendix
-\ref{appendix:miniopoly-simulation} on page
-\pageref{appendix:miniopoly-simulation}.
+\ref{appendix:MiniopolySim} on page
+\pageref{appendix:MiniopolySim}.
 
 This example covers most of the core ideas of what is referred to as the
 Reinforcement Learning Problem. We will explore the ideas presented here in much
@@ -350,11 +353,11 @@ robot how to drive or beat a world champion of Go. The rest of this thesis is
 dedicated to the careful development of the ideas presented here in the language
 of mathematics. Specifically, tackling questions such as:
 \begin{itemize}
-	\item What mechanism allows the robot player to learn from experience and fine-tune its strategy to improve?
-	\item How can we tell when a new strategy is better than an 
-	old one?
-	\item Is it possible to find \textit{the} best strategy? 
-	How difficult is it?
+	\item What mechanism allows the robot player to learn from experience and
+		fine-tune its strategy to improve?
+	\item How can we tell when a new strategy is better than an old one?
+	\item Is it possible to find \textit{the} best strategy?  How difficult is
+		it?
 \end{itemize}
 
 Beyond mere description, this thought exercise has the potential to unlock

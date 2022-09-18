@@ -5,26 +5,27 @@ In chapter \ref{chapter:SupervisedLearning} we reviewed the basic process of
 fitting a classification tree: what it entails, the algorithms, and some
 computational complexity calculations. To some readers it might be obvious how
 the process described by algorithms \ref{alg:tree-fit} and, most importantly
-\ref{alg:best-greedy-binary-split}, are similar to the exemplary RL problems we
-have developed so far. In this chapter we fill in the gaps and formalize how
-the CART fit procedure can be cast as an MDP and thus how the techniques
-discussed in part \ref{part:II} may be used and what we could expect from them.
+\ref{alg:best-greedy-binary-split}, are similar to the exemplary \ac{rl}
+problems we have developed so far. In this chapter we fill in the gaps and
+formalize how the \ac{cart} fit procedure can be cast as an \ac{mdp} and thus how the
+techniques discussed in part \ref{part:II} may be used and what we could expect
+from them.
 
 Let us begin by stating something that might not have been obvious when
 describing the fitting procedure in chapter \ref{chapter:SupervisedLearning}:
 the algorithms described and used in practice rarely---if ever---produce the
 best possible tree. The algorithms are, as their names suggest, greedy. As a
 reminder, when using the term greed we mean that during some optimization
-procedure such as solving an RL problem or fitting a CART we choose the best
-action available to us at the moment instead of exploring all the possible
-rammifications and then selecting the one that is most convenient at the end of
-the time. The alternative to greedy algorithms are lookahead algorithms, which
-work by ``looking ahead'' into the future and evaluating the effects a certain
-action in the present might have some steps in the future. The \emph{true} best
-fit of a tree as opposed to a greedy best would require the lookahead to be
-carried out for each split made until all subsplits reach a termination
-condition. In the following section we develop the lookahead procedure in
-detail, and set the basis for this chapter's main ideas.
+procedure such as solving an \ac{rl} problem or fitting a \ac{cart} we choose
+the best action available to us at the moment instead of exploring all the
+possible rammifications and then selecting the one that is most convenient at
+the end of the time. The alternative to greedy algorithms are lookahead
+algorithms, which work by ``looking ahead'' into the future and evaluating the
+effects a certain action in the present might have some steps in the future. The
+\emph{true} best fit of a tree as opposed to a greedy best would require the
+lookahead to be carried out for each split made until all subsplits reach a
+termination condition. In the following section we develop the lookahead
+procedure in detail, and set the basis for this chapter's main ideas.
 
 \section{True best splitting procedures}
 
@@ -146,22 +147,29 @@ to the \emph{expected reward function} defined in Definition
 By recognizing that:
 \begin{itemize}
     \item The nodes $t$ we reviewed in the tree fitting algorithm correspond to
-        the states $s \in \States$ of a RL problem,
+        the states $s \in \States$ of a \ac{rl} problem,
     \item The splits $\dot{s} \in \mathcal{Q}$ correspond to the actions $a \in
-        \Actions$ of a RL problem,
+        \Actions$ of a \ac{rl} problem,
     \item The impurity decrease function $\Delta i(\dot{s}, t)$ is analogous to
         the expected rewards function,
 \end{itemize}
 it becomes clear that the tree fitting procedure is indeed a special case of the
-general RL problem we defined in chapter \ref{chapter:ReinforcementLearning}. As
-a consequence, we can now recognize why algorithm \ref{alg:tree-fit} can not
-obtain true best trees: it focuses on maximizing immediate reward rather than
-analyzing long-term payoff. That is why algorithm
-\ref{alg:true-best-binary-split} analyzes the rammifications of every possible
-split. In order to find true-best splits, it is not enough to focus only on the
-immediate actions available.
+general \ac{rl} problem we defined in chapter
+\ref{chapter:ReinforcementLearning}. As a consequence, we can now recognize why
+algorithm \ref{alg:tree-fit} can not obtain true best trees: it focuses on
+maximizing immediate reward rather than analyzing long-term payoff. That is why
+algorithm \ref{alg:true-best-binary-split} analyzes the rammifications of every
+possible split. In order to find true-best splits, it is not enough to focus
+only on the immediate actions available.
 
-There is just one piece missing from the formulation of a RL problem: the state-value function $v(s)$. This piece is crucial, since approximating it is the cornerstone of Approximate Linear Programming. In the case of tree fitting, the value function is the impurity function $i(t)$ of a node $t$. This makes intuitive sense, given that impurity is the measure we use to determine if a split was good or bad, and it is a function over the set of states, which is the space of possible node in this case. With this in mind, we can define the action-value function for the tree fitting problem:
+There is just one piece missing from the formulation of a \ac{rl} problem: the
+state-value function $v(s)$. This piece is crucial, since approximating it is
+the cornerstone of Approximate Linear Programming. In the case of tree fitting,
+the value function is the impurity function $i(t)$ of a node $t$. This makes
+intuitive sense, given that impurity is the measure we use to determine if a
+split was good or bad, and it is a function over the set of states, which is the
+space of possible node in this case. With this in mind, we can define the
+action-value function for the tree fitting problem:
 \begin{equation}
     q (t, \dot{s}) = \Delta i(\dot{s}, t) + \sum_{t'} i (t').
 \end{equation}
@@ -181,7 +189,7 @@ varied the observations in a given node are. A small value indicates that a node
 contains predominantly observations from a single class. Given that we want to
 make nodes purer so we can make better predictions, we would like the values of
 the gini index to be smaller rather than bigger. In contrast, in the traditional
-treatment of the RL problem given in chapters
+treatment of the \ac{rl} problem given in chapters
 \ref{chapter:ReinforcementLearning} and \ref{chapter:ApproximateLinearP}, the
 bigger the value function the better. Fortunately, the ALP approach developed in
 chapter \ref{chapter:ApproximateLinearP} can be used without modifications.
@@ -221,15 +229,15 @@ chapter \ref{chapter:ApproximateLinearP} can be used without modifications.
 % Bellman's recurrence relationship with impurity decrease $\Delta i(s, t)$ as our
 % value function without realizing it.
 
-Now that we have shown how the CART fitting procedure and an RLP are analogous
-and motivated why the structure of the value function in this context warants
-the use of RL techniques. Let us proceed to define carefully the state and
-action spaces for this particular problem.
+Now that we have shown how the \ac{cart} fitting procedure and a Reinforcement
+Learning Problem are analogous and motivated why the structure of the value
+function in this context warants the use of \ac{rl} techniques. Let us proceed
+to define carefully the state and action spaces for this particular problem.
 
 \section{Sketching implementations}
 
-To implement ALP to solve the CART fitting procedure we must explicitly define
-some of the things we need to know to solve an RL problem.
+To implement ALP to solve the \ac{cart} fitting procedure we must explicitly
+define some of the things we need to know to solve an \ac{rl} problem.
 
 As discussed last section, the set of states $\States$ is the set of all
 possible partitions of the training set $\L$, which we will denote by $B_{\L}$.
@@ -314,17 +322,16 @@ The idea of applying Reinforcement Learning to the tree fitting procedure is not
 particularly novel. The approach has been explored for instance by
 \citeauthor{xiong} in \cite{xiong}. In their article the authors try to learn
 optimal splitting strategies with a Recurrent Neural Network controller trained
-by RL to maximize impurity decrease with the Gini impurity function. They
+by \ac{rl} to maximize impurity decrease with the Gini impurity function. They
 baptize their algorithm as RLBDT (Reinforcement Learning Based Decission Trees).
 The article concludes that RLBDT outperforms the traditional greedy fitting
-procedure described in CART (algorithm \ref{alg:tree-fit} using the splitting
-strategy in algorithm \ref{alg:best-greedy-binary-split}).
+algorithm known as \ac{cart}.
 
 Previous work laid out by \citeauthor{xiong} suggests there is some merit to the
-idea of using RL for the problem described in this chapter. However, the
+idea of using \ac{rl} for the problem described in this chapter. However, the
 approach taken, which is utilizing Recurrent Neural Networks, is very different
 from the approach we took. This chapter was developed almost entirely without
 external references, leveraging only the concepts reviewed earlier. In the next
-and final chapter of this thesis we discuss an implementation of CART and the
-Approximate Linear Programming Based Decission Trees (ALPBDT) in Julia, and run
-some test to compare the implementations.
+and final chapter of this thesis we discuss an implementation of \ac{cart} and
+the Approximate Linear Programming Based Decission Trees (ALPBDT) in Julia, and
+run some test to compare the implementations.

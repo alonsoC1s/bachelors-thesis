@@ -57,6 +57,19 @@ states respectively. Then, by Lemma
     p(s') = \sum_{r \in \Rewards} p(s', r).
 \] 
 
+Lastly, let us introduce conditional probability
+
+\begin{dfn}{Conditional Probability}{}
+    Let $A, B$ be two events over the same probability space such that $\IP{B} >
+    0$. The conditional probability of $A$ given $B$, denoted by $\IP{A \mid B}$
+    is defined as,
+    \begin{equation}
+        \IP{A \mid B} \coloneqq \frac{\IP{A, B}}{\IP{B}}.
+    \end{equation}
+\end{dfn}
+
+With the preliminaries covered, let us proceed to define stochastic processes.
+
 \subsection{Stochastic Processes}
 
 In this thesis we focus on countable stochastic processes, but the definitions
@@ -83,10 +96,22 @@ generalize to continuous processes with ease.
 
 Markov's property is often called the ``memoryless property'', since in essence,
 it says the history of the process does not influence the future evolution, it
-is only determined by the present state.
+is only determined by the present state. As a consequence, if we know the
+transition probabilities we can reconstruct the entire process.
+\begin{align}
+    \label{eq:markov-sequence}
+    & \IP{X_{n+1} = x_{n+1}, \dots, X_1 = x_1, X_0 = x_0} = \IP{X_{n+1} = x_{n+1} \mid X_n = x_n, \dots, X_0 = x_0} \nonumber \\
+    &= \IP{X_{n+1} = x_n \mid X_{n} = x_n, \dots, X_0 = x_0} \cdot \IP{X_n = x_n \mid X_{n-1} = x_{n-1}, \dots, X_0 = x_0} \nonumber \\
+    &\cdots \IP{X_1 = x_1 \mid X_0 = x_0} \IP{X_0 = x_0} \nonumber \\
+    &= \IP{X_{n+1} = x_{n+1} \mid X_n = x_n} \IP{X_n = x_n \mid X_{n-1} = x_{n-1}} \cdots \IP{X_1 = x_1 \mid X_0 = x_0} \nonumber \\
+    &= \IP{X_0 = x_0} \left( \prod_{k=1}^{n+1} \IP{X_k = x_k \mid X_{k-1} = x_{k-1}} \right).
+\end{align}
 
-\begin{dfn}{Markov Decision Process \cite[Lec.~2]{silver2015}}{MDP}
-    A countable \emph{Markov Decision Process} (abbreviated MDP) is a tuple
+By extending a Markov process with rewards and actions we can obtain a Markov
+Reward Process: the formal framework for Reinforcement Learning.
+
+\begin{dfn}{Markov Decision Process \cite[Lec.~2]{silver2015}}{\ac{mdp}}
+    A countable \emph{Markov Decision Process} (abbreviated as \ac{mdp}) is a tuple
     $(\States, \Actions, p, \Rewards)$, consisting of:
     \begin{itemize}
         \item A non-empty, countable set of states $\States$ (known as the state

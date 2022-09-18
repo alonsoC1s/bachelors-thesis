@@ -8,11 +8,12 @@ now allow us to delve properly into the theory and formalize some ideas while
 hopefully giving satisfying answers to some questions that the intuitive
 treatment might have left open.
 
-\section{The Agent \& the Environment} Recall from
-Chapter~\ref{chapter:Motivation} that we referred to the robot player as a
-``learning agent''. This agent continuously interacts with the rest of the
-game and surveys its current state. As we saw earlier, the robot then selects
-an action based on this current game state.
+\section{The Agent \& the Environment}
+
+Recall from Chapter~\ref{chapter:Motivation} that we referred to the robot
+player as a ``learning agent''. This agent continuously interacts with the rest
+of the game and surveys its current state. As we saw earlier, the robot then
+selects an action based on this current game state.
 
 To be precise, say that the game starts at some time $t=0$ and ends at $t=T$. We
 discretize this period of time into $t \in \{0, 1, 2, \ldots \}$ At each of
@@ -28,7 +29,7 @@ actions at the current state $s$. This, too, forms a stochastic process. One tim
 step in the future $t+1$ the agent receives more feedback from the environment,
 the so-called reward signal $R_{t+1} \in \Rewards \subseteq \R$. This process
 moves forward from $t$ to $t+1$ and so on until the task is over. This defines a
-Markov Decision Process (MDP from now on), which we can reorder as follows:
+Markov Decision Process (\acs{mdp} from now on), which we can reorder as follows:
 \begin{equation}
 	\label{eq:mdp-succession}
 	S_0, A_0, R_1, S_1, A_1, R_2, S_2, A_2, R_3, \ldots
@@ -58,7 +59,7 @@ actions is determined by it. Some transitions are just impossible.
 Not only are some transitions impossible at certain states, a given action
 chosen by the agent will not always result in the same transition from the state
 $s$ to the state $s'$, which might sound obvious as we have already established
-that an MDP can best model this entire process. To study the probability
+that an \ac{mdp} can best model this entire process. To study the probability
 of a certain transition from state $s$ to state $s'$, given that a certain action
 $a \in \Actions(s)$ was taken, we introduce the \textit{dynamics} function,
 keeping with the notation in \cite{SuttonBarto}.
@@ -186,7 +187,7 @@ The constant $\gamma \in (0, 1)$ is called the \textit{discount factor}. By
 considering the discounted sum of accumulated rewards as the value function, we
 are modeling the preference for immediate rather than delayed
 rewards\footnote{It is essential to consider the discounted sum since the simple
-sum of rewards for an infinite MDP may not be finite.}. 
+sum of rewards for an infinite \ac{mdp} may not be finite.}. 
 
 The notation used in definition \ref{dfn:value-func} is a bit abusive. The
 symbol $\mathbb{E}_{\pi}$ means the expected value of the random variable $R$
@@ -222,7 +223,7 @@ the following function.
 
 One of the characteristic properties of the value functions we have introduced
 this chapter, and indeed more generally, the problems that arise from optimal
-strategies in MDPs is that they can be written recursively. In other words, to
+strategies in \ac{mdp}s is that they can be written recursively. In other words, to
 evaluate the value of a given state; we can ``play it out'' and find that value
 as a combination of the values of all the possible states, the agent will visit in
 the future.
@@ -250,7 +251,7 @@ playing back to the beginning. This relationship was first noted by Bellman
 \begin{proof}[Proof of Lemma \ref{lem:recursive-eval}]
 	We define:
 	\[
-		G_t \coloneqq \sum_{k=t+1}^{\infty} \gamma^{k-t-1} R_k = R_{t+1} + \gamma R_{t+2} + \gamma^{2} R_{t+3} + \dots, 
+		G_t \coloneqq \sum_{k=t+1}^{\infty} \gamma^{k-t-1} R_k = R_{t+1} + \gamma R_{t+2} + \gamma^{2} R_{t+3} + \cdots, 
 	\]
 	to make the definition of $v_\pi (s)$ more compact.
 	\begin{align}
@@ -265,9 +266,9 @@ playing back to the beginning. This relationship was first noted by Bellman
 	\[
 		\mathbb{E}_\pi [R_{t+1} \mid S_t = s] = \sum_{r} r \cdot \IP{R_{t+1} = r \mid S_t = s},
 	\]
-	but the probability on the right hand side is not immediately available. We
-	calculate it by using the definition of conditional probability and
-	marginalizing probabilities:
+	but the probability density on the right hand side is not immediately
+	available. We calculate it by using the definition of conditional
+	probability and marginalizing probabilities:
 	\begin{align}
 		p(s', r \mid s, a) &\coloneqq \IP{S_{t+1} = s', R_{t+1} = r \mid S_t = s, A_t = a}, \nonumber \\
 		\pi(a \mid s) p(s', r \mid s, a) &= \IP{S_{t+1} = s', R_{t+1} = r, \, A_t = a \mid S_{t} = s}, \nonumber \\
@@ -283,7 +284,7 @@ playing back to the beginning. This relationship was first noted by Bellman
 	\[
 		\sum_a \pi(a \mid s) \sum_{s', r} p(s', r \mid s, a).
 	\]
-	Therefore,
+	Therefore, by Markov's property \eqref{eq:markov-sequence},
 	\begin{align}
 		\label{eq:cacho-dos}
 		\mathbb{E}_\pi [G_{t+1} \mid S_t = s] &= \sum_a \pi(a \mid s) p(s', r \mid s, a) \mathbb{E}_\pi \left[ G_{t+1} \mid S_{t+1} = s' \right], \nonumber \\
@@ -297,6 +298,9 @@ playing back to the beginning. This relationship was first noted by Bellman
 	\end{equation}
 Equation \eqref{eq:bellman-equation-v} is called Bellman's equation for the
 value function.
+
+The results in probability and stochastic processes used in this proof are
+briefly reviewed in appendix \ref{appendix:Stochastic}.
 \end{proof}
 
 \section{Striving for the best}
@@ -352,27 +356,29 @@ equations, one for each state $s$. The system of equations can be solved
 explicitly when considering a deterministic policy, and the number of states is
 small. However, it becomes computationally inefficient or simply intractable
 when the number of states grows because of the curse of dimensionality, as the
-RL problem is combinatoric in nature. Solving the system of equations explicitly
-is equivalent to listing out every possible combination of states and actions.
+\ac{rl} problem is combinatoric in nature. Solving the system of equations
+explicitly is equivalent to listing out every possible combination of states and
+actions.
 
 \begin{remark}{The Curse of Dimensionality}
 	By ``curse of dimensionality'', we refer to the fact that in combinatorial
-	problems such as listing all the action-value pairs of the RL problem,
+	problems such as listing all the action-value pairs of the \ac{rl} problem,
 	whenever the number of states or actions grows linearly, the combinations
 	grow exponentially or factorially.
 \end{remark}
 
 Other methods to solve Bellman's equations are part of an area called dynamic
 programming. Dynamic programming refers to a collection of algorithms and
-heuristics that can be used to solve problems with a similar structure to the RL
-problem. Dynamic programming (DP) is prevalent in areas such as Operations
-Research and other disciplines in which the nature of the problems is episodic
-and demands having the ability to adapt \textit{dynamically}. DP problems are
-often, as in this case, practically impossible to solve exactly in a
-computationally efficient way.
+heuristics that can be used to solve problems with a similar structure to the
+\ac{rl} problem. Dynamic programming (DP) is prevalent in areas such as
+Operations Research and other disciplines in which the nature of the problems is
+episodic and demands having the ability to adapt \textit{dynamically}. DP
+problems are often, as in this case, practically impossible to solve exactly in
+a computationally efficient way.
 
-Most of the methods implemented in practical applications to solve MDPs and in
-the implementations of Reinforcement Learning are based on techniques that stem
-from the application of DP concepts. In contrast, this thesis focuses on a
-technique that avoids DP completely to try instead to leverage the properties of
-other optimization problems. Namely, the ability to compute efficiently.
+Most of the methods implemented in practical applications to solve \aclp{mdp}
+and in the implementations of Reinforcement Learning are based on techniques
+that stem from the application of DP concepts. In contrast, this thesis focuses
+on a technique that avoids DP completely to try instead to leverage the
+properties of other optimization problems. Namely, the ability to compute
+efficiently.

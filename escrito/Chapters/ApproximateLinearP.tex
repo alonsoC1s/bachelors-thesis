@@ -10,21 +10,21 @@ burden of calculating exact solutions is often too significant to overcome, even
 on modern computing equipment. And given the ``curse of dimensionality'', even
 if the contemporary problems became tractable in the future thanks to the
 ever-increasing computing power, that very same improvement in computing power
-would motivate researchers to tackle bigger still problems. So, to use the RL
-techniques, we must find a way to use our computational resources more
+would motivate researchers to tackle bigger still problems. So, to use the
+\ac{rl} techniques, we must find a way to use our computational resources more
 efficiently. 
 
 Since Reinforcement Learning happens to be part of the techniques often grouped
 under the umbrella of ``artificial intelligence'', it has enjoyed much attention
 for decades. Thanks to these research efforts and numerous applications in the
-industry, there are several battle-tested approximate solutions to the RL
+industry, there are several battle-tested approximate solutions to the \ac{rl}
 problem we have developed here. Among these are: Q-learning, Monte--Carlo
 estimation methods, temporal difference learning, and many others that are
 described in detail in \cite[Chapter~4]{SuttonBarto}. The somewhat novel
 technique described in this thesis was developed in the first decade of the
-2000s and is not part of the standard toolbox for solving RL problems since it
-was developed initially in the area of management science and particularly for
-the problem of probabilistic inventory management, following previous work,
+2000s and is not part of the standard toolbox for solving \ac{rl} problems since
+it was developed initially in the area of management science and particularly
+for the problem of probabilistic inventory management, following previous work,
 laid out since the 1960s. 
 
 Specifically, the technique to be laid out in this part of the thesis was
@@ -159,8 +159,8 @@ fixed point $\vec{v}_*$ \cite[Ch.~5.4]{raoRL4F}.
 
 As promised, Bellman's operators yield the solutions to both the prediction
 problem and the optimal value function, which come in handy to prove whether or
-not our RL problem has solutions or under which circumstances. However, so far,
-we have no idea how to solve them.
+not our \ac{rl} problem has solutions or under which circumstances. However, so
+far, we have no idea how to solve them.
 
 With our toolbox almost complete, it is time to advance our search for
 optimality. As previously mentioned, there are several approaches to solving
@@ -206,7 +206,7 @@ Lemma 4.10.2 in \cite[pg.~115]{raoRL4F}.
 \end{proof}
 
 Wielding Lemma \ref{lem:equality-on-optimality} we can prove that there always
-exists an optimal policy for the RL problem we have been studying.
+exists an optimal policy for the \ac{rl} problem we have been studying.
 
 \begin{thrm}{}{opt-policy-existence}
     For a Reinforcement Problem based on a discrete-time, finite-space Markov
@@ -372,8 +372,8 @@ Professor \citeauthor{farias2002thesis} refers to Linear Program
 variables and $|\States| \times |\Actions|$ constraints. This makes it
 tremendously vulnerable to the curse of dimensionality, since we have as many
 variables to optimize as states. Solving this LP for the number of states in a
-modern RL problem becomes prohibitively computationally expensive, even when the
-average-case complexity of solving an LP is polynomial
+modern \ac{rl} problem becomes prohibitively computationally expensive, even
+when the average-case complexity of solving an LP is polynomial
 \cite[pg.~147]{kochenderfer2022}, much better than listing the $|\States|!$
 states.
 
