@@ -3,17 +3,16 @@
 
 In Chapter \ref{chapter:Motivation}, we briefly reviewed the areas that
 constitute the field of \ac{ml} and motivated an introductory example to
-Reinforcement Learning. We highlighted the differences between Supervised
-\ac{ml} (supervised \ac{ml}) and \ac{rl} by contrasting the way each work.
-Supervised \ac{ml} receives a wealth of examples from which it must extract
-patterns, while \ac{rl} receives no input data and so has to learn by
-interacting with its environment. Statistically speaking, supervised \ac{ml} is
+\acl{rl}. We highlighted the differences between \ac{sml} and \ac{rl} by
+contrasting the way each work. \Ac{sml} receives a wealth of examples from which
+it must extract patterns, while \ac{rl} receives no input data and so has to
+learn by interacting with its environment. Statistically speaking, \ac{sml} is
 often tasked with classifying or predicting a response. In this thesis, we focus
 only on the classification task.
 
 \section{Classification}
 
-Supervised \ac{ml} algorithms tasked with classifying receive large amounts of
+\Ac{sml} algorithms tasked with classifying receive large amounts of
 labeled data. Through the process called ``fitting'' or ``learning'', the
 algorithm will (hopefully) label correctly new observations never seen before.
 The classification task seeks to find a systematic way of predicting a
@@ -28,23 +27,26 @@ not. Our task is to find a systematic way of predicting whether or not a new
 patient, not seen before, will suffer from a stroke by measuring the same
 variables measured for the initial group.
 
-Fundamentally, a supervised \ac{ml} algorithm must receive a \textit{training
-set}, a set of pre-labeled data from a knowledgeable source, in contrast with
-\ac{rl}, where labeling is often not even possible or practical. This source of
-truth, the training set, is a set of observations $(\vec{x}_1, y_1), \dots,
-(\vec{x}_n, y_n)$. The vectors $\vec{x}_i = [x_{1, i}, x_{2, i}, \dots, x_{p,
-i}]^{\top} \in \R^{p}$ can be thought of as a list of measurements of every
-variable of interest for the $i$-th observation. In the case of the example
-trying to predict strokes, $x_{1, i}$ would correspond to age and $x_{2, i}$ to
-weight for the individual corresponding to observation $i$. The training set
-also contains $y_1, \dots, y_n$, one-dimensional values we call responses or
-labels in the specific case of classification. Using the standard parlance,
-following \cite{louppe2014}, the input variables are known as \textit{features},
-input vectors as \textit{instances} or \textit{samples} and the output variable
-as \textit{target}. For our purposes, we consider that the target variable is
-always categoric, not numeric nor continuous. Nevertheless, continuous target
-variables are allowed, but the learning task is called regression, which is
-outside this thesis's scope.
+Fundamentally, \iac{sml} algorithm must receive a \textit{training set}, a set
+of pre-labeled data from a knowledgeable source, in contrast with \ac{rl}, where
+labeling is often not even possible or practical. This source of truth, the
+training set, is a set of observations $(\vec{x}_1, y_1), \dots, (\vec{x}_n,
+y_n)$. The vectors $\vec{x}_i = [x_{1, i}, x_{2, i}, \dots, x_{p, i}]^{\top} \in
+\R^{p}$ can be thought of as a list of measurements of every variable of
+interest for the $i$-th observation. In the case of the example trying to
+predict strokes, $x_{1, i}$ would correspond to age and $x_{2, i}$ to weight for
+the individual corresponding to the $i$-th observation. The training set also
+contains $y_1, \dots, y_n$, one-dimensional values we call responses or labels
+in the specific case of classification. Using the standard parlance, following
+\cite{louppe2014}, the input variables are known as \textit{features}, input
+vectors as \textit{instances} or \textit{samples} and the output variable as
+\textit{target}.
+
+For the purposes of this thesis, we consider that the target variable is always
+categoric, not numeric nor continuous. Nevertheless, continuous target variables
+are allowed, but the learning task is called regression, which is outside this
+thesis's scope. To make the description of the algorithms easier, we concentrate
+on the classification case where all features are continuous, not categoric.
 
 In a typical \ac{ml} workflow, the algorithm used to make predictions is trained
 on the set we just described. Its performance is tested on a different set of
@@ -123,14 +125,13 @@ can leverage the power of \ac{rl} to fit classification trees.
 
 \section{Classification Trees}
 
-Classification trees and, more generally, classification and regression trees
-are \ac{ml} models like the ones described in the previous section.  They have
-gained massive popularity in the recent and ongoing boom in machine learning for
-their numerous qualities. For instance, they can model arbitrarily complex
-relationships in data, handle both numeric and categorical data, and are easily
-interpretable as they result in simple decision rules. Most importantly, they
-are the building block of state-of-the-art algorithms for \ac{ml}, such as
-XGBoost \cite{XGBoost}.
+Classification trees and, more generally, \acf{cart} are \ac{ml} models like the
+ones described in the previous section.  They have gained massive popularity in
+the recent and ongoing boom in machine learning for their numerous qualities.
+For instance, they can model arbitrarily complex relationships in data, handle
+both numeric and categorical data, and are easily interpretable as they result
+in simple decision rules. Most importantly, they are the building block of
+state-of-the-art algorithms for \ac{ml}, such as XGBoost \cite{XGBoost}.
 
 Sadly, their fitting process leads to a rather complicated problem that cannot
 be solved exactly in a reasonable time. The fitting process shares many
@@ -152,7 +153,7 @@ partition can be described as:
 \[
     \Omega = \bigcup_{i=1}^{j} \Omega_{c_i},
 \]
-where each $\Omega_{c_i}$ is defined as $\left\{ (\vec{x}_i, y_i) \mid y_i = c_k
+where each $\Omega_{c_i}$ is defined as $\left\{ (\vec{x}_k, y_k) \mid y_k = c_i
 \right\}$.
 
 Similarly, a model $f_\L$ defines a partition. This partition however is made
@@ -166,21 +167,28 @@ The classification task then can be thought of as fitting the model $f_\L$ that
 gives the partition of $\mathcal{X}$ that most closely approximates the
 partition on $\Omega$ as a result of its preimages.
 
-In other words, we are trying to represent $f_\L$ as a tree (in the same way
-Computer Science thinks about trees) where any node $t$ represents a
-\underline{subset} $\mathcal{X}_t \subseteq \mathcal{X}$ of the input space such
-that the node designated as root (denoted $t_0$) corresponds to the entirety of
-$\mathcal{X}$.  Internal nodes $t$ are originated via a \textit{split} $s_t$
-taken from a set of questions $\mathcal{Q}$.
+We are trying to represent $f_\L$ as a tree (in the same way Computer Science
+thinks about trees) where any node $t$ represents a \underline{subset}
+$\mathcal{X}_t \subseteq \mathcal{X}$ of the input space such that the node
+designated as root (denoted $t_0$) corresponds to the entirety of $\mathcal{X}$.
+Recall that in this thesis we focus on the case where all features are numeric,
+which allows us to conceptualize $\mathcal{X}$ as a subset of $\R^{p}$ where $p$
+is the number of features.
 
-The set of questions $\mathcal{Q}$ is exactly what it sounds like. The question
-defining split $s_t$ might be, for example, is $x_{m, 1} < 65$? Or, is the person
-recorded as observation $m$ younger than 65? The space $\mathcal{X}_t$
-represented by node $t$ is made up of disjoint subsets corresponding to each
-of $t$'s children nodes; two in the case of binary trees. 
+Internal nodes $t$ are originated via a \textit{split} $s_t$ taken from a set of
+questions $\mathcal{Q}$.  The set of questions $\mathcal{Q}$ is exactly what it
+sounds like. The question defining split $s_t$ might be, for example, is $x_{m,
+1} < 65$? Or, is the person recorded as observation $m$ younger than 65? The
+space $\mathcal{X}_t$ represented by node $t$ is made up of disjoint subsets
+corresponding to each of $t$'s children nodes; two in the case of binary trees. 
 
 Terminal nodes (or leaves) are labeled with a best guess value $\widehat{y}_t
-\in \mathcal{C}$. The prediction process is carried out by navigating the tree,
+\in \mathcal{C}$. In the case of classification, this prediction value
+$\widehat{y}_t$ is usually set as the class $c_k$ shared by the majority of the
+observations at that leaf. Since our aim is to minimize Generalization Error, we
+would like nodes to be as ``purely'' one class as possible.
+
+The prediction process is carried out by navigating the tree,
 providing answers to the questions defining each node until a leaf is reached.
 The label for that leaf will be the tree's prediction. In algorithm
 \ref{alg:tree-predict}, we show a formal description of the process of using an
@@ -242,9 +250,9 @@ describe the fitting algorithm nor do we have enough space to cover the
 available options and their properties.
 
 \begin{dfn}{Impurity decrease}{impurity-decrease}
-    The \emph{impurity decrease}, under an impurity function $i: \mathcal{Q} \to
-    [0, 1]$, of a binary split of node $t$ into a left child $t_L$ and a right
-    child $t_R$ is denoted by $\Delta(i)$, and defined as: 
+    The \emph{impurity decrease} $\Delta i$, under an impurity function $i: t
+    \subset \R^{p} \to [0, 1]$, of a binary split $s$ of node $t$ into a left
+    child $t_L$ and a right child $t_R$, is defined as: 
     \[
         \Delta i(s, t) \coloneqq i(t) - \frac{N_{t_L}}{|\L_t|} \, i(t_L) - \frac{N_{t_R}}{|\L_t|} \, i(t_R),
     \]
@@ -309,7 +317,7 @@ the splitting strategies and the termination criteria.
 \begin{dfn}{Split}{split}
     A \emph{split} $s$ of node $t$ is a partition of $\mathcal{X}_t$. Recall
     that the subset $\mathcal{X}_t$ is what we call a node. Formally, a
-    partition is a collection of non-empty subsets of $\mathcal{X}_t$ such that,
+    partition is a collection of non-empty subsets of $\mathcal{X}_t$ such that:
     \begin{enumerate}
         \item The union of all subsets equals $\mathcal{X}_t$.
         \item The intersection of any two distinct subsets is empty.
@@ -352,7 +360,7 @@ binary split $s_*$ can be found using algorithm
 
 In simple words, algorithm \ref{alg:best-greedy-binary-split} receives a node
 $t$, which is nothing more than a subset of the training set. Then, it iterates
-over the features of the data set, and finds the one that woyld yield a bigger
+over the features of the data set, and finds the one that would yield a bigger
 impurity decrease when split. In line \ref{line:best-greedy-split} of the
 algorithm, the split $s_{*}^{j}$ is a question pertaining to the $j$-th feature.
 If the $j$-th feature of the data set corresponded to the subject's age, one
@@ -388,14 +396,13 @@ refer to the sources used to develop this chapter:
         for reviewing the foundations of statistical, supervised learning in
         much more depth and in a better style that could be achieved here
         \cite{elements2009}.
-    \item \citeauthor{louppe2014}'s doctoral thesis, which is heavily cited in
-        this chapter. Louppe is a core developer emeritus of the scikit-learn
-        python library, the industry-standard library. His work is admirably
-        deep, clear, and has valuable insights on the real-world considerations
-        a practical implementation would have to keep in mind \cite{louppe2014}.
-        After extensive research, this source provided the most satisfying
-        treatment of classification and regression trees of all documents
-        reviewed.
+    \item \citeauthor{louppe2014}'s doctoral thesis. Louppe is a core developer
+        emeritus of the scikit-learn python library, the industry-standard
+        library.  His work has valuable insights on the real-world
+        considerations a practical implementation would have to keep in mind
+        \cite{louppe2014}. After extensive research, this source provided the
+        most satisfying treatment of classification and regression trees of all
+        documents reviewed.
 \end{enumerate}
 
 The field of machine learning is so vast that we only had a chance to develop
