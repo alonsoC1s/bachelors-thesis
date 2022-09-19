@@ -23,8 +23,8 @@ on the quality of the resulting approximation.
     \[
         \left\| \vec{x} \right\|_{1, \vec{c}} \coloneqq  \sum_i |x_i| c_i.
     \]
-    Vector $\vec{c}$ must be non-negative in each entry, and the same size as
-    $\vec{x}$.
+    Vector $\vec{c}$ must be non-negative in each entry, and the same dimensions
+    as $\vec{x}$.
 \end{dfn}
 
 We defined the weighted $\ell_1$ norm for vectors, but it will become useful to
@@ -90,22 +90,23 @@ for the approximation procedure.
     A vector $\vec{\beta}_0$ solves the following LP
     \[
     \begin{array}{rl@{}ll}
-        \displaystyle \min_{\vec{\beta} \in \R^{K}} & \vec{c}^{\top} \Phi \vec{\beta} \\
-        \text{S.t.} & \displaystyle \Phi \vec{\beta} (s) \geq r(s, a) + \gamma \sum_{s'} p(s' \mid s, a) \Phi \vec{\beta}(s') & \quad \forall a, s \in \Actions, \States . \\
+        \displaystyle \max_{\vec{\beta} \in \R^{K}} & \vec{c}^{\top} \Phi \vec{\beta} \\
+        \text{S.t.} & \displaystyle \Phi \vec{\beta} \leq \vec{R}_a + \gamma \vec{P}_a \, \Phi \vec{\beta} & \quad \forall a \in \Actions, \\
     \end{array}
     \]
     if and only if it solves
     \[
     \begin{array}{rl@{}ll}
-        \displaystyle \max_{\vec{\beta} \in \R^{K}} & \left\| \vec{v}_* - \Phi \vec{\beta} \right\|_{1, \, \vec{c}} \\
-        \text{S.t.} & \displaystyle \Phi \vec{\beta} (s) \geq r(s, a) + \gamma \sum_{s'} p(s' \mid s, a) \Phi \vec{\beta}(s') & \quad \forall a, s \in \Actions, \States . \\
+        \displaystyle \min_{\vec{\beta} \in \R^{K}} & \left\| \vec{v}_* - \Phi \vec{\beta} \right\|_{1, \, \vec{c}} \\
+        % \text{S.t.} & \displaystyle \Phi \vec{\beta} (s) \geq r(s, a) + \gamma \sum_{s'} p(s' \mid s, a) \Phi \vec{\beta}(s') & \quad \forall a, s \in \Actions, \States . \\
+        \text{S.t.} & \displaystyle \Phi \vec{\beta} \leq \vec{R}_a + \gamma \vec{P}_a \, \Phi \vec{\beta} & \quad \forall a \in \Actions. \\
     \end{array}
     \]
 \end{lemma}
 
 Lemma \ref{lem:farias-vanroy-lem1} corresponds to Lemma 1 in
 \Cite[pg.~853]{farias2003LP2ADP}, and effectively establishes that
-\eqref{lp:approx-lp} can be solved as the maximization of a weighted norm where
+\eqref{lp:approx-lp} can be solved as the minimization of a weighted norm where
 the weights are given by the state-relevance weights. The state-relevance
 weights vector does what it's name suggests: impose a balance of the quality of
 the approximation of the value function for each state. This means that by
@@ -121,7 +122,7 @@ quality of approximations. Said theorem corresponds to Theorem 1 in
 \begin{thrm}{}{farias-vanroy-thm1}
     Let $\vec{v}$ such that $\vec{v} \geq T^{*} \vec{v}$, then
     \[
-       \left\| \vec{v}_{\pi_v} - \vec{v}_* \right\| \leq \frac{1}{1 - \gamma} \left\| \vec{v}  - \vec{v}_* \right\|_{1, \mu_{\pi_v, \, \sigma}}.
+       \left\| \vec{v}_{\pi_v} - \vec{v}_* \right\|_{1,\, \vec{c}} \leq \frac{1}{1 - \gamma} \left\| \vec{v}  - \vec{v}_* \right\|_{1, \mu_{\pi_v, \, \sigma}}.
     \]
 \end{thrm}
 
@@ -181,8 +182,8 @@ RLP (Reduced Linear Program).
         \label{lp:reduced-lp}
         \tag{RLP}
         \begin{array}{rl@{}ll}
-            \displaystyle \min_{\vec{\beta} \in \R^{K}} & \vec{c}^{\top} \Phi \vec{\beta} \\
-            \text{S.t.} & \displaystyle \Phi \vec{\beta} \geq \vec{R}_a + \gamma \vec{P}_a \Phi \vec{\beta} & \quad \forall a \in \mathcal{X} \\
+            \displaystyle \max_{\vec{\beta} \in \R^{K}} & \vec{c}^{\top} \Phi \vec{\beta} \\
+            \text{S.t.} & \displaystyle \Phi \vec{\beta} \leq \vec{R}_a + \gamma \vec{P}_a \Phi \vec{\beta} & \quad \forall a \in \mathcal{X} \\
             & \vec{\beta} \in \mathcal{N}.
         \end{array}
     \end{equation}

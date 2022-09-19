@@ -260,7 +260,6 @@ playing back to the beginning. This relationship was first noted by Bellman
 		\label{eq:paso-2}
 		&= \mathbb{E}_\pi [R_{t+1} \mid S_t = s] + \gamma \mathbb{E}_\pi \left[ G_{t+1} \vertsep S_{t} = s \right].
 	\end{align}
-
 	To calculate the expected value of $R_{t+1}$ with the functions defined
 	earlier, we use the following argument. We need to calculate
 	\[
@@ -274,7 +273,7 @@ playing back to the beginning. This relationship was first noted by Bellman
 		\pi(a \mid s) p(s', r \mid s, a) &= \IP{S_{t+1} = s', R_{t+1} = r, \, A_t = a \mid S_{t} = s}, \nonumber \\
 		\sum_{a} \pi(a \mid s) p(s', r \mid s, a) &= \IP{S_{t+1} = s', R_{t+1} = r \mid S_{t} = s}, \nonumber \\
 		\sum_{a, s'} \pi(a \mid s) p(s', r \mid s, a) &= \IP{R_{t+1} = r \mid S_{t} = s} , \nonumber\\
-		\sum_{a} \pi(a \mid s) \sum_{s'} p(s', r \mid s, a) &=  \IP{R_{t+1} = r \mid S_{t} = s} \nonumber \\
+		\sum_{a} \pi(a \mid s) \sum_{s'} p(s', r \mid s, a) &=  \IP{R_{t+1} = r \mid S_{t} = s}, \nonumber \\
 		\sum_{a} \pi(a \mid s) \sum_{s', r} p(s', r \mid s, a) \, r &= \mathbb{E}_\pi \left[ R_{t+1} \vertsep S_t = s \right]. \label{eq:cacho-uno}
 	\end{align}
 

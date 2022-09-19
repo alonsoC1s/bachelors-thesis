@@ -132,9 +132,10 @@ how \textit{any} $v$ acts on the set of states $\States$.
 
 Using the newly defined Bellman's Policy Operator, we can rewrite Bellman's
 recurrence equation \eqref{eq:bellmans-recurrence} as
-\[
+\begin{equation}
+    \label{eq:BPO-fixed-point}
     T_\pi \vec{v}_\pi = \vec{v}_\pi.
-\]
+\end{equation}
 This means $\vec{v}_\pi$ is a fixed point of the Bellman Policy Operator.
 
 Using the same arguments that led to \eqref{eq:bellmans-recurrence-prime}, let
@@ -154,13 +155,30 @@ Using the Optimality Operator, \eqref{eq:bellmans-value} can be rewritten as
     \label{eq:bellmans-optimality-operators}
     T_* \vec{v}_{*} = \vec{v}_{*}.
 \end{equation}
-In other words, the optimality operator $T_*$ is a non-linear operator with a
-fixed point $\vec{v}_*$ \cite[Ch.~5.4]{raoRL4F}.
 
-As promised, Bellman's operators yield the solutions to both the prediction
-problem and the optimal value function, which come in handy to prove whether or
-not our \ac{rl} problem has solutions or under which circumstances. However, so
-far, we have no idea how to solve them.
+% In other words, the optimality operator $T_*$ is a non-linear operator with a
+% fixed point $\vec{v}_*$ \cite[Ch.~5.4]{raoRL4F}.
+
+Theorem \ref{thrm:farias2002thesis-thrm2.1} (corresponding to Theorem 2.1 in
+\cite[Ch.~2.2]{farias2002thesis}) presents some key properties of Bellman's
+Policy Operator. We are especially interested in the fact that it has a unique
+fixed-point.
+
+\begin{thrm}{}{farias2002thesis-thrm2.1}
+    Let $\vec{v}$ be an arbitrary value function. Then,
+    \begin{enumerate}
+        \item $\left\| T\vec{v} - T \vec{v}_* \right\|_{\infty} \leq \gamma
+            \left\| \vec{v} - \vec{v}_* \right\|$.
+        \item If $\vec{v}_0 \geq \vec{v}_1$, then $T\vec{v}_0 \geq T\vec{v}_1$.
+        \item The operator $T$ has a unique fixed-point given by $\vec{v}_*$.
+    \end{enumerate}
+\end{thrm}
+
+The equation presented in \eqref{eq:BPO-fixed-point} is equivalent to statement
+3 on the previous theorem. As promised, Bellman's operators yield the solutions
+to both the prediction problem and the optimal value function, which come in
+handy to prove whether or not our \ac{rl} problem has solutions or under which
+circumstances. However, so far, we have no idea how to solve them.
 
 With our toolbox almost complete, it is time to advance our search for
 optimality. As previously mentioned, there are several approaches to solving
@@ -244,7 +262,7 @@ exists an optimal policy for the \ac{rl} problem we have been studying.
     equation \eqref{eq:prop-dependencia-vq}, $v_* (s) = \max_a q_* (s, a)$, and
     therefore,
     \[
-        v_* (s) = q_* (s, \pi_{*}^{D}(s)).
+        v_* (s) = q_* \left(s, \pi_{*}^{D}(s) \right).
     \]
 
     In other words, we maximize the value function if we first take the action
@@ -316,39 +334,40 @@ for the LP formulation.
     \end{enumerate}
 \end{thrm}
 
-By Theorem \ref{thrm:6.2.2-puterman} whenever a given policy $\vec{v}$ satisfies
+By Theorem \ref{thrm:6.2.2-puterman}, statement 2, whenever a given policy
+$\vec{v}$ satisfies
 \[
-    \vec{v} \geq T_* \vec{v}
+    \vec{v} \leq T_* \vec{v}
 \]
 which then, by Bellman's optimality equation
 \eqref{eq:bellmans-optimality-operators} gives
 \[
-    \vec{v} \geq \vec{v}_* = T_* \vec{v}_*,
+    \vec{v} \leq \vec{v}_* = T_* \vec{v}_*,
 \]
 where vectors $\vec{v}$ and $\vec{v}_*$ are compared component-wise. In other
-words, we can try to find an upper bound $\vec{v} \geq T_{*} \vec{v}$ by
+words, we can try to find a lower bound $\vec{v} \leq T_{*} \vec{v}$ by
 considering Definition \ref{dfn:bellmans-opt-operator} which gives the following
 set of linear constraints:
 \[
-    v(s) \geq \max_{a} \left\{ r(s, a) + \gamma \sum_{s'} p(s' \mid s, a) \, v(s') \right\} \quad \forall s \in \States.
+    v(s) \leq \max_{a} \left\{ r(s, a) + \gamma \sum_{s'} p(s' \mid s, a) \, v(s') \right\} \quad \forall s \in \States.
 \]
 In particular
 \begin{equation}
     \label{eq:upper-bound-v}
-    v(s) \geq r(s, a) + \gamma \sum_{s'} p(s' \mid s, a) \, v(s') \quad \forall s \in \States, a \in \Actions.
+    v(s) \leq r(s, a) + \gamma \sum_{s'} p(s' \mid s, a) \, v(s') \quad \forall s \in \States, a \in \Actions.
 \end{equation}
 
 Since the solution to \eqref{eq:bellmans-optimality-operators} is guaranteed to
 exist by Theorem \ref{thrm:opt-policy-existence} and satisfy: $\vec{v}_* = T_*
-\vec{v}_*$, we can approach it by finding the smallest vector upper bound.  We
-can generate upper bounds to the optimal value function by using
+\vec{v}_*$, we can approach it by finding the biggest vector upper bound. We
+can generate lower bounds to the optimal value function by using
 \eqref{eq:upper-bound-v}.
 
-Finding the smallest upper bound leads to the following optimization problem:
+Finding the biggest upper bound leads to the following optimization problem:
 \begin{equation}
 \begin{array}{rl@{}ll}
-    \displaystyle \min_{v: \States \to \R} & v(s) \\
-    \text{Subject to} & \displaystyle v(s) \geq r(s,a) + \gamma \sum_{s'} p(s' \mid s, a) \, v(s') & \quad \forall a \in \Actions, s \in \States. \\
+    \displaystyle \max_{v: \States \to \R} & v(s) \\
+    \text{Subject to} & \displaystyle v(s) \leq r(s,a) + \gamma \sum_{s'} p(s' \mid s, a) \, v(s') & \quad \forall a \in \Actions, s \in \States. \\
     & v(s) \text{ unconstrained,} & \quad \forall s \in \States.
 \end{array}
 \end{equation}
@@ -358,8 +377,8 @@ Utilizing the vector notation introduced earlier, we can find a Linear Program f
 \label{lp:exact-lp}
 \tag{ELP}
 \begin{array}{rl@{}ll}
-    \displaystyle \min_{\vec{v} \in \R^{|\States|}} & \vec{c}^{\top} \vec{v} \\
-    \text{Subject to} & \vec{v} \geq \vec{R}_a + \gamma \vec{P}_a \, \vec{v} & \quad \forall a \in \Actions \\
+    \displaystyle \max_{\vec{v} \in \R^{|\States|}} & \vec{c}^{\top} \vec{v} \\
+    \text{Subject to} & \vec{v} \leq \vec{R}_a + \gamma \vec{P}_a \, \vec{v} & \quad \forall a \in \Actions \\
     & \vec{v} \text{ unconstrained.} &
 \end{array}
 \end{equation}
@@ -437,11 +456,19 @@ pertinent:
 \label{lp:approx-lp}
 \tag{ALP}
 \begin{array}{rl@{}ll}
-    \displaystyle \min_{\vec{\beta} \in \R^{K}} & \vec{c}^{\top} \Phi \vec{\beta} \\
-    \text{S.t.} & \displaystyle \Phi \vec{\beta} \geq \vec{R}_a + \gamma \vec{P}_a \, \Phi \vec{\beta} & \quad \forall a \in \Actions, \\
+    \displaystyle \max_{\vec{\beta} \in \R^{K}} & \vec{c}^{\top} \Phi \vec{\beta} \\
+    \text{S.t.} & \displaystyle \Phi \vec{\beta} \leq \vec{R}_a + \gamma \vec{P}_a \, \Phi \vec{\beta} & \quad \forall a \in \Actions, \\
     & \vec{\beta} \text{ unconstrained}.
 \end{array}
 \end{equation}
+
+Once having an approximately optimal value function we can generate optimal
+decisions according to:
+\begin{equation}
+    u_{\Phi \beta} (s) = \argmin_{a} \left( \vec{R}_a + \gamma \vec{P}_a \Phi \beta \right),
+\end{equation}
+where the policy $\pi$ is subscripted by $\Phi\beta$ to emphasize how it is
+generated.
 
 The LP in \eqref{lp:approx-lp} is referred to as the \textit{approximate linear
 program}. The vector $\vec{c}$ with positive components is called the
@@ -456,15 +483,14 @@ from dynamic programming can be used to efficiently sample constraints, making
 the solution of this LP more efficient.
 
 The subsequent chapters of this part are dedicated to briefly reviewing the
-extensions and results of this method.
+extensions and results of this method.  Chapter
+\ref{chapter:PropertiesGuarantees} continues the exploration of the Approximate
+Linear Programming (ALP) method we have just described. In particular, some
+desirable properties the optimization problem \eqref{lp:approx-lp} has and some
+performance guarantees we can expect.
 
-Chapter \ref{chapter:PropertiesGuarantees} continues the exploration of the
-Approximate Linear Programming (ALP) method we have just described. In
-particular, some desirable properties the optimization problem
-\eqref{lp:approx-lp} has and some performance guarantees we can expect.
 
-
-\section{Bibliographical Notes}
+\section{Bibliographic Notes}
 
 For the development of Bellman's Optimality Operator, we follow several sources:
 \begin{itemize}
@@ -475,7 +501,7 @@ For the development of Bellman's Optimality Operator, we follow several sources:
         \item Basic Reinforcement Learning course at McGill University
             \cite[Lect.~2]{moisescu-parejaa}.
         \item Foundations of Reinforcement Learning with Applications in Finance
-            course notes by Ashwin Rao \cite[Lect. on Jan 15 2019]{raoRL4F}.
+            course textbook by Ashwin Rao \cite[Ch.1-4]{raoRL4F}.
     \end{itemize}
     \item \citeauthor{nadeemward2021}'s thesis \cite{nadeemward2021} which
         summarizes the numerical approaches based on dynamic programming skipped
