@@ -19,6 +19,9 @@
 % \tikzexternalize[prefix=tikz/]
 \usepackage{import}
 
+\usepackage{caption}
+\usepackage{subcaption}
+
 % Bibliografía
 \usepackage{csquotes}
 \usepackage[
@@ -71,33 +74,33 @@
 \pagestyle{plain}
 \pagenumbering{arabic}
 
-% \include{Chapters/Intro}
-\include{Chapters/Motivation}
+% % \include{Chapters/Intro}
+% \include{Chapters/Motivation}
 
 \part{Foundations}
 \label{part:I}
 
-	\include{Chapters/OptimizationTheory}
+	% \include{Chapters/OptimizationTheory}
 	\include{Chapters/SupervisedLearning}
-	\include{Chapters/ReinforcementLearning}
+	% \include{Chapters/ReinforcementLearning}
 
 \part{Approximate solutions to the Reinforcement Learning Problem}
 \label{part:II}
 
-	\include{Chapters/ApproximateLinearP}
-	\include{Chapters/PropertiesGuarantees}
+	% \include{Chapters/ApproximateLinearP}
+	% \include{Chapters/PropertiesGuarantees}
 	
 \part{Applications to Supervised Machine Learning}
 \label{part:III}
 
-	\include{Chapters/CARTasRLP}
-	\include{Chapters/ALPBDT}
+	% \include{Chapters/CARTasRLP}
+	% \include{Chapters/ALPBDT}
 
 \appendix
 \addcontentsline{toc}{part}{Appendices}
 
-	\include{Chapters/MiniopolySim}
-	\include{Chapters/Stochastic}
+	% \include{Chapters/MiniopolySim}
+	% \include{Chapters/Stochastic}
 
 \nocite{*}
 \printbibliography
