@@ -53,6 +53,8 @@
 		\RequirePackage{url}
 		\RequirePackage{wrapfig} % Wrap figures
 		\RequirePackage{acro} % Acronyms
+		\RequirePackage{caption}
+		\RequirePackage{subcaption} % Subfigures
 		% \RequirePackage{witharrows} % Pretty margin anotations for equations
 		% \RequirePackage{mdframed}
 

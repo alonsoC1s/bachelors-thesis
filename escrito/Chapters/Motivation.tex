@@ -153,7 +153,7 @@ in several classic board games. Chess was ``mastered'' when Kasparov, then chess
 grandmaster, was beaten by Deep Blue in 1997 \cite{silverchess}. Other board
 games with enormous state spaces, such as Go, the game that originated in China,
 proved to be too complex for the techniques used by Deep Blue. Deep Blue was
-mainly based on hard-coded openings and endgames taken from other grandmaster
+mainly based on hard-coded openings and end\-ga\-mes taken from other grandmaster
 games, which differs significantly from the \ac{rl} approach. Go was much later
 attacked by another robot player named AlphaGo, developed by researchers from a
 company named DeepMind \cite{silver2017mastering}. AlphaGo defeated Lee Sedol,
@@ -170,7 +170,7 @@ some available for sale, in which a player is at any given moment. In order to
 move, a player spins an arrow fixed on the center of a circle that can stop at
 any of four circle segments numbered from 1 to 4. This is the number of squares
 the player moves forward. We refer to this spinning arrow as the
-\textit{spinner}.
+\textit{spinner}. We will be calling this game \emph{Miniopoly}.
 
 Figure \ref{fig:miniopoly-board} shows a picture of the board for this game. The
 squares numbered 1 through 8 (colored in shades of red, blue, purple, and green)
@@ -190,12 +190,6 @@ receives money every time it completes the circuit.
 Predictably, the point of the game is to make the most money. The game ends when
 either the robot or its opponent goes bankrupt. What purchase strategy must the
 robot follow to win?
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=.65\textwidth]{img/board.pdf}
-	\caption{Board for the game described earlier.}
-	\label{fig:miniopoly-board}
-\end{figure}
 
 First, unlike the slot machine-playing robot, this robot player cannot entirely
 choose which square to move to. It can only decide if it wants to purchase it or
@@ -207,13 +201,24 @@ Figure \ref{fig:miniopoly-diagram-start} shows a simplified version of the
 board. Only the squares accessible on the first turn are shown, along with
 arrows indicating the possible transitions between the starting square and the
 rest.
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=.65\textwidth]{img/diagram-start.pdf}
-	\caption{Squares accessible on the first turn.}
-	\label{fig:miniopoly-diagram-start}
-\end{figure}
 
+\begin{figure}[h]
+    \centering
+	\begin{subfigure}[t]{0.45\textwidth}
+		\centering
+		\includegraphics[width=0.95\textwidth]{img/board.pdf}
+		\caption{Board for the game described earlier.}
+		\label{fig:miniopoly-board}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.45\textwidth}
+		\centering
+		\includegraphics[width=0.95\textwidth]{img/diagram-start.pdf}
+		\caption{Squares accessible on the first turn.}
+		\label{fig:miniopoly-diagram-start}
+	\end{subfigure}
+    \caption{Miniopoly board with example transitions from the starting square}
+    \label{figs:miniopoly-boards-transitions}
+\end{figure}
 In figure \ref{fig:miniopoly-diagram-start}, we can see all the possible squares
 the robot might land on and then buy starting from the first turn. Notice how
 squares 6 and further are not included. If the robot were to spin a 4, the red

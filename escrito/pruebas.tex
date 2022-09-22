@@ -19,9 +19,6 @@
 % \tikzexternalize[prefix=tikz/]
 \usepackage{import}
 
-\usepackage{caption}
-\usepackage{subcaption}
-
 % Bibliografía
 \usepackage{csquotes}
 \usepackage[
@@ -48,6 +45,12 @@
 
 \begin{document}
 
+%==============================================================================%
+% --------------------------Title & Front Matter ----------------------------- %
+%==============================================================================%
+\pagestyle{plain}
+\pagenumbering{arabic}
+
 \frontmatter
 \pagenumbering{roman}
 \maketitle
@@ -68,20 +71,20 @@
 
 \mainmatter
 
-%====================================================%
-% Start of the content proper ---------------------- %
-%====================================================%
+%==============================================================================%
+% --------------------------Start of the content proper ---------------------- %
+%==============================================================================%
 \pagestyle{plain}
 \pagenumbering{arabic}
 
 % % \include{Chapters/Intro}
-% \include{Chapters/Motivation}
+\include{Chapters/Motivation}
 
 \part{Foundations}
 \label{part:I}
 
 	% \include{Chapters/OptimizationTheory}
-	\include{Chapters/SupervisedLearning}
+	% \include{Chapters/SupervisedLearning}
 	% \include{Chapters/ReinforcementLearning}
 
 \part{Approximate solutions to the Reinforcement Learning Problem}
