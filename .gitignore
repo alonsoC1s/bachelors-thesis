@@ -12,3 +12,8 @@ vault/readings/
 .obsidian
 .csvescrito/Literate/
 escrito/Literate
+*.acr
+*.bcf
+*.fdb_latexmk
+*.fls
+*.out
