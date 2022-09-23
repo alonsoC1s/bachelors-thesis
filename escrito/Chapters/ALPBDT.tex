@@ -1,2 +1,79 @@
 \chapter{Approximate Linear Programming Based Decission Trees}
 \label{chapter:ALPBDT.tex}
+
+In chapter \ref{chapter:CARTasRLP} we showed how the \ac{cart} fitting procedure
+can be cast an \ac{mdp} and consequently tackled as a Reinforcement Learning
+Problem. We concluded that the state space $\mathcal{S}$ corresponds to the set
+of all partitions of the training set $\L_t$; the action space coresponds to the
+set of all observed values for each available feature, and the state-value
+function is the Gini impurity index. In this chapter we will define the
+necessary abstractions to implement the method we named \acf{alpbdt} in Julia.
+We use Julia because it allows for an efficient implementation, ease of use, and
+enjoys some of the best ecosystems for optimization.
+
+To represent \iac{mdp}, we define a some types. Using the code in
+\cite{kochenderfer2022} as inspiration, listing \ref{lst:structs} presents the
+code needed to represent \iac{mdp}. The state and action spaces are represented
+using Vectors, which in Julia are contiguous arrays. The probability transition
+function is represented as a 3-dimensional matrix, since it aims to capture $p(s
+\mid s', a)$. This is represented as a Union of a 3-d Matrix and Nothing to
+allow for problems that have determinisitc transitions.
+
+\begin{lstlisting}[
+    language=Julia, caption={Type definition of an \ac{mdp}}, label={lst:structs}
+    ]
+struct State name::Symbol end
+
+struct Action name::Symbol end
+
+struct DiscreteMDP
+    𝒮   ::Vector{State}
+    𝒜   ::Vector{Action}
+    p   ::Union{Array{Float64, 3}, Nothing}
+    R   ::Function
+    γ   ::Float64
+end
+\end{lstlisting}
+
+In listing \ref{lst:basic-funcs} we define implement a lookahead function that
+will be neede later to solve the RL problem, and the definition of a policy
+function.
+
+\begin{lstlisting}[
+    language=Julia, caption={Basic \ac{mdp} functionality},
+    label={lst:basic-funcs}
+    ]
+function lookahead(P::DiscreteMDP, U, s::State, a::Action)
+    S, R, γ = P.𝒮, P.R, P.γ
+    return R(s, a) + γ * sum(U[i] for (i, s′) in enumerate(S))
+end
+
+struct ValueFunctionPolicy
+    P   ::DiscreteMDP
+    U   ::Function
+end
+
+function greedy(P::DiscreteMDP, U, s::State)
+    u, a = findmax(a -> lookahead(P, U, s, a), P.𝒜)
+    return (a=a, u=u)
+end
+
+(π::ValueFunctionPolicy)(s::State) = π.P.𝒜[greedy(π.P, π.U, s).a]
+\end{lstlisting}
+
+Listing \ref{lst:LP-form} deals with the Exact Linear Programming formulation
+discussed in chapter \ref{chapter:ApproximateLinearP}.
+
+\begin{lstlisting}[
+    language=Julia,
+    caption={Linear Programming formulation for an RL Problem},
+    label={lst:LP-form}
+]
+function tensorform(P::DiscreteMDP)
+    𝒮, 𝒜, R = P.𝒮, P.𝒜, P.R
+    𝒮′ = eachindex(𝒮)
+    𝒜′ = eachindex(𝒜)
+    R′ = [R(s, a) for s ∈ 𝒮, a ∈ 𝒜]
+    return 𝒮′, 𝒜′, R′
+end
+\end{lstlisting}
