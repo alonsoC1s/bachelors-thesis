@@ -17,3 +17,4 @@ escrito/Literate
 *.fdb_latexmk
 *.fls
 *.out
+codigo/ALPBDT/DecisionMakingProblems.jl

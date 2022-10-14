@@ -11,9 +11,9 @@
 %================================%
 \DeclareOption{colorful}{
 	\AtEndOfClass{
-		%=================%
+		% =================%
 		% Page dimensions %
-		%=================%
+		% =================%
 		% \usepackage[
 		% 		showframe,
 		% 		paperwidth=17cm,
@@ -168,7 +168,7 @@
 
 	\noindent
 	{
-	\fontfamily{lmr}\selectfont
+	% \fontfamily{lmr}\selectfont
 	<<Con fundamento en los artículos 21 y 27 de la Ley Federal 
 	del Derecho de Autor y como titular de los derechos moral y 
 	patrimonial de la obra titulada ``\textbf{\@title}'', 
@@ -179,7 +179,7 @@
 	entre sus usuarios, profesores, estudiantes o terceras 
 	personas, sin que pueda percibir por tal divulgación una 
 	contraprestación.>>
-	\normalfont
+	% \normalfont
 	}
 
 	\centering 

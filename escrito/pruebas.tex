@@ -1,7 +1,7 @@
 \documentclass[colorful]{sty/itam-thesis}
 
 \usepackage[
-		% showframe,
+		showframe,
 		paperwidth=17cm,
 		paperheight=22.5cm,
 		nofoot=true,
@@ -10,6 +10,13 @@
 		outer=1.8cm,
 		top=2.5cm,
 		bottom=1.5cm
+		%% Dimensiones para hoja suelta de derechos %%
+		% paperwidth = 8.5in,
+		% paperheight = 27.9cm,
+		% margin = 1.9in,
+		% headheight = 0cm,
+		% headsep = 0cm,
+		% textwidth = 4.7in
 	]{geometry}
 
 \usepackage{tikz}
@@ -19,7 +26,7 @@
 % \tikzexternalize[prefix=tikz/]
 \usepackage{import}
 
-\input{sty/julia_unicode.tex}
+% \input{sty/julia_unicode.tex}
 
 % Bibliografía
 \usepackage{csquotes}
@@ -41,7 +48,7 @@
 }
 \subtitle{%
 	Approximate solutions to the Reinforcement Learning Problem via Linear
-	Programming; with applications to Supervised Machine Learning.%
+	Programming; with applications to Supervised Machine Learning%
 }
 \date{2022}
 
@@ -59,7 +66,7 @@
 \makefrontmatter
 
 % Something
-\cleardoublepage
+% \cleardoublepage
 % \pagestyle{plain}
 % \pagenumbering{arabic}
 
@@ -67,10 +74,14 @@
 \include{FrontBackMatter/Acknowledgments}
 \include{FrontBackMatter/Abstract}
 
-\tableofcontents
-\listofalgorithms
-\cleardoublepage
+{
+	\hypersetup{hidelinks}
 
+	\tableofcontents
+	\listofalgorithms
+}
+
+\cleardoublepage
 \mainmatter
 
 %==============================================================================%
@@ -99,7 +110,8 @@
 \label{part:III}
 
 	\include{Chapters/CARTasRLP}
-	% \include{Chapters/ALPBDT}
+	\include{Chapters/ALPBDT}
+	\include{Chapters/Conclusions}
 
 \appendix
 \addcontentsline{toc}{part}{Appendices}

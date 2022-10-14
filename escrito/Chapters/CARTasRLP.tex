@@ -58,7 +58,6 @@ notation used in the algorithm below, please refer to chapter
 
 \begin{algorithm}
     \SetKwFunction{TrueBestSplit}{FindTrueBestBinarySplit}
-    \SetKwFunction{Value}{value}
     \KwIn{A subset $\L_t$ of the training set $\L$}
     \KwOut{The true best binary split $s_*$ on $\L_t$ and impurity decrease achieved $\Delta_{*}$.}
     \Function{\TrueBestSplit{$\L_t$}}{
@@ -70,8 +69,8 @@ notation used in the algorithm below, please refer to chapter
                     \Return{$(\Delta i(s, t), s)$}
                 }
                 Partition $\L_t$ into $\L_{t_L}, \L_{t_R}$ according to $s$ \; 
-                $\Delta_{L}^{*} \gets$ \TrueBestSplit{$\L_{t_L}$}.\Value{} \;
-                $\Delta_{R}^{*} \gets$ \TrueBestSplit{$\L_{t_R}$}.\Value{} \;
+                $\Delta_{L}^{*} \gets$ \TrueBestSplit{$\L_{t_L}$} \;
+                $\Delta_{R}^{*} \gets$ \TrueBestSplit{$\L_{t_R}$} \;
                 \If{$\Delta i(s, t) + \Delta_{L}^{*} + \Delta_{R}^{*} > \Delta$ \label{value-calculation}}{
                     $\Delta_* \gets \Delta i(s, t) + \Delta_{L}^{*} + \Delta_{R}^{*}$ \;
                     $s_{*} \gets s = x_{j, i}$
@@ -133,14 +132,14 @@ Where the last identify is a consequence of \eqref{eq:q-by-v}. In simple words,
 we establish that the policy $\pi_*$ will assign to state $s$ the action $a_*$
 that maximizes $q_* (s, a)$. 
 
-From now on we use the symbol $\dot{s}$ to denote splits to avoid confusing it
+From now on we use the symbol $\bar{s}$ to denote splits to avoid confusing it
 with the symbol $s$ which is used to denote states. Looking closely at
 \eqref{eq:greedy-split-condition} we note that the idea for creating an optimal
 policy (in this case, the splits defining a tree) is very similar to the
 strategy used to prove Theorem \ref{thrm:opt-policy-existence}. The impurity
 decrease function calculates the reward to be obtained by splitting node $t$
-using the split $\dot{s}$. In other words, it is a function of both the state (a
-node $t$) and some action (splitting using $\dot{s}$). This makes it analogous
+using the split $\bar{s}$. In other words, it is a function of both the state (a
+node $t$) and some action (splitting using $\bar{s}$). This makes it analogous
 to the \emph{expected reward function} defined in Definition
 \ref{dfn:rewards-func}.
 
@@ -148,9 +147,9 @@ By recognizing that:
 \begin{itemize}
     \item The nodes $t$ we reviewed in the tree fitting algorithm correspond to
         the states $s \in \States$ of a \ac{rl} problem,
-    \item The splits $\dot{s} \in \mathcal{Q}$ correspond to the actions $a \in
+    \item The splits $\bar{s} \in \mathcal{Q}$ correspond to the actions $a \in
         \Actions$ of a \ac{rl} problem,
-    \item The impurity decrease function $\Delta i(\dot{s}, t)$ is analogous to
+    \item The impurity decrease function $\Delta i(\bar{s}, t)$ is analogous to
         the expected rewards function,
 \end{itemize}
 it becomes clear that the tree fitting procedure is indeed a special case of the
@@ -171,17 +170,21 @@ split was good or bad, and it is a function over the set of states, which is the
 space of possible node in this case. With this in mind, we can define the
 action-value function for the tree fitting problem:
 \begin{equation}
-    q (t, \dot{s}) = \Delta i(\dot{s}, t) + \sum_{t'} i (t').
+    q (t, \bar{s}) = \Delta i(\bar{s}, t) + \sum_{t'} i (t').
 \end{equation}
 
-So far we have avoided explicitly describing an impurity function. The selection of a suitable impurity function comes with some caveats that are outside of scope for this thesis. Suffice it to say that from now on we will be using the Gini impurity index, which we define below.
+So far we have avoided explicitly describing an impurity function. The selection
+of a suitable impurity function comes with some caveats that are outside of
+scope for this thesis. Suffice it to say that from now on we will be using the
+Gini impurity index, which we define below.
 
 \begin{dfn}{Gini Impurity Index \cite[Ch.~8.1.2]{intro2statslearning} }{gini-index}
     The \emph{gini impurity index} or simply the \emph{gini index} is defined by
     \begin{equation}
-        G = \sum_{k=1}^{K} \widehat{p}_{mk}(1 - \widehat{p}_{mk}).
+        i_{G}(t) = \sum_{k=1}^{K} \IP{c_k \mid t} \left( 1 - \IP{c_k \mid t} \right).
     \end{equation}
-    Here $\widehat{p}_{mk}$ represents the proportion of training observations in the $m$-th region that belong to the $k$-th class.
+    The expression $\IP{c_k \mid t}$ is the probability that some observation in
+    $t$ belongs to category $c_k$.
 \end{dfn}
 
 We refer to the Gini index as an impurity index since it is a measure of how
@@ -247,12 +250,12 @@ all questions that define binary splits. The set of questions can be described
 as $\mathcal{Q} = \{ \text{is } x \leq x_{j, i} \text{ ?} \mid x_{j, i} \in
 \mathcal{X}_{j}^{t}, \; \forall j = 1, \dots, p \}$.  The innermost loop in
 algorithm \ref{alg:true-best-binary-split} is ennumerating all the actions in
-the set of available actions. Since choosing a split $\dot{s}$ on a given subset
+the set of available actions. Since choosing a split $\bar{s}$ on a given subset
 $\L_t$ always results in the same partition into $\L_{t_L}$ and $\L_{t_R}$ being
 made, the transition function $p(s' \mid s, a)$ is not necessary for this
 problem. Finally, the expected reward function for a state $s$ and action $a$,
-$r(s, a)$, is precisely the impurity decrease function $\Delta i(\dot{s}, t)$
-for a split $\dot{s}$ and node $t$. The value function is the impurity function
+$r(s, a)$, is precisely the impurity decrease function $\Delta i(\bar{s}, t)$
+for a split $\bar{s}$ and node $t$. The value function is the impurity function
 $i(t)$.
 
 Given the equivalences we just established, we proceed to reformulate the Exact Linear program \ref{lp:exact-lp}, presented in chapter \ref{chapter:ApproximateLinearP}. The ELP was formulated, using the general form of the state-value and rewards functions, by transforming:
@@ -277,9 +280,9 @@ The Exact Linear Program for this problem can be formulated using the impurity d
 \begin{equation}
 \label{eq:pre-cart-lp}
 \begin{array}{rl@{}ll}
-    \displaystyle \min_{i: B_\L \to \R} & \displaystyle \sum_{t \in B_\L} i(t) \\
-    \text{Subject to} & \displaystyle i(\dot{s}) \geq \Delta i(\dot{s}, t') + \sum_{t'} i(t') & \quad \forall t' \in B_\L, \dot{s} \in \mathcal{Q}. \\
-    & i(t) \text{ unconstrained,} & \quad \forall t \in B_\L.
+    \displaystyle \min_{i_G: B_\L \to \R} & \displaystyle \sum_{t \in B_\L} i_{G}(t) \\
+    \text{Subject to} & \displaystyle i_{G}(\bar{s}) \geq \Delta i_{G}(\bar{s}, t') + \sum_{t'} i(t') & \quad \forall t' \in B_\L, \bar{s} \in \mathcal{Q}. \\
+    & i_{G}(t) \text{ unconstrained,} & \quad \forall t \in B_\L.
 \end{array}
 \end{equation}
 
@@ -288,9 +291,9 @@ it in terms of vectors and matrices as we did in chapter
 \ref{chapter:ApproximateLinearP}. We consider the impurity function as a vector
 $\vec{i}$,
 \[
-    \vec{i} = \left[ i(t_1), \dots, i(t_{|B_L|}) \right].  
+    \vec{i} = \left[ i_{G}(t_1), \dots, i_{G}(t_{|B_L|}) \right]^{\top}.  
 \]
-We also introduce $\vec{Di}_{\dot{s}} \in \R^{|B_\L|}$ defined as $[\Delta i(t_1, \dot{s}), \dots, \Delta i(t_{|B_\L|}, \dot{s})]^{\top}$.
+We also introduce $\vec{Di}_{\bar{s}} \in \R^{|B_\L|}$ defined as $[\Delta i(t_1, \bar{s}), \dots, \Delta i(t_{|B_\L|}, \bar{s})]^{\top}$.
 
 By using the notation just introduced, we can write \eqref{eq:pre-cart-lp} as:
 \begin{equation}
@@ -298,11 +301,12 @@ By using the notation just introduced, we can write \eqref{eq:pre-cart-lp} as:
 \label{lp:cart-elp}
 \begin{array}{rl@{}ll}
     \displaystyle \min_{\vec{i} \in \R^{|B_\L|}} & \vec{c}^{\top} \vec{i} \\
-    \text{Subject to} & \displaystyle \vec{i} \geq \vec{Di}_{\dot{s}} + \gamma \sum_{t'} \vec{i} & \quad \forall \dot{s} \in \mathcal{Q}, \\
+    \text{Subject to} & \displaystyle \vec{i} \geq \vec{Di}_{\bar{s}} + \gamma \sum_{t'} \vec{i} & \quad \forall \bar{s} \in \mathcal{Q}, \\
     & \vec{i} \text{ unconstrained.} &
 \end{array}
 \end{equation}
-This formulation is nothing more than the original ELP using the equivalences between state-value and rewards functions established this chapter.
+This formulation is nothing more than the original ELP using the equivalences
+between state-value and rewards functions established this chapter.
 
 For now we refrain from selecting a basis $\Phi$ of functions. The choice of
 this basis is heuristic and relies on experience with the specific problem to be
@@ -323,14 +327,13 @@ particularly novel. The approach has been explored for instance by
 \citeauthor{xiong} in \cite{xiong}. In their article the authors try to learn
 optimal splitting strategies with a Recurrent Neural Network controller trained
 by \ac{rl} to maximize impurity decrease with the Gini impurity function. They
-baptize their algorithm as RLBDT (Reinforcement Learning Based Decission Trees).
-The article concludes that RLBDT outperforms the traditional greedy fitting
-algorithm known as \ac{cart}.
+name their algorithm \ac{rlbdt}. The article concludes that \ac{rlbdt}
+outperforms the traditional greedy fitting algorithm known as \ac{cart}.
 
 Previous work laid out by \citeauthor{xiong} suggests there is some merit to the
 idea of using \ac{rl} for the problem described in this chapter. However, the
 approach taken, which is utilizing Recurrent Neural Networks, is very different
 from the approach we took. This chapter was developed almost entirely without
 external references, leveraging only the concepts reviewed earlier. In the next
-and final chapter of this thesis we discuss an implementation of \ac{cart} and
-the \ac{alpbdt} in Julia, and run some test to compare the implementations.
+and final chapter of this thesis we discuss a possible implementation of
+\ac{cart} and the \ac{alpbdt} in Julia

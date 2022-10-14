@@ -71,6 +71,7 @@
     UprightFont=*-Regular,
 ]
 
+\input{./sty/julia_unicode.tex}
 
 % Language definitions and listings
 \lstdefinelanguage{julia}{
@@ -80,7 +81,8 @@
 		findmin, ones, else, length, trues, isfinite., abs., 
 		abs, eps, Float64, julia>, julia, println, Bool, rand, 
 		prinln, round, pkg, mutable, struct, Int, Dict, Tuple, 
-		Union, Nothing, Int8, UInt, Vector, Function, eachindex, for, enumerate},
+		Union, Nothing, Int8, UInt, Vector, Function, eachindex,
+		for, enumerate, in, findmax, sum, @variable, @objective, optimize!},
         morekeywords = [1]{1,2,3,40},
 		sensitive=false,
 		morestring=[s]{"}{"},
@@ -182,6 +184,11 @@
 	long = Linear Program,
 	short-indefinite = an,
 	long-indefinite = a,
+}
+\DeclareAcronym{rlbdt}{
+	short = rlbdt,
+	long = Reinforcement Learning Based Decission Trees,
+	short-indefinite = an,
 }
 \DeclareAcronym{alpbdt}{
 	short = alpbdt,

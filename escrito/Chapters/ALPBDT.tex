@@ -1,5 +1,5 @@
 \chapter{Approximate Linear Programming Based Decission Trees}
-\label{chapter:ALPBDT.tex}
+\label{chapter:ALPBDT}
 
 In chapter \ref{chapter:CARTasRLP} we showed how the \ac{cart} fitting procedure
 can be cast an \ac{mdp} and consequently tackled as a Reinforcement Learning
@@ -9,15 +9,16 @@ set of all observed values for each available feature, and the state-value
 function is the Gini impurity index. In this chapter we will define the
 necessary abstractions to implement the method we named \acf{alpbdt} in Julia.
 We use Julia because it allows for an efficient implementation, ease of use, and
-enjoys some of the best ecosystems for optimization.
+enjoys some of the best ecosystems for optimization problems.
 
 To represent \iac{mdp}, we define a some types. Using the code in
 \cite{kochenderfer2022} as inspiration, listing \ref{lst:structs} presents the
 code needed to represent \iac{mdp}. The state and action spaces are represented
-using Vectors, which in Julia are contiguous arrays. The probability transition
-function is represented as a 3-dimensional matrix, since it aims to capture $p(s
-\mid s', a)$. This is represented as a Union of a 3-d Matrix and Nothing to
-allow for problems that have determinisitc transitions.
+using \lstinline{Vector}s, which are contiguous arrays in Julia. The probability
+transition function is represented as a 3-dimensional \lstinline{Matrix}, since
+it aims to capture $p(s \mid s', a)$. This is represented as a \lstinline{Union}
+of a 3-d \lstinline{Matrix} and \lstinline{Nothing} to allow for problems that
+have determinisitc transitions.
 
 \begin{lstlisting}[
     language=Julia, caption={Type definition of an \ac{mdp}}, label={lst:structs}
@@ -45,7 +46,7 @@ function.
     ]
 function lookahead(P::DiscreteMDP, U, s::State, a::Action)
     S, R, γ = P.𝒮, P.R, P.γ
-    return R(s, a) + γ * sum(U[i] for (i, s′) in enumerate(S))
+    return R(s, a) + γ * sum(U[i] for (i, s′) ∈ enumerate(S))
 end
 
 struct ValueFunctionPolicy
@@ -64,6 +65,12 @@ end
 Listing \ref{lst:LP-form} deals with the Exact Linear Programming formulation
 discussed in chapter \ref{chapter:ApproximateLinearP}.
 
+Listing \ref{lst:LP-form} presents how the vectors and matrices needed to define
+\eqref{lp:cart-elp} can be obtained for some \ac{mdp}. These will be necessary
+later on to solve the Linear Program. Julia's built-in function
+\lstinline{eachindex} returns an iterable of efficient indexes that can be used
+to iterate over the structure passed as its argument.
+
 \begin{lstlisting}[
     language=Julia,
     caption={Linear Programming formulation for an RL Problem},
@@ -77,3 +84,40 @@ function tensorform(P::DiscreteMDP)
     return 𝒮′, 𝒜′, R′
 end
 \end{lstlisting}
+
+Finally, listing \ref{lst:lp-solving} shows how we can use the Julia packages
+JuMP and GLPK to solve the specific Linear Program associated with the
+\ac{alpbdt}. JuMP is a package that introduces a Domain Specific Language to
+Julia that allows the user to use a mathematics-friendly notation to pose
+optimization problems, without having to worry about solver-specific code or
+representations. On the other hand, the GLPK.jl package is a wrapper of the
+widely used, battle-tested GNU Linear Programming Kit, which is used to solve
+Linear and Mixed Integer Programs.
+
+\begin{lstlisting}[
+    language=Julia,
+    caption={Code used to solve a Linear Program},
+    label={lst:lp-solving}
+]
+function ELP(p::DiscreteMDP)
+    𝒮, 𝒜, R, T = tensorform(p)
+    model = Model(GLPK.Optimizer)
+    @variable(model, U[𝒮])
+    @objective(model, Min, sum(U))
+    @constraint(model, [s=𝒮, a=𝒜], U[s] >= R[s, a] + p.γ * T[s, a, :] · U)
+    optimize!(model)
+    return ValueFunctionPolicy(p, value.(U))
+end
+\end{lstlisting}
+
+Using the code presented this chapter, all that is left to implement to finally
+provide a complete implementation of \ac{alpbdt} is to provide an instance of
+the \lstinline{DiscreteMDP} structure that captures the \ac{cart} fitting
+procedure within the confines of \iac{mdp}. This is relatively simple to do once
+we developed the theory of Chapter \ref{chapter:CARTasRLP}. Regretably, we do
+not include that final step in the present work for several reasons. For
+instance, to fully develop the remaining steps we would need to develop in full
+the concepts of cross validation, and introduce the classic hyperparameters used
+in the \ac{cart} fitting procedures such as max depth, to name a few. That being
+said, the theoretical groundwork is laid in this thesis. What remains to be done
+is an engineering problem.
