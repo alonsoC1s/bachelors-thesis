@@ -308,7 +308,17 @@ entire books.
     \label{alg:tree-fit}
 \end{algorithm}
 
-Hola
+Let us focus on a specific example. Consider a classification task with two
+classes and two features $X_1$ and $X_2$. Plotting the observations in the $X_1,
+X_2$ plane, using a different marker shape and color for the two classes of
+interest, figure \ref{fig:classification-task} shows the distribution of the
+observations in the training set. The task is to separate the observations in
+group one, represented as circles, from the observations in the second group,
+represented as rhomboids. The resulting tree for the classification task is
+represented in figure \ref{fig:tree-diagram}, terminal nodes are shaded and the
+decision rules are annotated on the branches of the tree. It can be seen that
+the tree structure recognizes and reproduces the fact that rhomboids are almost
+entirely contained in the square $[0.25, 0.75] \times [0.25, 0.75]$.
 
 \begin{figure}[h]
     \centering
