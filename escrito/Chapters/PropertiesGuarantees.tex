@@ -10,10 +10,11 @@ demistify some of the claims made about linear program \eqref{lp:approx-lp}
 being ``easier'' to solve.
 
 Recall that in the definition of \eqref{lp:approx-lp} we referred to the vector
-$\vec{c}$ as the \emph{state-relevance wights}. The choice of state-relevance
-weights does not influence the solution of \eqref{lp:exact-lp}, but it does
-affect \eqref{lp:approx-lp}. The results discussed below demonstrate the impact
-on the quality of the resulting approximation.
+$\vec{c}$ as the \emph{state-relevance wights}. The choice of these
+state-relevance weights does not influence the solution of \eqref{lp:exact-lp},
+but it does affect \eqref{lp:approx-lp} as stated in \cite{farias2003LP2ADP}.
+The results discussed below demonstrate the impact on the quality of the
+resulting approximation.
 
 \section{Preliminaries}
 
@@ -23,8 +24,8 @@ on the quality of the resulting approximation.
     \[
         \left\| \vec{x} \right\|_{1, \vec{c}} \coloneqq  \sum_i |x_i| c_i.
     \]
-    Vector $\vec{c}$ must be non-negative in each entry, and the same dimensions
-    as $\vec{x}$.
+    The vector $\vec{c}$ must be strictly positive in each entry, and the same
+    dimensions as $\vec{x}$.
 \end{dfn}
 
 We defined the weighted $\ell_1$ norm for vectors, but it will become useful to
@@ -41,11 +42,11 @@ extension of the weighted norm as follows.
     \[
         \left\| \vec{v} \right\|_{1, \sigma} \coloneqq \sum_{s \in \States} \sigma(s) \, |v(s)|,
     \]
-    for some vector $\vec{v} \sim \sigma$ where $\sigma$ is a probability
+    for each vector $\vec{v} \sim \sigma$ where $\sigma$ is a probability
     distribution.
 \end{dfn}
 
-To measure the quality of a specific policy $\pi$ we will consider the how the
+To measure the quality of a specific policy $\pi$ we will consider how the
 value $v_\pi(s)$ compares to the optimal value $v_* (s)$ when the initial state
 $s$ is a random variable with probability distribution $\sigma$. Intuitively,
 how far are the expected total discounted rewards from the optimal when
@@ -55,7 +56,7 @@ following policy $\pi$.
     The expected increase in value following a policy $\pi$ is defined as
     \begin{equation}
         \label{eq:expected-value-increase}
-        \E_{s \sim \sigma} \left[ v_* (s) - v_\pi (s) \right] = \left\| \vec{v
+        \E_{s \sim \sigma} \left[ v_* (s) - v_\pi (s) \right] \coloneqq \left\| \vec{v
         }_* - \vec{v}_\pi \right\|_{1, \sigma}.
     \end{equation}
     The notation $s \sim \sigma$ means that $s$ is a particular realization of the
@@ -63,12 +64,12 @@ following policy $\pi$.
 \end{dfn}
 
 Next, we define a probability measure that captures the probability of the agent
-being in some state given that it is following policy $\pi$ and starte on some
-randomly distributed $s \sim \sigma$.
+being in some state given that it is following policy $\pi$ and started on some
+state $s$, randomly distributed according to distribution $\sigma$.
 
 \begin{dfn}{The $\mu$ measure}{mu-measure}
     We define a measure represented by the vector $\mu$, where each entry
-    $\mu(s)$ is the measure evaluated at that $s$, as
+    $\mu(s)$ is the measure evaluated at that state $s$, as
     \[
         \mu_{\pi, \, \sigma}^{\top} \coloneqq (1 - \gamma) \sigma^{\top} \sum_{t=0}^{\infty} \gamma^{t} \vec{P}_{\pi}^{t}.
     \]
@@ -78,7 +79,8 @@ randomly distributed $s \sim \sigma$.
         \mu_{\pi, \, \sigma}^{\top} = (1 - \gamma) \sigma^{\top} (I - \gamma \vec{P}_{\pi})^{-1}.
     \]
     We say $\mu$ is a measure in the sense of measure theory. It can be shown
-    \Cite[pg.~864]{farias2003LP2ADP} that $\mu$ is a probability distribution.
+    \Cite[pg.~864]{farias2003LP2ADP} that $\mu$ is a probability distribution
+    (assuming $\sigma$ is known).
 \end{dfn}
 
 \section{Error bounds for the ALP}
@@ -102,13 +104,15 @@ for the approximation procedure.
         \text{S.t.} & \displaystyle \Phi \vec{\beta} \leq \vec{R}_a + \gamma \vec{P}_a \, \Phi \vec{\beta} & \quad \forall a \in \Actions. \\
     \end{array}
     \]
+    Where $\vec{v}_*$ is the vector that represents the optimal state-value
+    function. For a review on notation, refer to equations \ref{lp:approx-lp}.
 \end{lemma}
 
 Lemma \ref{lem:farias-vanroy-lem1} corresponds to Lemma 1 in
 \Cite[pg.~853]{farias2003LP2ADP}, and effectively establishes that
 \eqref{lp:approx-lp} can be solved as the minimization of a weighted norm where
 the weights are given by the state-relevance weights. The state-relevance
-weights vector does what it's name suggests: impose a balance of the quality of
+weights vector does what its name suggests: impose a balance of the quality of
 the approximation of the value function for each state. This means that by
 tuning $\vec{c}$ we can give more or less attention to different regions of the
 state space $\States$.
@@ -127,18 +131,19 @@ quality of approximations. Said theorem corresponds to Theorem 1 in
 \end{thrm}
 
 We use the notation $\pi_v$ to mean the policy that yields the value $v$. This
-policy can be extracted once a specific $v$ is known. Theorem
-\ref{thrm:farias-vanroy-thm1} assures us that if the approximate value function
-$\vec{v}$ found by solving the LP is close to the optimal $\vec{v}_{*}$, then
-the performance of the policy generated by $\vec{v}, \pi_v$  will also be close
-to the perfomance achieved by the optimal policy. By combining theorem
-\ref{thrm:farias-vanroy-thm1} with lemma \ref{lem:farias-vanroy-lem1} we
-conclude that we would like the initial state-relevance weight vector to capture
-the (discounted) frequency with which different states are expected to be
-visited. In other words we would like for $\vec{c}$ to be as close as possible
-to $\mu_{\pi_v, \, \sigma}$. That is, we would like to invest more effort
-approximating the function for the states the learning agent is most likely to
-visit, compromising on worse approximations for infrequent states.
+policy can be extracted once a specific $v$ is known, leveraging equation
+\eqref{eq:optimal-policy-generator}. Theorem \ref{thrm:farias-vanroy-thm1}
+assures us that if the approximate value function $\vec{v}$ found by solving the
+LP is close to the optimal $\vec{v}_{*}$, then the performance of the policy
+generated by $\vec{v}, \pi_v$  will also be close to the perfomance achieved by
+the optimal policy. By combining theorem \ref{thrm:farias-vanroy-thm1} with
+lemma \ref{lem:farias-vanroy-lem1} we conclude that we would like the initial
+state-relevance weight vector to capture the (discounted) frequency with which
+different states are expected to be visited. In other words we would like for
+$\vec{c}$ to be as close as possible to $\mu_{\pi_v, \, \sigma}$. That is, we
+would like to invest more effort approximating the function for the states the
+learning agent is most likely to visit, compromising on worse approximations for
+infrequent states.
 
 \subsection{Error bounds for the ALP}
 We begin with a simple bound for the error of the ALP, expressing it as a
@@ -146,43 +151,51 @@ function of the minimal error given the selected basis functions.
 
 \begin{thrm}{}{farias-vanroy-thm2}
     Let $\mu: \States \to [0,1]$ be a probability distribution over the state
-    space. If $\vec{\beta}$ is an optimal solution to \eqref{lp:approx-lp},
+    space. If $\vec{\beta}$ is an optimal solution to \eqref{lp:approx-lp}, the
+    following holds true:
     \[
-        \left\| \vec{v}_* - \Phi \vec{\beta} \right\|_{1, \, \mu} \leq \frac{2}{1-\alpha} \min_{\vec{\beta}} \left\| \vec{v}_* - \Phi \vec{\beta} \right\|_{\infty}.
+        \left\| \vec{v}_* - \Phi \vec{\beta} \right\|_{1, \, \mu} \leq \frac{2}{1- \gamma} \min_{\vec{\beta}} \left\| \vec{v}_* - \Phi \vec{\beta} \right\|_{\infty}.
     \]
 \end{thrm}
 
 Theorem \ref{thrm:farias-vanroy-thm2} tells us that whenever the optimal value
-function lies close to the span of the selected basis functions the ALP
-generates a good approximation. If the optimal value function lies within the
-span, then the ALP produces an exact solution.
+function lies close to the span of the selected basis functions then the
+\eqref{lp:approx-lp} generates a good approximation. If the optimal value
+function lies within the span of the basis functions (equivalently, the span of
+the columns of $\Phi$), then the \eqref{lp:approx-lp} produces an exact
+solution.
 
-The error bounds we can achieve can be improved much futher by considering Lyapunov functions.
+The error bounds we can achieve can be improved much futher by considering
+Lyapunov functions. In \cite{farias2003LP2ADP}, \citeauthor{farias2003LP2ADP}
+prove tighter bounds on the quality of approximations when using Lyapunov
+functions as the columns of $\Phi$.
 
 \section{Constraint Sampling}
 
 As previously mentioned, the \eqref{lp:approx-lp} has $|\States| \times
 |\Actions|$ constraints, often a prohibitive amount since this number is subject
 to the curse of dimensionality. However, since the number of variables is $K \ll
-|\States|$, most of the constraints are linearly dependent on the rest and
-therefore removing them does not affect the feasible region of the linear
-program. This allow for the Approximate Linear Program to be transformed into an
-equivalent LP with a much smaller number of constraints by only considering the
-linearly independent subset of constraints. We will refer to this new LP as the
-RLP (Reduced Linear Program).
+|\States|$, most of the constraints are linearly dependent and therefore
+removing them does not affect the feasible region of the linear program. This
+allows for the Approximate Linear Program to be transformed into an equivalent
+LP with a much smaller number of constraints by only considering the linearly
+independent subset of constraints. We will refer to this new LP as the RLP
+(Reduced Linear Program).
 
-\begin{dfn}{Reduced Linear Program (RLP)}{}
+\begin{dfn}{Reduced Linear Program \cite[Sec.~1.3]{farias2004constraint}}{}
     Let $m$ be a constraint sample size such that a LP with $m$ constraints is
     tractable. Let $\psi: \States \times \Actions \to [0, 1]$ be a probability
     distribution over all state-action pairs, and $\mathcal{X}$ a subset of all
     state-action pairs independently sampled according to $\psi$ such that
     $|\mathcal{X}| = m$. Let $\mathcal{N} \subseteq \R^K$ be a subset that
-    contains $\Phi\vec{\beta}$.  The \emph{Reduced Linear Program} is defined by
+    contains $\Phi\vec{\beta}$. Recall that the parameter $K \ll |\States|$ was
+    chosen as the number of basis functions to be used in the
+    \eqref{lp:approx-lp}. The \emph{Reduced Linear Program} is defined by
     \begin{equation}
         \label{lp:reduced-lp}
         \tag{RLP}
         \begin{array}{rl@{}ll}
-            \displaystyle \max_{\vec{\beta} \in \R^{K}} & \vec{c}^{\top} \Phi \vec{\beta} \\
+            \displaystyle \max_{\Phi\vec{\beta} \in \R^{K}} & \vec{c}^{\top} \Phi \vec{\beta} \\
             \text{S.t.} & \displaystyle \Phi \vec{\beta} \leq \vec{R}_a + \gamma \vec{P}_a \Phi \vec{\beta} & \quad \forall a \in \mathcal{X} \\
             & \vec{\beta} \in \mathcal{N}.
         \end{array}
@@ -191,8 +204,8 @@ RLP (Reduced Linear Program).
 
 \citeauthor{farias2004constraint} focus on two approaches: generating
 near-feasible solutions, and bounding the number of constraints to be sampled so
-that the RLP generates a solution that closely approximates an optimal solution
-to the ALP. We will be considering constraints of the form:
+that the \eqref{lp:reduced-lp} generates a solution that closely approximates an optimal solution
+to the \eqref{lp:approx-lp}. We will be considering constraints of the form:
 \[
     \alpha_{z}^{\top} \vec{\beta} + k_z \geq 0, \quad \forall z \in Z
 \]
@@ -202,11 +215,12 @@ In the case where we want to generate near-feasible solutions, we cannot
 guarantee that all constraints will be satisfied over the feasible region. Since
 we limit the approximation to a subset of constraints, we consider a subset to
 be good if we can guarantee that if we satisfy all constraints in the subset,
-the set of unsatisfied constraints has a small measure. The next theorem
-(corresponding to theorem 2.1 in \cite[pg.~467]{farias2004constraint})
-establishes a bound on the number $m$ of, possible repetated, sampled
-constraints necessary to ensure with probability $1 - \delta$ lead to
-near-feasibility.
+the set of unsatisfied constraints is small. The next theorem (corresponding to
+Theorem 2.1 in \cite[pg.~467]{farias2004constraint}) establishes a bound on the
+number of constraints needed for the \eqref{lp:reduced-lp} to achieve
+near-feasibility. Specifically, it determines a bound for $m$, where $m$ is the
+number of, possibly repeated, sampled constraints that ensure near-feasibility
+with probability $1 - \delta$.
 
 \begin{thrm}{}{fariasvanroy-thm2.1}
     For any $\delta \in (0,1)$, $\varepsilon \in (0,1)$ and $m$ that satisfies
@@ -232,23 +246,24 @@ probability smaller than $\varepsilon$.
 
 \section{Closing thoughts \& Bibliographical notes}
 
-In the present chapter we analyzed with greater care the benefits the ALP and
-later the \ac{rl}P would carry in practice in contrast to some of the more
-traditional methods for solving \ac{rl} problems through approximate dynamic
-programming. Even though we managed to escape to a certain degree the curse of
-dimensionality, we had to accept the cost of an increased number of parameters
-(choosing a distribution $\psi$, a number $m$ of constraints, and a subset
-$\mathcal{N}$), the need for heuristic approaches to setting parameters,
-decreased accuracy, to name the first that come to mind. This is no surprise as
-computational mathematics are often govenerned by the ``no free lunch''
-theorem\footnote{Not an actual theorem per-se.}, and if we sought more
-computationally attainable methods we must accept the trade-off. How much more
-efficient an implementation of ALP would be compared to traditional methods for
-solving \ac{rl} problems or even plain simple greedy approaches remains unclear.
-Having established the bases, in part \ref{part:III} we hope to answer this
-question for a specific problem: the fitting of Classification and Regresssion
-Trees. In the next chapter we propose why would framing the \ac{cart} fitting
-problem as an \ac{rl} problem might be warranted.
+In the present chapter we analyzed with greater care the benefits the
+\eqref{lp:approx-lp} and later the \eqref{lp:reduced-lp} would carry in practice
+in contrast to some of the more traditional methods for solving \acf{rl}
+problems through approximate dynamic programming. Even though we managed to
+escape to a certain degree the curse of dimensionality, we had to accept the
+cost of an increased number of parameters (choosing a distribution $\psi$, a
+number $m$ of constraints, and a subset $\mathcal{N}$), the need for heuristic
+approaches to setting parameters, decreased accuracy, to name the first that
+come to mind. This is no surprise as computational mathematics are often
+govenerned by the ``no free lunch'' theorem\footnote{Not an actual theorem
+per-se.}, and if we sought more computationally attainable methods we must
+accept the trade-off. How much more efficient an implementation of
+\eqref{lp:approx-lp} would be compared to traditional methods for solving
+\ac{rl} problems or even plain simple greedy approaches remains unclear.  Having
+established the bases, in part \ref{part:III} we hope to answer this question
+for a specific problem: the fitting of Classification and Regresssion Trees. In
+the next chapter we propose why would framing the \ac{cart} fitting problem as
+an \ac{rl} problem might be warranted.
 
 \subsection{Bibliographical notes}
 
@@ -257,6 +272,6 @@ This chapter is almost entirely a reproduction of results presented by
 \citetitle{farias2004constraint}. The notation is changed to the one introduced
 and used throughout this thesis as the original notation is better suited to
 areas in queueing theory and inventory management. The results are also given
-some context and interpretation based on the themes and goals of this present
-thesis. For more detail and proofs on the results presented here please refer to
+some context and interpretation based on the themes and goals of the present
+work. For more detail and proofs on the results presented here please refer to
 \cite{farias2003LP2ADP} and \cite{farias2004constraint} respectively.

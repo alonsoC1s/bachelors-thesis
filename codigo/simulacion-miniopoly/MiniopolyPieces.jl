@@ -50,7 +50,6 @@ end
 
 ### Square
 mutable struct Square
-    # s::UInt8
     id::Int
     owner::Union{Player,Nothing}
     hotels::Int8

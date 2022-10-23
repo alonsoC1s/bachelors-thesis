@@ -13,21 +13,22 @@ use on a daily basis to solve problems of the industry. This thesis makes an
 effort to present the concepts needed to understand the mathematical framework
 of Reinforcement Learning.
 
-Additionally to a detailed review of the theory, we explore some of the more
+In addition to a detailed review of the theory, we explore some of the more
 recent techniques in the field developed in the last decades, and propose how
 Reinforcement Learning might be useful in other areas of Artificial
 Intelligence. This thesis culminates by making the connection between these
 seemingly disconnected areas an idea that is, if not obvious, organic. Sadly,
 the implementation of \acf{alpbdt} and the proper comparison with \acf{rlbdt}
 could not be included in the present work due to several constraints. Hopefully,
-an implementation and more serious evaluation can be part of the future work.
+an implementation and more serious evaluation can be undertaken as a part of
+future work.
 
 \section{Future work}
 As mentioned previously, the \ac{alpbdt} algorithm could not be fully
 implemented, as the Approximate Linear Programming approach to solving a general
 Reinforcement Learning problem requires problem-specific knowledge to
 effectively model and leverage the strengths of the approach. There are many
-ways to circunvent those constraints, one of which is simply investing more time
+ways to overcome those constraints, one of which is simply investing more time
 and effort to gain that problem-specific knowledge. Sadly, this is outside of
 scope for a bachelor's thesis, and would require a dedicated and in-depth study
 of the particular problem. With this in mind, the completion of the
@@ -37,11 +38,11 @@ Beyond Reinforcement Learning, \ac{alpbdt} could be of significant importance
 specifically in the field of supervised machine learning. As was proved by
 \cite{caglar22}, any neural network with piece-wise linear activation functions
 can be represented \emph{exactly} as a decission tree, no approximations
-required. In the context of our work this hints that, not only \ac{rlbdt}
-\cite{xiong} can be matched in prediction perfomance, there is some hope to
-surpass it in terms of computational effort required for the training procedure.
-Looking farther, this means that neural networks, the bleeding edge technique in
-the field, can be understood and represented as the simple structure reviewed in
-this thesis. Understanding decission trees is becoming more relevant than ever,
-and finding better ways to leverage their power might be worthwile path for
-future reaserchers to follow.
+required. In the context of our work this hints that, not only \ac{rlbdt}'s
+prediction performance \cite{xiong} can be matched, there is some hope to
+achieve this parity at a much lower computational cost for the training
+procedure. Looking further, this means that neural networks, the bleeding edge
+technique in the field, can be understood and represented as the simple
+structure reviewed in this thesis. Understanding decission trees is becoming
+more relevant than ever, and finding better ways to leverage their power might
+be worthwile path for future reaserchers to follow.

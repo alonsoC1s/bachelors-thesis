@@ -465,10 +465,14 @@ pertinent:
 Once having an approximately optimal value function we can generate optimal
 decisions according to:
 \begin{equation}
-    u_{\Phi \beta} (s) = \argmin_{a} \left( \vec{R}_a + \gamma \vec{P}_a \Phi \beta \right),
+    \label{eq:optimal-policy-generator}
+    u_{\Phi \beta} (s) = \argmin_{a \in \mathcal{A}(s)} \left( \vec{R}_a + \gamma \vec{P}_a \Phi \beta \right),
 \end{equation}
 where the policy $\pi$ is subscripted by $\Phi\beta$ to emphasize how it is
-generated.
+generated. Notice that both sides of equation
+\eqref{eq:optimal-policy-generator} depend on $s$. The right-hand side depends
+on $s$ since the minimization is carried out over $\mathcal{A}(s)$, the set of
+available actions given the current state.
 
 The LP in \eqref{lp:approx-lp} is referred to as the \textit{approximate linear
 program}. The vector $\vec{c}$ with positive components is called the

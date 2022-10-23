@@ -14,11 +14,12 @@ enjoys some of the best ecosystems for optimization problems.
 To represent \iac{mdp}, we define a some types. Using the code in
 \cite{kochenderfer2022} as inspiration, listing \ref{lst:structs} presents the
 code needed to represent \iac{mdp}. The state and action spaces are represented
-using \lstinline{Vector}s, which are contiguous arrays in Julia. The probability
-transition function is represented as a 3-dimensional \lstinline{Matrix}, since
-it aims to capture $p(s \mid s', a)$. This is represented as a \lstinline{Union}
-of a 3-d \lstinline{Matrix} and \lstinline{Nothing} to allow for problems that
-have determinisitc transitions.
+using \lstinline{Vector}s, which in Julia are arrays allocated contiguously. The
+probability transition function is represented as a 3-dimensional
+\lstinline{Matrix}, since it aims to capture $p(s \mid s', a)$, a function of
+three arguments. This is represented as a \lstinline{Union} of a 3-d
+\lstinline{Matrix} and \lstinline{Nothing} to allow for problems that have
+determinisitc transitions.
 
 \begin{lstlisting}[
     language=Julia, caption={Type definition of an \ac{mdp}}, label={lst:structs}
@@ -66,10 +67,11 @@ Listing \ref{lst:LP-form} deals with the Exact Linear Programming formulation
 discussed in chapter \ref{chapter:ApproximateLinearP}.
 
 Listing \ref{lst:LP-form} presents how the vectors and matrices needed to define
-\eqref{lp:cart-elp} can be obtained for some \ac{mdp}. These will be necessary
-later on to solve the Linear Program. Julia's built-in function
-\lstinline{eachindex} returns an iterable of efficient indexes that can be used
-to iterate over the structure passed as its argument.
+the Reduced Linear Program associated with the \ac{cart} fitting procedure
+\eqref{lp:cart-elp} can be computed. These will be necessary later on to solve
+the Linear Program. Julia's built-in function \lstinline{eachindex} returns an
+iterable of efficient indexes that can be used to iterate over the structure
+passed as its argument.
 
 \begin{lstlisting}[
     language=Julia,
@@ -118,6 +120,9 @@ we developed the theory of Chapter \ref{chapter:CARTasRLP}. Regretably, we do
 not include that final step in the present work for several reasons. For
 instance, to fully develop the remaining steps we would need to develop in full
 the concepts of cross validation, and introduce the classic hyperparameters used
-in the \ac{cart} fitting procedures such as max depth, to name a few. That being
-said, the theoretical groundwork is laid in this thesis. What remains to be done
-is an engineering problem.
+in the \ac{cart} fitting procedures such as max depth, and minimum samples per
+leaf, to name a few. That being said, the theoretical groundwork is laid out in
+this thesis. What remains to be done is an engineering problem.
+
+Since the implementation is incomplete, we cannot compare the performance of the
+algorithm proposed here with the figures presented by \citeauthor{xiong}.

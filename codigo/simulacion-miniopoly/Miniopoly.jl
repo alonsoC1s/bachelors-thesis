@@ -164,7 +164,7 @@ function turn!(gm::GameManager)::Bool
 
     # Spin the spinner, get new position
     cur_square = spin!(cur_player, gm)
-    square_number = gm.positions[cur_player] # Supposedly safe from 0-indexing
+    square_number = gm.positions[cur_player] # Safe from 0-indexing
 
     @assert cur_square.id == square_number
 
@@ -173,14 +173,14 @@ function turn!(gm::GameManager)::Bool
     is_mine = ismine(cur_player, cur_square)
     n = gm.turn
 
-	if is_mine
+	if is_mine # Check if a hotel is available for purchase
         if willbuy(cur_player, HOTEL_PRICE) && hotels(cur_square) <= 3
             @info "$(cur_player) is buying a hotel for square $(cur_square)"
             buy!(cur_square, cur_player, :hotel)
             gone_broke = transaction!(cur_player, square_number, HOTEL_PRICE, :pay, n)
         end
     else
-        # Either already owned, or available to buy
+        # Either already owned, or available for purchase
         if is_owned(cur_square)
             # Transaction. Charge flat fee * hotels
             amount = FLAT_FEE + 50 * hotels(cur_square)

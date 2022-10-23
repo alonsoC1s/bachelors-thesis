@@ -13,7 +13,7 @@ otherwise stated.
 \begin{dfn}{Joint Probability Density}{}
     Let $(X_1, X_2, \dots, X_n)$ be random vector where each $X_i$ is defined
     over the same probability space $(\Omega, \mathcal{F}, \mathbb{P})$. We
-    define the \emph{joint probability distribution} of $(X_1, \dots, X_n)$ as
+    define the \emph{joint probability density} of $(X_1, \dots, X_n)$ as
     \[
         f_{X_1, \dots, X_n} (x_1, \dots, x_n) = \IP{X_1 = x_1, \dots, X_n = x_n}.    
     \] 
@@ -79,8 +79,8 @@ generalize to continuous processes with ease.
     Let $(\Omega, \mathcal{F}, \mathbb{P})$ be a probability space. A
     \emph{stochastic process} is a collection $\left\{ X_t \right\}$,where each
     $X_t$ is a random variable on $(\Omega, \mathcal{F}, \mathbb{P})$, for $t
-    \in \tau$. A stochastic process is said to be \emph{countable} whenever
-    $\tau$ is countable.
+    \in \tau$, where $\tau$ is a set of timepoints. A stochastic process is said
+    to be \emph{countable} whenever $\tau$ is countable.
 \end{dfn}
 
 \begin{dfn}{Markov's Property}{}
@@ -101,7 +101,7 @@ transition probabilities we can reconstruct the entire process.
 \begin{align}
     \label{eq:markov-sequence}
     & \IP{X_{n+1} = x_{n+1}, \dots, X_1 = x_1, X_0 = x_0} = \IP{X_{n+1} = x_{n+1} \mid X_n = x_n, \dots, X_0 = x_0} \nonumber \\
-    &= \IP{X_{n+1} = x_n \mid X_{n} = x_n, \dots, X_0 = x_0} \cdot \IP{X_n = x_n \mid X_{n-1} = x_{n-1}, \dots, X_0 = x_0} \nonumber \\
+    &= \IP{X_{n+1} = x_{n+1} \mid X_{n} = x_n, \dots, X_0 = x_0} \cdot \IP{X_n = x_n \mid X_{n-1} = x_{n-1}, \dots, X_0 = x_0} \nonumber \\
     &\cdots \IP{X_1 = x_1 \mid X_0 = x_0} \IP{X_0 = x_0} \nonumber \\
     &= \IP{X_{n+1} = x_{n+1} \mid X_n = x_n} \IP{X_n = x_n \mid X_{n-1} = x_{n-1}} \cdots \IP{X_1 = x_1 \mid X_0 = x_0} \nonumber \\
     &= \IP{X_0 = x_0} \left( \prod_{k=1}^{n+1} \IP{X_k = x_k \mid X_{k-1} = x_{k-1}} \right).
