@@ -1,4 +1,4 @@
-La tésis se enfoca en explorar y explicar que transformaciones se pueden aplicar a los problemas de optimización en programación dinámica que definen al problema de RL para convertirlos a problemas más fáciles computacionalmente.
+La tesis se enfoca en explorar y explicar que transformaciones se pueden aplicar a los problemas de optimización en programación dinámica que definen al problema de RL para convertirlos a problemas más fáciles computacionalmente.
 
 Posible título: The Reinforcement Learning Problem through the lens of optimization theory.
 

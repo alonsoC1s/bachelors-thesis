@@ -1,5 +1,5 @@
 # Objetivos generales
-Qué quiero que logre mi tésis?
+Qué quiero que logre mi tesis?
 
 - Explorar más allá de lo superficial la teoría de la optimización, MDPs y aplicaciones. Lo más lejos que se pueda llevar t.q aún sea algo que puedo lograr
 - Reconocimiento académico & cultivar más oportunidades académicas
