@@ -21,11 +21,11 @@ phenomenon given a set of measurements.
 \subsection{A formal description} \label{sss:formalizing-trees}
 
 Putting some concepts to work, picture a scenario where we have access to
-several measurements (e.g., age, weight, blood pressure, etc\dots) for a group
-of patients. Some patients in the study group suffered a stroke; the rest did
-not. Our task is to find a systematic way of predicting whether or not a new
-patient, not seen before, will suffer from a stroke by measuring the same
-variables measured for the initial group.
+several measurements (e.g., age, weight, blood pressure, etc.) for a group of
+patients. Some patients in the study group suffered a stroke; the rest did not.
+Our task is to find a systematic way of predicting whether or not a new patient,
+not seen before, will suffer from a stroke by measuring the same variables
+measured for the initial group.
 
 Fundamentally, \iac{sml} algorithm must receive a \textit{training set}, a set
 of pre-labeled data from a knowledgeable source, in contrast with \ac{rl}, where
@@ -33,14 +33,13 @@ labeling is often not even possible or practical. This source of truth, the
 training set, is a set of observations $(\vec{x}_1, y_1), \dots, (\vec{x}_n,
 y_n)$. The vectors $\vec{x}_i = [x_{1, i}, x_{2, i}, \dots, x_{p, i}]^{\top} \in
 \R^{p}$ can be thought of as a list of measurements of every variable of
-interest for the $i$-th observation. In the case of the example trying to
-predict strokes, $x_{1, i}$ would correspond to age and $x_{2, i}$ to weight for
-the individual corresponding to the $i$-th observation. The training set also
-contains $y_1, \dots, y_n$, one-dimensional values we call responses or labels
-in the specific case of classification. Using the standard parlance, following
-\cite{louppe2014}, the input variables are known as \textit{features}, input
-vectors as \textit{instances} or \textit{samples} and the output variable as
-\textit{target}.
+interest for the $i$-th patient. In the case of the example trying to predict
+strokes, $x_{1, i}$ would correspond to age and $x_{2, i}$ to weight for the
+$i$-th patient. The training set also contains $y_1, \dots, y_n$,
+one-dimensional values we call responses or labels in the specific case of
+classification. Using the standard parlance, the input variables are known as
+\textit{features}, input vectors as \textit{instances} or \textit{samples} and
+the output variable as \textit{target}.
 
 For the purposes of this thesis, we consider that the target variable is always
 categoric, not numeric nor continuous. Nevertheless, continuous target variables
@@ -57,24 +56,28 @@ the $i$-th column is $\vec{x}_i$. Similarly, we group the target variables into
 the vector $\vec{y} \in \R^{n}$.
 
 Our classification task can be framed as finding a function $f_{\L}$ we will
-call model whose output or predictions $f_{\L} (\vec{x}) = \widehat{y}$
-are ``as good as possible''. We subscript the function $f$ with $\L$ to
-highlight that the function depends on what data the training set contains. We
-proceed to define what makes a model ``good'' at making predictions.
+call model whose output or predictions $f_{\L} (\vec{x}) = \widehat{y}$ are ``as
+good as possible''. We subscript the function $f$ with $\L$ to highlight the
+fact that the behaviour of the function is highly dependent on what training
+data it received. We proceed to define what makes a model ``good'' at making
+predictions.
 
 \subsection{Evaluation}
 
 As it has become a recurring theme in this thesis, determining what makes a
 prediction suitable and finding the best possible model $f_\L$ is a process of
-optimization. Since we assume that the training set is a sample of the
-population we aim to label with our model, it stands to reason that a model that
-makes the fewest mistakes when tasked with classifying the training observations
-will also make the fewest mistakes when classifying new observations. In
-reality, this is not precisely the case, as often making the number of
-classification mistakes as small as possible in the training set results in a
-model that ``memorized'' the set and has no ability whatsoever to generalize
-patterns. It only reproduces known-good answers. But the idea is not entirely
-misguided, it provides a good starting point.
+optimization. 
+
+We will be working under the assumption that the training set is a subset of the
+universe of patients for who we can measure the feautures of interest. Under
+this assumption we theorize that a model that misclassifies as little as
+possible the patients in the training set will also minimize misclassifications
+for other patients from the rest of the universe. In reality, this is not
+precisely the case, as often making the number of classification mistakes as
+small as possible in the training set results in a model that ``memorized'' the
+set and has no ability whatsoever to generalize patterns. It only reproduces
+known-to-be-good answers. But the idea is not entirely misguided, it provides a
+good starting point.
 
 The process we referred to as ``fitting'' a model consists of finding a model
 which minimizes its expected prediction error, also called generalization error.
@@ -88,8 +91,9 @@ the training set without hard-coding the labels for future observations.
         \Err (f_\L) = \mathbb{E} \left[ \1 (y_i \neq \widehat{y}_i)  \right].
     \]
     Where $\widehat{y}_i \coloneqq f_\L (\vec{x}_i)$ is the model's prediction
-    for the observation $\vec{x}_i$, and the indicator function $\1$ equals one
-    whenever the condition inside it holds, and zero otherwise.
+    for the, previously unseen, observation $\vec{x}_i$, and the indicator
+    function $\1$ equals one whenever the condition inside it holds, and zero
+    otherwise.
 \end{dfn}
 
 Minimizing this Generalization Error will allow us to classify the newest
@@ -110,7 +114,7 @@ model among the space of hypotheses. To be more specific, let $\vec{\theta}$ be
 the vector of hyper-parameters controlling the behavior of a specific model in
 $\mathcal{H}$.  Then, our optimization task is to find $\theta^{*}$,
 \[
-    \theta^{*} \coloneqq \argmin_{\theta} \widehat{\Err}\left(f_\L (\vec{x}; \theta) \right) \quad \text{ for all } \vec{x} \in \mathcal{X}.
+    \theta^{*} \coloneqq \argmin_{\theta} \; \widehat{\Err}\left(f_\L (\vec{x}; \theta) \right) \quad \text{ for all } \vec{x} \in \mathcal{X}.
 \]
 where the vectors of features come from the input space $\mathcal{X}$ defined
 clearly in the next section.
@@ -161,7 +165,7 @@ over the input space $\mathcal{X} = \left\{ \vec{x}_i \mid (\vec{x}_i, y_i) \in
 \Omega \right\}$. This partition can be described as the preimages of $f_\L$ as
 such
 \[
-    \mathcal{X} = \bigcup_{i=1}^{j} f_{\L}^{-1}(\Omega_{c_i}).
+    \mathcal{X} = \bigcup_{i=1}^{j} f_{\L}^{-1}(\{ y \mid (\vec{x}, y) \in \Omega_{c_i} \}) = \bigcup_{i=1}^{j} f_{\L}^{-1}(c_i).
 \]
 The classification task then can be thought of as fitting the model $f_\L$ that
 gives the partition of $\mathcal{X}$ that most closely approximates the
@@ -185,7 +189,7 @@ corresponding to each of $t$'s children nodes; two in the case of binary trees.
 Terminal nodes (or leaves) are labeled with a best guess value $\widehat{y}_t
 \in \mathcal{C}$. In the case of classification, this prediction value
 $\widehat{y}_t$ is usually set as the class $c_k$ shared by the majority of the
-observations at that leaf. Since our aim is to minimize Generalization Error, we
+observations at that leaf. Since our aim is to minimize generalization error, we
 would like nodes to be as ``purely'' one class as possible.
 
 The prediction process is carried out by navigating the tree,
@@ -212,8 +216,6 @@ already fitted tree $f_\L$ to predict the label of a new observation.
     \label{alg:tree-predict}
 \end{algorithm}
 
-[Maybe una imágen de muestra de el árbol particionando el espacio.]
-
 \subsection{Fitting Decision Trees}
 
 \citeauthor{hyafil1976} proved that fitting a decision tree that minimizes the
@@ -221,16 +223,19 @@ generalization error is an NP-complete problem \cite{hyafil1976}. That means no
 polynomial time algorithm to solve it exists. As with other NP-complete
 problems, the solution methods must rely on heuristics. One of the most widely
 used algorithms for tree fitting is the \acl{cart} algorithm developed by
-\citeauthor{breiman2017} \cite{breiman2017}; it is implemented in
-scikit-learn\footnote{The industry-standard python library for machine learning
-\cite{louppe2014}.}, available to R users via the tidymodels extension and part
-of MLJ.jl\footnote{The most widely used machine learning library for Julia
-users.}. This thesis will focus on \ac{cart} and later on try to extend it.
+\citeauthor{breiman2017} \cite{breiman2017}. Breiman's algorithm is implemented
+in scikit-learn\footnote{The industry-standard python library for machine
+learning \cite{louppe2014}.}, available to R users via the tidymodels extension
+and part of MLJ.jl\footnote{The most widely used machine learning library for
+Julia users.}. This chapter explores the \ac{cart} algorithm as a way to fit
+decision trees, and part \ref{part:III} of this proposes a new algorithm based
+on \ac{cart}.
 
 The \ac{cart} algorithm is based on greedily finding splits based on node
 purity, the amount of misclassified observations in a given node. The
-\textit{purer} the node, the lower the impurity score, the better the
-prediction. We denote by $\L_t$
+\textit{purer} the node, the lower the impurity score, and thus the better the
+prediction. We denote by $\L_t$ the subset of the training set $\L$ that
+corresponds to a node $t$, defined as:
 \[
     \L_t \coloneqq \left\{ (\vec{x}, y) \mid \vec{x} \in \mathcal{X}_t \right\}.
 \]
@@ -240,7 +245,7 @@ prediction. We denote by $\L_t$
     algorithms. The heuristic consists of evaluating the immediately available
     actions without looking ahead to analyze if some action ignores the path
     that will actually lead to the best results down the line. Greedy algorithms
-    are used often since looking ahead is often very computationally taxing.
+    are often used since looking ahead can be very computationally taxing.
 \end{remark}
 
 Many impurity functions can be used to determine the goodness of a split, each
@@ -363,7 +368,7 @@ non-empty subsets is given by the Stirling number of the second kind
 Even in the case of binary partitions in which $S(N_t, k)$ reduces to $2^{N_t
 -1}-1$, the number of partitions grows exponentially for the binary case. For
 the non-binary case, even worse, it grows factorially. Calculating each possible
-partition and choosing the best is not computationally feasible. The attentive
+partition and choosing the best is computationally infeasible. The attentive
 reader will find the similarities when describing in full detail the \ac{rl}
 problem presented in Chapter \ref{chapter:ReinforcementLearning}. The best
 binary split $s_*$ can be found using algorithm
