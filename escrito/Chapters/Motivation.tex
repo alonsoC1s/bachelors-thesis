@@ -323,19 +323,20 @@ of the game by buying or not buying a square.}
 \end{figure}
 
 Figure \ref{fig:violinplot} was created by simulating 20 thousand
-games\footnote{The entire simulation took around 70 seconds.} and recording what
-rewards the robot player obtained at the end of the game by buying or not buying
-a specific square. For instance, if it bought square 3, the record shows the
-initial loss of however much money the player paid for the square. Later in the
-game, if the opponent lands on square 3 and pays rent, that rent is recorded as
-a gain for the robot player. That number is averaged out at the end of the game
-so the robot can analyze this information later. One way of analyzing this
-information to improve strategy is precisely to make a graph like the one in
-figure \ref{fig:violinplot}. Do keep in mind that such visual representations
-are most usefull for humans, a robot player would analyze the data in a
-different way to arrive at the same conclusions, or possibly much better ones.
-The exact nature of that analysis is the subject of this work's part
-\ref{part:I}.
+games\footnote{The entire simulation took around 70 seconds.} where each turn
+the robot purchased the square it landed on with a probability of 50\%, and
+recording what rewards the robot player obtained at the \textit{end of the game}
+by buying or not buying a specific square. For instance, if it bought square 3,
+the record shows the initial loss of however much money the player paid for the
+square.  Later in the game, if the opponent lands on square 3 and pays rent,
+that rent is recorded as a gain for the robot player. That number is averaged
+out at the end of the game so the robot can analyze this information later. One
+way of analyzing this information to improve strategy is precisely to make a
+graph like the one in figure \ref{fig:violinplot}. Do keep in mind that such
+visual representations are most usefull for humans, a robot player would analyze
+the data in a different way to arrive at the same conclusions, or possibly much
+better ones.  The exact nature of that analysis is the subject of this work's
+part \ref{part:I}.
 
 It stands to reason that as this graph is updated, the learning agent will be
 able to make progressively better choices by identifying the patterns. For
