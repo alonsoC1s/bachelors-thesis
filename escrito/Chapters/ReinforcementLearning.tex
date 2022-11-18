@@ -19,17 +19,21 @@ To be precise, say that the game starts at some time $t=0$ and ends at $t=T$. We
 discretize this period of time into $t \in \{0, 1, 2, \ldots \}$ At each of
 these points $t$ in time, the agent finds itself at some state $S_t \in
 \States$, where $\States$ represents the set of all possible states. This
-defines a stochastic process: a series of random variables $\{ S_t \}_{t = 0, 1
+defines a stochastic process: a collection of random variables $\{ S_t \}_{t = 0, 1
 \ldots}$. Stochastic processes are covered in appendix
 \ref{appendix:Stochastic}.
 
-Likewise, at each time step $t$, the agent chooses how to interact with an action
-$A_t \in \Actions(s)$, where $\Actions(s)$ is the set of all \textit{available}
-actions at the current state $s$. This, too, forms a stochastic process. One time
-step in the future $t+1$ the agent receives more feedback from the environment,
-the so-called reward signal $R_{t+1} \in \Rewards \subseteq \R$. This process
-moves forward from $t$ to $t+1$ and so on until the task is over. This defines a
-Markov Decision Process (\acs{mdp} from now on), which we can reorder as follows:
+Likewise, at each time step $t$, the agent chooses how to interact with the
+environment by taking an action $A_t \in \Actions(s)$, where $\Actions(s)$ is
+the set of all \textit{available} actions at the current state $s$. This, too,
+forms a stochastic process, since the transitions between states are often
+random, and actions are chosen based on the current state and other factors
+breifly exemplified in the Miniopoly introductory example. One time step in the
+future $t+1$ the agent receives more feedback from the environment, the
+so-called reward signal $R_{t+1} \in \Rewards \subseteq \R$. This process moves
+forward from $t$ to $t+1$ and so on until the task is over. This defines a
+Markov Decision Process (\acs{mdp} from now on), which we can reorder as
+follows:
 \begin{equation}
 	\label{eq:mdp-succession}
 	S_0, A_0, R_1, S_1, A_1, R_2, S_2, A_2, R_3, \ldots
@@ -56,13 +60,13 @@ action taken. Furthermore, as we discussed, not every state is accessible from
 every other state.  Thus, it makes sense that for each state, the set of possible
 actions is determined by it. Some transitions are just impossible.
 
-Not only are some transitions impossible at certain states, a given action
-chosen by the agent will not always result in the same transition from the state
-$s$ to the state $s'$, which might sound obvious as we have already established
-that an \ac{mdp} can best model this entire process. To study the probability
-of a certain transition from state $s$ to state $s'$, given that a certain action
-$a \in \Actions(s)$ was taken, we introduce the \textit{dynamics} function,
-keeping with the notation in \cite{SuttonBarto}.
+In addition to the fact that available actions depend on the current state a
+given action chosen by the agent will not always result in the same transition
+from the state $s$ to the state $s'$, which might sound obvious as we have
+already established that an \ac{mdp} can best model this entire process. To
+study the probability of a certain transition from state $s$ to state $s'$,
+given that a certain action $a \in \Actions(s)$ was taken, we introduce the
+\textit{dynamics} function, following the notation in \cite{SuttonBarto}.
 
 \begin{dfn}{Dynamics function}{dynamics-func}
 	For all $s, s' \in \States, r \in \Rewards, a \in 
@@ -77,7 +81,7 @@ keeping with the notation in \cite{SuttonBarto}.
 
 Notice how the dynamics function is just a joint probability density function
 over the space of state-reward pairs ($\States \times \Rewards$). This means we
-can treat it as such and get valuable information about, for instance, expected
+can use it as such and get valuable information about, for instance, expected
 rewards by calculating:
 \begin{equation}
 	\label{eq:pre-rewards-func}
@@ -103,16 +107,15 @@ function defined earlier.
 \end{dfn}
 
 Keep in mind that both the dynamics and the rewards function are merely tools
-for us to formalize the process. For instance, the learning agent has very
-little or non-existent knowledge of the dynamics underlying transitions. The
-only way it can interact with the environment is via rewards. From the agent's
-perspective, the environment is a black box. Each time the agent takes a given
-action, the black box responds with a new state and a reward. How or why the new
-states and rewards are assigned is unknown to the agent (and sometimes not
-apparent to us humans doing the modeling either). Even if the dynamics are
-unknown, they are not needed to learn.  Toddlers have no concept of Newton's
-third law nor need it to learn which things they can push around and which will
-push them.
+for us to formalize the process. The learning agent has very little or
+non-existent knowledge of the dynamics underlying transitions. The only way it
+can interact with the environment is via rewards. From the agent's perspective,
+the environment is a black box. Each time the agent takes a given action, the
+black box responds with a new state and a reward. How or why the new states and
+rewards are assigned is unknown to the agent (and sometimes not apparent to us
+humans doing the modeling either). Even if the dynamics are unknown, they are
+not needed to learn.  Toddlers have no concept of Newton's third law nor need it
+to learn which things they can push around and which will push them.
 
 \section{What I Talk About When I Talk About Learning}
 
@@ -171,19 +174,19 @@ particular policy with the help of the value function.
 
 \begin{dfn}{State-Value Function}{value-func}
 	The \emph{value} of the state $s$ is the expected value of the
-	\underline{discounted} sum of the accumulated rewards from time $t$ forward
+	\underline{$\gamma$-discounted} sum of the accumulated rewards from time $t$ forward
 	when the agent follows the policy $\pi$,
 	\[
 		v_{\pi} (s) \coloneqq \mathbb{E}_{\pi} \left[\sum_{k=0}^{\infty} \gamma^{k} R_{t+k+1} \vertsep S_{t} = s\right],
 	\]
-	for all $s \in \States$. The starting time $t$ is not important to the
-	accumulated rewards.
+	for all $s \in \States$ with $\gamma \in (0, 1)$. The starting time
+	$t$ is not important to the accumulated rewards.
 \end{dfn}
 
 The state-value function gives us an idea of what happens when following the
 succession described in \eqref{eq:mdp-succession} by taking the actions
 $A_{t+k}$ that result in obtaining the rewards $R_{t+k+1}$ being accumulated.
-The constant $\gamma \in (0, 1)$ is called the \textit{discount factor}. By
+The constant $\gamma$ is called the \textit{discount factor}. By
 considering the discounted sum of accumulated rewards as the value function, we
 are modeling the preference for immediate rather than delayed
 rewards\footnote{It is essential to consider the discounted sum since the simple
@@ -192,7 +195,8 @@ sum of rewards for an infinite \ac{mdp} may not be finite.}.
 The notation used in definition \ref{dfn:value-func} is a bit abusive. The
 symbol $\mathbb{E}_{\pi}$ means the expected value of the random variable $R$
 (the rewards), given that the agent follows the policy $\pi$. Recall that the
-random variable $R$ depends on the agent's actions.
+random variable $R$ depends on the agent's actions and thus, indirectly, on the
+policy $\pi$ being followed.
 
 Figure \ref{fig:violinplot}, way back in Chapter \ref{chapter:Motivation}, is
 a graphical representation of $v_\pi (s)$ for the Miniopoly game for each square
@@ -239,7 +243,7 @@ Lemma \ref{lem:recursive-eval} will be the basis for the methods we will review
 further in this thesis. What may not be obvious is that there may exist a
 trivially-evaluable value function. The agent's last action can only come from a
 relatively small list of possible actions; the computational burden of exploring
-said list is often realistic. The second to last action taken comes from a much
+said list is often realistic. The second-to-last action taken comes from a much
 more extensive list of possible actions. However, we do not have to explore
 every combination since we already have the values computed for each terminal
 action.  Using the lemma, we can efficiently compute the value for each
@@ -290,7 +294,8 @@ playing back to the beginning. This relationship was first noted by Bellman
 		&= \sum_a \pi(a \mid s) p(s', r \mid s, a) v_\pi (s').
 	\end{align}
 
-	Combining \eqref{eq:cacho-uno} and \eqref{eq:cacho-dos}, making a substitution in \eqref{eq:paso-2} and factoring, we get:
+	Substituting \eqref{eq:cacho-uno} and \eqref{eq:cacho-dos} in
+	\eqref{eq:paso-2} and factoring, we get:
 	\begin{equation}
 		\label{eq:bellman-equation-v}
 		v_\pi (s) = \sum_a \pi(a \mid s) \sum_{s', r} p(s', r \mid s, a) \left[ r + \gamma v_\pi (s') \right].
@@ -366,18 +371,17 @@ actions.
 	grow exponentially or factorially.
 \end{remark}
 
-Other methods to solve Bellman's equations are part of an area called dynamic
-programming. Dynamic programming refers to a collection of algorithms and
-heuristics that can be used to solve problems with a similar structure to the
-\ac{rl} problem. Dynamic programming (DP) is prevalent in areas such as
-Operations Research and other disciplines in which the nature of the problems is
-episodic and demands having the ability to adapt \textit{dynamically}. DP
-problems are often, as in this case, practically impossible to solve exactly in
-a computationally efficient way.
+Other methods to solve Bellman's equations are part of an area called \acf{dp}.
+\Ac{dp} refers to a collection of algorithms and heuristics that can be used to
+solve problems with a similar structure to the \ac{rl} problem. \Ac{dp} is
+prevalent in areas such as Operations Research and other disciplines in which
+the nature of the problems is episodic and demands having the ability to adapt
+\textit{dynamically}. \Ac{dp} problems are often, as in this case, practically
+impossible to solve exactly in a computationally efficient way.
 
 Most of the methods implemented in practical applications to solve \aclp{mdp}
-and in the implementations of Reinforcement Learning are based on techniques
-that stem from the application of DP concepts. In contrast, this thesis focuses
-on a technique that avoids DP completely to try instead to leverage the
+and implementations of Reinforcement Learning are based on techniques that stem
+from the application of \ac{dp} concepts. In contrast, this thesis focuses on a
+technique that avoids \ac{dp} completely to try instead to leverage the
 properties of other optimization problems. Namely, the ability to compute
 efficiently.
