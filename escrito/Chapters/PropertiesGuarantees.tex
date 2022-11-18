@@ -4,10 +4,10 @@
 As previously mentioned, the Approximate Linear Programming (ALP) approach to
 solving the \ac{rl} problem is based on work by \citeauthor{farias2003LP2ADP}.
 This chapter is devoted to reproducing and discussing some of the main results
-presented in \cite{farias2003LP2ADP}. The proofs are left out in favour of more
-verbose explanations of what the results might entail. This chapter aims to
-demistify some of the claims made about linear program \eqref{lp:approx-lp}
-being ``easier'' to solve.
+presented in \cite{farias2003LP2ADP}. The proofs are left out in favour of
+verbose explanations of what the results entail. This chapter aims to demistify
+some of the claims made about linear program \eqref{lp:approx-lp} being
+``easier'' to solve.
 
 Recall that in the definition of \eqref{lp:approx-lp} we referred to the vector
 $\vec{c}$ as the \emph{state-relevance wights}. The choice of these
@@ -63,13 +63,23 @@ following policy $\pi$.
     random variable $S$, which is distributed according to $\sigma$.
 \end{dfn}
 
-Next, we define a probability measure that captures the probability of the agent
-being in some state given that it is following policy $\pi$ and started on some
-state $s$, randomly distributed according to distribution $\sigma$.
+% Next, we define a probability measure that captures the probability of the agent
+% being in some state given that it is following policy $\pi$ and started on some
+% state $s$, randomly distributed according to distribution $\sigma$.
+
+% Comentario de Alfredo:
+% Me cuesta trabajo seguir esta parte. Por $\mu$ estás definiendo una medida de probabilidad o una densidad de probabilidad. Para que efectivamente sea una medida bajo el argumento $s$, estamos suponiendo que tenemos una colección finita de estados, ¿cierto?
+% Por otro lado: ¿la notación $\mu_{\pi,\sigma}^\top$ implica que tenemos un vector de probabilidades de longitud $|\mathcal{S}|$?
+
+Starting from a randomly distributed state $s \sim \sigma$, following policy
+$\pi$, we would like to know the probability that the agent is at any given
+state. This will give us information about frequently visited states, so we can
+focus on approximating those better.
 
 \begin{dfn}{The $\mu$ measure}{mu-measure}
-    We define a measure represented by the vector $\mu$, where each entry
-    $\mu(s)$ is the measure evaluated at that state $s$, as
+    % We define a measure represented by the vector $\mu$, where each entry
+    % $\mu(s)$ is the measure evaluated at that state $s$, as
+    We define a probability measure $\mu$, represented as a vector:
     \[
         \mu_{\pi, \, \sigma}^{\top} \coloneqq (1 - \gamma) \sigma^{\top} \sum_{t=0}^{\infty} \gamma^{t} \vec{P}_{\pi}^{t}.
     \]
@@ -82,6 +92,12 @@ state $s$, randomly distributed according to distribution $\sigma$.
     \Cite[pg.~864]{farias2003LP2ADP} that $\mu$ is a probability distribution
     (assuming $\sigma$ is known).
 \end{dfn}
+
+Each entry in $\mu$ corresponds to the probability distribution function
+evaluated at some state $s$, so the length of the vector is $|\States|$. Recall
+that as established in chapter \ref{chapter:ReinforcementLearning}, the set of
+states is finite. This way, the $i$-th entry of the vector $\mu$ contains the
+probability of the agent being at the $i$-th state at any given time.
 
 \section{Error bounds for the ALP}
 
@@ -195,7 +211,7 @@ independent subset of constraints. We will refer to this new LP as the RLP
         \label{lp:reduced-lp}
         \tag{RLP}
         \begin{array}{rl@{}ll}
-            \displaystyle \max_{\Phi\vec{\beta} \in \R^{K}} & \vec{c}^{\top} \Phi \vec{\beta} \\
+            \displaystyle \max_{\vec{\beta} \in \R^{K}} & \vec{c}^{\top} \Phi \vec{\beta} \\
             \text{S.t.} & \displaystyle \Phi \vec{\beta} \leq \vec{R}_a + \gamma \vec{P}_a \Phi \vec{\beta} & \quad \forall a \in \mathcal{X} \\
             & \vec{\beta} \in \mathcal{N}.
         \end{array}
@@ -227,7 +243,7 @@ with probability $1 - \delta$.
     \[
         m \geq \frac{4}{\varepsilon} \left( K \ln \frac{12}{\varepsilon} + \ln \frac{2}{\delta} \right),
     \]
-    a set $\mathcal{X}$ of $m$ identically, independently distributed vandom
+    a set $\mathcal{X}$ of $m$ identically, independently distributed random
     variables drawn from $|\States| \times |\Actions|$ according to
     distribuition $\psi$, satisfies 
     \[
@@ -242,7 +258,7 @@ Theorem \ref{thrm:fariasvanroy-thm2.1} provides some reassurance on the error we
 could expect to commit even on the worst case sampling scenario. Even without
 applying any special knowledge about the problem, we can guarantee with a
 probability greater than $1 - \delta$ that we violate restrictions with a
-probability smaller than $\varepsilon$.
+probability smaller than~$\varepsilon$.
 
 \section{Closing thoughts \& Bibliographical notes}
 
@@ -261,7 +277,7 @@ accept the trade-off. How much more efficient an implementation of
 \eqref{lp:approx-lp} would be compared to traditional methods for solving
 \ac{rl} problems or even plain simple greedy approaches remains unclear.  Having
 established the bases, in part \ref{part:III} we hope to answer this question
-for a specific problem: the fitting of Classification and Regresssion Trees. In
+for a specific problem: the fitting of Classification and Regression Trees. In
 the next chapter we propose why would framing the \ac{cart} fitting problem as
 an \ac{rl} problem might be warranted.
 
