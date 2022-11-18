@@ -19,20 +19,20 @@ discipline can be divided into the following sub-fields of research:
 This work is explicitly concerned with \ac{ml}. Particularly with a
 subset of the field known as Reinforcement Learning. Some authors, such as
 \cite[Ch.~1]{SuttonBarto} divide the field of \ac{ml} into three parts:
-Supervised learning, unsupervised learning, and reinforcement learning. Both
-supervised and unsupervised learning relies heavily on statistics-based
-techniques such as regression models and statistical inference.  The techniques
-used in \ac{rl} rely on different models of what learning is and tries to go
+supervised learning, unsupervised learning, and reinforcement learning. Both
+supervised and unsupervised learning rely heavily on statistics-based
+techniques such as regression models and statistical inference. The techniques
+used in \ac{rl} rely on different models of learning and tries to go
 beyond finding association rules for a simple, well-defined problem.
 
 In contrast to supervised learning, where a learning agent is given data labeled
 by a knowledgeable source and must ``learn'' to classify based on those initial
-labels. In unsupervised learning as well as reinforcement learning, there is no
+labels. In unsupervised learning as well as reinforcement learning there is no
 ``training data''. The agent must act and optimize its strategy based only upon
 the reward or penalty resulting from making a certain decision. The key words
 here are \textit{optimize},  \textit{strategy} and \textit{decision}.
 
-For a concrete example, picture an android at a casino playing at a slot
+For a concrete example, picture an android at a casino playing on a slot
 machine; only this machine has $k$ levers instead of just one. This robot is
 instructed to win as much money as possible across several games. How could this
 be achieved? Surely each lever makes the machine operate differently and thus is
@@ -57,9 +57,11 @@ the novelty of being goal-oriented rather than task-oriented, as most Machine
 Learning techniques often are. For example, a self-driving car, ``trained'' via
 supervised learning might train on millions of examples of what constitutes a
 valid steering wheel move and is expected to extrapolate to situations outside
-the training data. Meanwhile, for a self-driving car, learning by being
-evaluated is learning how to drive as an activity consisting of hundreds of
-little tasks, all to be mastered simultaneously.
+the training data. Meanwhile, if we were to train the car by reinforcement
+learning, we would present the act of driving as a collection of hundreds of
+little tasks, all to be mastered simultaneously. In contrast, supervised
+learning algorithms often require the task to be small and well-defined, which
+makes task like driving a poor use case for those techniques.
 
 \section{Formalizing ideas}
 
@@ -69,40 +71,39 @@ machine to ``learn''?
 We might not get as far as what learning as a whole means for humans or
 machines, but we can certainly discuss what mechanisms allow self-driving cars
 to exist or computers to beat world champions of Chess and Go. For that, we need
-to identify the key concepts in the picture I painted and express them in the
-language of mathematics.
+to identify the key concepts in the previously evoked picture, and express them
+in the language of mathematics.
 
-For now, we can gloss over the details of how might a machine make decisions,
+For now, we can gloss over the details of how a machine might make decisions,
 perceive goals, take actions or perceive rewards. Let us focus on one key
-component: ``learning''.  When we talk about the process of a machine learning
-something we are thinking about something or someone (referred to as agent
-henceforth) that can keep track of the decisions it made before and whether or
-not they resulted in positive results so it can, later on, apply that knowledge
-to become an increasingly better problem solver. If this agent is evaluated each
-time it carries out some task, we would like its score to increase each
-successive time it tries to complete the task.  The idea of a continuously
-improving score is the foundation of mathematical optimization.
+component: ``learning''. When we talk about the process of some machine
+mastering some task we are thinking about something or someone (referred to as
+agent henceforth) that can keep track of the decisions it made before and
+whether or not they resulted in positive results so it can, later on, apply that
+knowledge to become an increasingly better problem solver. If this agent is
+evaluated each time it carries out some task, we would like its score to
+increase each successive time it tries to complete the task.  The idea of a
+continuously improving score is the foundation of mathematical optimization.
 
 \subsection{Optimization Theory}
 
-As the name suggests, mathematical optimization
-is concerned with finding an ``optimal'' (whatever ``optimal'' means) solution
-to problems where an unambiguous score might be given to different solutions.
-Even if there is no best solution to a given problem, the techniques used in
+As the name suggests, mathematical optimization is concerned with finding an
+``optimal'' (whatever ``optimal'' means in this particular context) solution to
+problems where an unambiguous score might be given to different solutions.  Even
+if there is no best solution to a given problem, the techniques used in
 mathematical optimization often allow for continuous improvement through
 iteration.
 
 Going back to our slot machine example, each time the robot selects one of the
 $k$ levers, the machine gives out a prize. The prizes vary significantly in
 size, and there is no way to know which ones give the biggest prizes in advance.
-Since the robot wants to maximize money earned, it is likely to keep pulling it
-if one lever consistently gives out more significant prizes. The robot was
-rewarded earlier for choosing that lever by getting a big prize. Similarly, if a
-lever pull resulted in no prize at all, the robot lost money by playing and
-probably will not choose that lever again. In each iteration, the player robot
-would like to increase the prize more and is thus encouraged to keep track of
-which levers give good prizes, improving the average prize in each successive
-game.
+Since the robot wants to maximize money earned, it is likely to keep pulling the
+lever that has given the highest rewards in the past. The robot was rewarded
+earlier for choosing that lever by getting a big prize. Similarly, if a lever
+pull resulted in no prize at all, the robot lost money by playing and probably
+will not choose that lever again. In each iteration, the player robot would like
+to increase the prize and is encouraged to keep track of which levers
+give good prizes, improving the average prize in each successive game.
 
 We are now ready to peel away another layer of abstraction. We now have an
 intuition of what it means for a machine to learn or, in other words,
@@ -114,20 +115,21 @@ and balance between exploring and exploiting the knowledge gained so far. What
 does it mean for this robot player to ``make choices''?
 
 \subsection{Stochasticity}
-Another critical aspect we take for granted when
-talking about machines learning is implicit in the word learning. We would
-hardly call that learning if there were a predefined path for the robot to take.
-It is merely reproducing instructions. This means we must allow for a framework
-in which our robot's actions are not entirely determined beforehand. In fancier
+
+Another critical aspect we take for granted when talking about machines becoming
+knowledgeable, or, ``learning'' is implicit in the word learning. We would hardly
+call that learning if there were a predefined path for the robot to take.  It is
+merely reproducing instructions. This means we must allow for a framework in
+which our robot's actions are not entirely determined beforehand. In fancier
 words, the succession of events that determine the actions and responses of the
 robot to stimuli are not predetermined or \textit{deterministic}.
 
 This idea is formalized through a \textit{stochastic process}. The word
 stochastic is just mathematical lingo for ``not entirely determined beforehand''
 or ``aptly described as a random phenomenon''. In particular, we can think of
-the robot as being in some state among many possible. The robot can change
-states as time passes, but the transitions are not always the same and do not
-necessarily carry the same reward or punishment.
+the robot as being in a particular state among many that are possible. The robot
+can change states as time passes, but the transitions are not always the same
+and do not necessarily carry the same reward or punishment.
 
 For instance, the robot at the slot machine might have gotten a massive prize
 the first time it chose a specific lever but got almost nothing the next game.
@@ -149,11 +151,11 @@ One of the significant achievements and claims to fame for reinforcement
 learning in the past decades has been its use in some of the most famous matches
 in several classic board games. Chess was ``mastered'' when Kasparov, then chess
 grandmaster, was beaten by Deep Blue in 1997 \cite{silverchess}. Other board
-games with enormous state spaces, such as Go, the game that originated in China,
+games with enormous state spaces such as Go, the game that originated in China,
 proved to be too complex for the techniques used by Deep Blue. Deep Blue was
 mainly based on hard-coded openings and end\-ga\-mes taken from other grandmaster
 games, which differs significantly from the \ac{rl} approach. Go was much later
-attacked by another robot player named AlphaGo, developed by researchers from a
+attacked by another robot player called AlphaGo, developed by researchers from a
 company named DeepMind \cite{silver2017mastering}. AlphaGo defeated Lee Sedol,
 the reigning human champion, in 2016. AlphaGo was one of the most notorious
 applications of \ac{rl} and made the field even more popular. Since \ac{rl} has
@@ -181,24 +183,30 @@ the \ac{rl} techniques we are slowly developing. At each turn, the robot spins
 and moves forward however many squares the spinner indicates. If the robot lands
 on any square with a number, it might acquire that square for itself. From that
 moment on, if the opponent lands on that square, the robot player will be paid
-rent. If the robot lands on that same square, it may build hotels on it, so the
-next time the opponent lands there, the rent will be much higher. The robot also
-receives money every time it completes the circuit.
+rent. If the robot lands on that same square, it has the option to build hotels
+on it, so the next time the opponent lands there, the rent will be much higher.
+The players also receive a fixed amount of money every time they completes the
+circuit.
 
 Predictably, the point of the game is to make the most money. The game ends when
 either the robot or its opponent goes bankrupt. What purchase strategy must the
 robot follow to win?
 
-First, unlike the slot machine-playing robot, this robot player cannot entirely
-choose which square to move to. It can only decide if it wants to purchase it or
-not once it has landed on it. The biggest number it can spin is 4; even if it
-got to spin again, the furthest it could go is square 5. Even if the robot
-wanted to go to square number 8 and buy it, there is no possible way to do that.
+First of all, unlike the slot machine-playing robot, this robot player cannot
+entirely choose which square to move to. It can only decide if it wants to
+purchase a square or not once it has landed on it. The biggest number it can
+spin is 4; even if it got to spin again, the furthest it could go is square 5.
+Even if the robot wanted to go to square number 8 and buy it, there is no
+possible way to do that.
 
 Figure \ref{fig:miniopoly-diagram-start} shows a simplified version of the
 board. Only the squares accessible on the first turn are shown, along with
 arrows indicating the possible transitions between the starting square and the
-rest.
+rest. Notice how squares 6 and further are not included. If the robot were to
+spin a 4, the red square with the number 3 is the furthest it could go. If it
+were to land on \texttt{Spin Again} and then spin a 4, the biggest possible
+spin, it could move four squares: from \texttt{Spin Again} to 3, then to 4, then
+to \texttt{Goto Start}, and finally to square 5, exhausting its possible moves.
 
 \begin{figure}[h]
     \centering
@@ -217,13 +225,6 @@ rest.
     \caption{Miniopoly board with example transitions from the starting square}
     \label{figs:miniopoly-boards-transitions}
 \end{figure}
-In figure \ref{fig:miniopoly-diagram-start}, we can see all the possible squares
-the robot might land on and then buy starting from the first turn. Notice how
-squares 6 and further are not included. If the robot were to spin a 4, the red
-square with the number 3 is the furthest it could go. If it were to land on
-\texttt{Spin Again} and then spin a 4, the biggest possible spin, it could move
-four squares: from \texttt{Spin Again} to 3, then to 4, then to \texttt{Goto
-Start}, and finally to square 5, exhausting its possible moves.
 
 Notice how in this figure, we only care about the starting and ending points,
 not the transit points, so that is why no arrows are pointing to the squares
@@ -233,13 +234,13 @@ This transition might happen. We know what it takes for this to happen: land on
 \texttt{Spin Again} and then land on \texttt{Goto Start}. In other words, this
 transition happens if the robot spins 3 two consecutive times.
 
-If the robot were to land on \texttt{Spin Again}, then spin a 3, it would
-``land'' on \texttt{Goto Start}, finishing its turn back at the starting square.
-That move results in the robot returning to the start and getting paid for
-completing the circuit without running the risk of landing on a square someone
-else owns. That sounds like a very desirable move (for us looking at the big
-picture, the robot cannot see that far ahead yet). Since we would like this to
-happen, we might ask how likely it is for that to happen.
+If the robot were to land on \texttt{Spin Again}, then spin a 3, it would land
+on \texttt{Goto Start}, finishing its turn back at the starting square. That
+move results in the robot returning to the start and getting paid for completing
+the circuit without running the risk of landing on a square someone else owns.
+That sounds like a very desirable move (for us looking at the big picture, the
+robot cannot see that far ahead yet). Since we would like this to happen, we
+might ask how likely it is for that to happen.
 
 \begin{figure}
 \centering
@@ -285,7 +286,8 @@ Start} to \texttt{Start} is not annotated with the probability of it happening,
 since that transition is not random. Once the player lands there, the next thing
 that happens to the player is always the same: go to the starting square.
 
-The robot we are trying to teach moves, as the figure above suggests. There is a
+The diagram above represents a model of the, inherently random, dynamics that
+govern how the robot learning to play moves around the board. There is a
 different diagram for each square in which the player finds itself at the start
 of its turn. The robot is not aware of this. All it knows is that it spins and
 then is transported elsewhere and must decide whether to buy or not (if the
@@ -293,14 +295,24 @@ square is available). It knows its current position and the gains or losses it
 sustained on the other squares it has visited. Crucially, landing on a square
 previously visited does not necessarily mean the reward will be the same as last
 time. For instance, if it lands on square 3 and decides not to buy it, the
-reward is a net 0, but the other player may buy it so that the next time the
-robot visits that square, it has to pay rent, which would mean a loss. Also, the
-reward for buying a square may come much later on or not at all. This robot must
-somehow keep track of the expected reward for landing somewhere, recording it
-somewhere and tallying up as it goes.
+reward is a net zero, but if the other player bought it later on, the next time
+the robot visits that square, it has to pay rent, which would mean a loss. Also,
+the reward for buying a square may come much later on or not at all. This robot
+must somehow keep track of the expected reward for landing somewhere, recording
+it somewhere and tallying up as it goes.
 
-For instance, after a few turns, it might have something like fig.
-\ref{fig:violinplot} on its head to help make decisions.
+After playing a few games and keeping a record of which squares it bought, the
+player might make a graph to discover what moves it made that resulted in higher
+rewards at the end of the game. Such a graph might look like figure
+\ref{fig:violinplot}, which is a violin plot. In this plot, a violin-shaped
+figure gives the robot an idea of what squares yielded better rewards or smaller
+losses when bought or left for other players to buy. The height of the violin
+indicates how high the reward was at the end of the game. The width of the
+violin helps the robot decide whether that outcome was a mere chance or not.  A
+thin violin at a specific height (reward) indicates that over the games it has
+played so far, that specific reward marked by the y-axis is not as common as
+the reward that corresponds to the thicker parts of the violin.
+% Se entiende??
 
 \begin{figure}
 \centering
@@ -310,29 +322,20 @@ of the game by buying or not buying a square.}
 \label{fig:violinplot}
 \end{figure}
 
-After playing a few games and keeping a record of which squares it bought, the
-player might make a graph to discover what moves it made that resulted in higher
-rewards at the end of the game. Such a graph might look like figure
-\ref{fig:violinplot}, which is a violin plot. In this plot, a violin-shaped
-figure gives the robot an idea of what squares yielded better rewards or more
-minor losses when bought or left for other players to buy. The height of the
-violin indicates how high the reward was at the end of the game. The width of
-the violin helps the robot decide whether that outcome was a mere chance or not.
-A thin violin at a specific height (reward) indicates that over the games it has
-played so far, that specific reward marked by the y-axis is not as standard as
-the reward that corresponds to the thicker parts of the violin.
-% Se entiende??
-
-This figure was created by simulating 20 thousand games\footnote{The entire
-simulation took around 70 seconds.} and recording what rewards the robot player
-obtained at the end of the game by buying or not buying a specific square. For
-instance, if it bought square 3, the record shows the initial loss of however
-much money the player paid for the square. Later in the game, if the opponent
-lands on square 3 and pays rent, that rent is recorded as a gain for the robot
-player. That number is averaged out at the end of the game so the robot can
-analyze this information later. One way of analyzing this information to improve
-strategy is precisely to make a graph like the one in figure
-\ref{fig:violinplot}
+Figure \ref{fig:violinplot} was created by simulating 20 thousand
+games\footnote{The entire simulation took around 70 seconds.} and recording what
+rewards the robot player obtained at the end of the game by buying or not buying
+a specific square. For instance, if it bought square 3, the record shows the
+initial loss of however much money the player paid for the square. Later in the
+game, if the opponent lands on square 3 and pays rent, that rent is recorded as
+a gain for the robot player. That number is averaged out at the end of the game
+so the robot can analyze this information later. One way of analyzing this
+information to improve strategy is precisely to make a graph like the one in
+figure \ref{fig:violinplot}. Do keep in mind that such visual representations
+are most usefull for humans, a robot player would analyze the data in a
+different way to arrive at the same conclusions, or possibly much better ones.
+The exact nature of that analysis is the subject of this work's part
+\ref{part:I}.
 
 It stands to reason that as this graph is updated, the learning agent will be
 able to make progressively better choices by identifying the patterns. For
@@ -364,8 +367,8 @@ of mathematics. Specifically, tackling questions such as:
 \end{itemize}
 
 Beyond mere description, this thought exercise has the potential to unlock
-\textit{insight}. As is often said by legendary math communicator Grant
+\textit{insight}. Quoting the notable math communicator Grant
 Sanderson\footnote{From the YouTube channel
 \href{https://www.youtube.com/channel/UCYO_jab_esuFRV4b17AJtAw}{3blue1brown}}(loose
-quote), the point in formulating things this way is to gain a deeper
-understanding of the phenomenon. So let us dive right in.
+quote), the point of computation is not reaching solutions, but understanding.
+So let us dive right in.
