@@ -2,13 +2,13 @@
 \label{chapter:ApproximateLinearP}
 \section{Introduction}
 
-As discussed in previous chapters \ref{chapter:ReinforcementLearning}, the
-problem of finding the best policies by using Bellman's optimality equations
-falls within the realm of dynamic programming. The problem is that even if an
-explicit solution can be given under certain conditions, the computational
-burden of calculating exact solutions is often too significant to overcome, even
-on modern computing equipment. And given the ``curse of dimensionality'', even
-if the contemporary problems became tractable in the future thanks to the
+As discussed in chapter \ref{chapter:ReinforcementLearning}, the problem of
+finding the best policies by using Bellman's optimality equations falls within
+the realm of dynamic programming. The problem is that even if an explicit
+solution can be given under certain conditions, the computational burden of
+calculating exact solutions is often impossible to overcome, even on modern
+computing equipment. And given the ``curse of dimensionality'', even if the
+contemporary problems became tractable in the future thanks to the
 ever-increasing computing power, that very same improvement in computing power
 would motivate researchers to tackle bigger still problems. So, to use the
 \ac{rl} techniques, we must find a way to use our computational resources more
@@ -71,7 +71,7 @@ v_\pi (s) = \sum_{a \in \Actions} \pi(a \mid s) \sum_{s', r} p(s', r \mid s, a) 
 \end{equation}
 
 The identity \eqref{eq:bellmans-recurrence} was proved earlier in chapter
-\ref{chapter:ReinforcementLearning} in Lemma \ref{lem:recursive-eval}, the
+\ref{chapter:ReinforcementLearning}, Lemma \ref{lem:recursive-eval}: the
 Recursive Evaluation Lemma. We named the Lemma that way for reasons that will
 become apparent soon.
 
@@ -102,9 +102,9 @@ For now, let us consider the value function as a vector, following
     \vec{v} = \left[ v (s_1), \dots , v (s_{|\States|}) \right].
 \]
 As shorthand notation we define $\vec{v}(s) \coloneqq v(s)$. Recall that $r(s,
-a)$ is the expected reward upon taking action $a$ being in state $s$, and $p(s'
-\mid s, a)$ is the probability of transitioning directly from state $s$ to state
-$s'$ after taking action $a$. We define:
+a)$ is the expected reward upon taking action~$a$ being in state~$s$, and $p(s'
+\mid s, a)$ is the probability of transitioning directly from state~$s$ to
+state~$s'$ after taking action~$a$. We define:
 \begin{align*}
     R_\pi (s) &= \sum_{a \in \Actions} \pi(a \mid s) \, r(s,a), \\
     P_\pi (s, s') &= \sum_{a \in \Actions} \pi(a \mid s) \sum_{s' \in \States} p(s' \mid s, a),
@@ -304,6 +304,9 @@ reproduced below, allows us to conclude similar things to Theorem
     for any starting $\vec{v}_0$.
 \end{thrm}
 
+As exemplified by the gradient descent operator presented in chapter
+\ref{chapter:OptimizationTheory}, once again the solution to an optimization
+problem reduces to finding fixed points of an operator over a specific space.
 The proof of Theorem \ref{thrm:pect} can be found in \cite[pg.~131]{raoRL4F}. We
 do not include the proof it it requieres a considerable amount of preliminaries
 and is extensive. Nonetheless, we think it is a very pleasing application of
@@ -317,7 +320,7 @@ of Bellman's Policy Operator and thus the optimal value function. That approach
 is called \emph{value iteration} and is described in detail in
 \cite{SuttonBarto,raoRL4F}, we focus on other approaches.
 
-\section{Approximate Linear Programming}
+\section{Approximating solutions with Linear Programming}
 
 Having established the necessary context, we can at last address the main
 objective of this Chapter, and indeed the whole thesis: avoiding the use of
@@ -372,7 +375,8 @@ Finding the biggest upper bound leads to the following optimization problem:
 \end{array}
 \end{equation}
 
-Utilizing the vector notation introduced earlier, we can find a Linear Program formulation to the previous optimization problem
+Making use of the vector notation introduced earlier, we can find a Linear
+Program formulation to the previous optimization problem
 \begin{equation}
 \label{lp:exact-lp}
 \tag{ELP}
@@ -389,7 +393,7 @@ Professor \citeauthor{farias2002thesis} refers to Linear Program
 \eqref{lp:exact-lp} as the \textit{exact Linear Program}
 \cite[Ch.~2.3]{farias2002thesis}. This LP (linear program) has $|\States|$
 variables and $|\States| \times |\Actions|$ constraints. This makes it
-tremendously vulnerable to the curse of dimensionality, since we have as many
+especially vulnerable to the curse of dimensionality, since we have as many
 variables to optimize as states. Solving this LP for the number of states in a
 modern \ac{rl} problem becomes prohibitively computationally expensive, even
 when the average-case complexity of solving an LP is polynomial
@@ -404,11 +408,11 @@ to reduce the number of constraints.
 
 \subsection{Linear everything}
 
-Approximating complicated functions by collections of linear or linear-affine
-functions is not new. One of the most proliferous applications of this idea is
-linear regression in the area of statistical learning, or its more glamorous
-name: machine learning. The main idea behind linear regression is approximating
-a relationship between a vector of \textit{regressors}, $\vec{x}_i$, measured
+Approximating complicated functions by collections of linear or affine functions
+is not new. One of the most proliferous applications of this idea is linear
+regression in the area of statistical learning, or its more glamorous name:
+machine learning. The main idea behind linear regression is approximating a
+relationship between a vector of \textit{regressors}, $\vec{x}_i$, measured
 attributes observed for some phenomenon of interest; and a vector of response
 variables $\vec{y}$. Specifically, the relationship to be estimated is the
 conditional expectation of $\vec{y}$ given the $\vec{x}_i$, or $\mathbb{E}
@@ -429,7 +433,7 @@ with a pa\-ra\-me\-trized class of functions, similar to linear regression but
 carrying out the ``fitting'' without being able to sample the function we are
 trying to approximate.
 
-This parametrized class of functions will be a basis for the space of value
+This parameterized class of functions will be a basis for the space of value
 functions made up of linear functions $\varphi_i : \States \to \R$ for $i = 1,
 \dots, K$, with $K \ll |\States|$ a set parameter. Following the standard
 notation used in statistics, we denote $\widehat{\vec{v}} \approx \vec{v}$ the
@@ -486,7 +490,7 @@ approximated efficiently with modern methods. The rest of
 from dynamic programming can be used to efficiently sample constraints, making
 the solution of this LP more efficient.
 
-The subsequent chapters of this part are dedicated to briefly reviewing the
+The remaining chapter of this part is dedicated to briefly reviewing the
 extensions and results of this method.  Chapter
 \ref{chapter:PropertiesGuarantees} continues the exploration of the Approximate
 Linear Programming (ALP) method we have just described. In particular, some
@@ -518,9 +522,9 @@ consult any of the sources referenced directly above.
 The conceptual leap involved in casting the dynamic programming problem as a
 linear program using the properties of Bellman's operators, entire chapters are
 dedicated to explaining the background and motivating the ideas, and laying a
-solid foundation in \cite{puterman2014}, specifically chapters 2 and 6.
+solid foundation in \cite{puterman2014}, specifically chapters~2 and 6.
 
 Sadly, we are constrained in scope and can not possibly lay the entire
 groundwork for this idea to feel more natural and better motivated. For the
-interested reader, \citeauthor{puterman2014}'s book is a great, if involved,
+interested reader, \citeauthor{puterman2014}'s book is a good--if involved--
 read and is cited by several other bibliographic pieces used in this chapter.
