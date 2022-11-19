@@ -13,7 +13,7 @@ from them.
 
 Let us begin by stating something that might not have been obvious when
 describing the fitting procedure in chapter \ref{chapter:SupervisedLearning}:
-the algorithms described and used in practice rarely---if ever---produce the
+the algorithms described and used in practice rarely--if ever--produce the
 best possible tree. The algorithms are, as their names suggest, greedy. As a
 reminder, when using the term greed we mean that during some optimization
 procedure such as solving an \ac{rl} problem or fitting a \ac{cart} we choose
@@ -98,16 +98,17 @@ of a stopping criterion is, stop splitting if the current $\L_t$ has less
 than $\kappa$ samples.
 
 Even though the recursive splitting procedure does eventually stop thanks to the
-stopping criteria, the call stack for \TrueBestSplit becomes very high very
-quickly. Once the call stack reaches a maximum depth, provided it does not
-exceed the computer's maximum stack size, it starts to grow in breadth since we
-only just begun testing a single split $s$, when we must test for every possible
-one. If the problem is complex and the call stack would need to grow higher than
-the maximum call stack size for the computer, the program would crash and return
-nothing useful. As mentioned in chapter \ref{chapter:SupervisedLearning}, in the
-case of binary splits we would explore $2^{|\L| -1}-1$, possible partitions.
-Each corresponding to a call to \TrueBestSplit. This amount of complexity makes
-all but trivial problems impossible to solve. 
+stopping criteria, the call stack for \TrueBestSplit grows high enough to
+overflow for all practical problems. Once the call stack reaches a maximum
+depth, provided it does not exceed the computer's maximum stack size, it starts
+to grow in breadth since we only just begun testing a single split $s$, when we
+must test for every possible one. If the problem is complex and the call stack
+grows higher than the maximum call stack size for the computer, the program will
+crash and return nothing useful. As mentioned in chapter
+\ref{chapter:SupervisedLearning}, in the case of binary splits we would explore
+$2^{|\L| -1}-1$, possible partitions.  Each corresponding to a call to
+\TrueBestSplit. This amount of complexity makes all but trivial problems
+impossible to solve. 
 
 \subsection{Making connections}
 
@@ -174,8 +175,8 @@ action-value function for the tree fitting problem:
 \end{equation}
 
 So far we have avoided explicitly describing an impurity function. The selection
-of a suitable impurity function comes with some caveats that are outside of
-scope for this thesis. Suffice it to say that from now on we will be using the
+of a suitable impurity function comes with some caveats that are outside the
+scope of this thesis. Suffice it to say that from now on we will be using the
 Gini impurity index, which we define below.
 
 \begin{dfn}{Gini Impurity Index \cite[Ch.~8.1.2]{intro2statslearning} }{gini-index}
@@ -234,7 +235,7 @@ chapter \ref{chapter:ApproximateLinearP} can be used without modifications.
 
 Now that we have shown how the \ac{cart} fitting procedure and a Reinforcement
 Learning Problem are analogous and motivated why the structure of the value
-function in this context warants the use of \ac{rl} techniques. Let us proceed
+function in this context warrants the use of \ac{rl} techniques. Let us proceed
 to define carefully the state and action spaces for this particular problem.
 
 \section{Sketching implementations}
@@ -287,8 +288,8 @@ Linear Program.
 \begin{equation}
 \label{eq:pre-cart-lp}
 \begin{array}{rl@{}ll}
-    \displaystyle \max{i_G: B_\L \to \R} & \displaystyle - \sum_{t \in B_\L} i_{G}(t) \\
-    \text{Subject to} & \displaystyle i_{G}(\bar{s}) \geq \Delta i_{G}(\bar{s}, t') + \sum_{t'} i_{G}(t') & \quad \forall t' \in B_\L, \bar{s} \in \mathcal{Q}. \\
+    \displaystyle \max_{i_G: B_\L \to \R} & \displaystyle - \sum_{t \in B_\L} i_{G}(t) \\
+    \text{Subject to} & \displaystyle i_{G}(\bar{s}) \geq \Delta i_{G}(\bar{s}, t') + \sum_{t'} i_{G}(t') & \quad \forall t' \in B_\L, \; \bar{s} \in \mathcal{Q}. \\
     & i_{G}(t) \text{ unconstrained,} & \quad \forall t \in B_\L.
 \end{array}
 \end{equation}
@@ -319,16 +320,17 @@ By using the notation just introduced, we can write \eqref{eq:pre-cart-lp} as:
 \end{equation}
 Where $\vec{1}$ is the vector where each entry equals 1.This formulation is
 nothing more than the original Exact Linear Program expressed using the
-equivalences between state-value and rewards functions established this chapter.
+equivalences between state-value and rewards functions established in this
+chapter.
 
 For now we refrain from selecting a basis $\Phi$ of functions needed to define
 the Reduced Linear Program presented as \ref{lp:reduced-lp} introduced in
-Chapter \ref{chapter:PropertiesGuarantees}. The choice of this basis is
+chapter~\ref{chapter:PropertiesGuarantees}. The choice of this basis is
 heuristic and relies on experience with the specific problem to be solved as
 pointed out by \citeauthor{farias2003LP2ADP} in \cite{farias2003LP2ADP}.
-Likewise, the specific parameters reviewed in chapter
-\ref{chapter:PropertiesGuarantees} for the Reduced Linear Program, such as
-sampling distribuition, are selected on a case-by-case basis
+Likewise, the specific parameters reviewed in
+chapter~\ref{chapter:PropertiesGuarantees} for the Reduced Linear Program, such
+as sampling distribuition, are selected on a case-by-case basis
 \cite{farias2004constraint}. Both the basis functions and the parameters to
 carry out constraint sampling can be considered hyperparameters like tree depth
 and minimum nodes per leaf in the example of tree fitting. As such, these may be
@@ -338,7 +340,7 @@ best possible results for the problem at hand.
 \section{Closing thoughts}
 
 The idea of applying Reinforcement Learning to the tree fitting procedure is not
-particularly novel. The approach has been explored for instance by
+particularly novel. The approach has been explored, for instance, by
 \citeauthor{xiong} in \cite{xiong}. In their article the authors try to learn
 optimal splitting strategies with a Recurrent Neural Network controller trained
 by \ac{rl} to maximize impurity decrease with the Gini impurity function. They
@@ -350,5 +352,21 @@ idea of using \ac{rl} for the problem described in this chapter. However, the
 approach taken, which is utilizing Recurrent Neural Networks, is very different
 from the approach we took. This chapter was developed almost entirely without
 external references, leveraging only the concepts reviewed earlier. In the next
-and final chapter of this thesis we discuss a possible implementation of
-\ac{cart} and the \ac{alpbdt} in Julia.
+and final chapter of this thesis we lay the foundations that would facilitate a
+future, complete, implementation of \ac{alpbdt}. We will be using the
+programming language Julia for several reasons. First, the syntax of the
+language is particularly well suited to express mathematical ideas and will
+allow us to use a similar notation to the one used so far. Additionally, Julia
+enjoys performance comparable to compiled languages and has access to some of
+the industry-standard mathematical optimization tools, which allowed us to
+perform small-scale tests.
+
+As mentioned in the introductory chapters problems in the area of machine
+learning nowadays are mostly a problem of engineering, and there is a good
+reason for that switch. Even having developed the theory behind a possibly new
+algorithm, there are many practical concerns we would need to explore to provide
+a complete, ready-to-use implementation of \ac{alpbdt}. These details are what
+will determine an algorithm's usefulness in practice, as they can impact
+accuracy, computational complexity, and other factors that are important in
+industrial applications. That being said, we have developed enough theoretical
+background to illustrate the concept in code.
