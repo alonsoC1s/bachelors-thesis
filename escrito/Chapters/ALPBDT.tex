@@ -6,18 +6,18 @@ can be cast an \ac{mdp} and consequently tackled as a Reinforcement Learning
 Problem. We concluded that the state space $\mathcal{S}$ corresponds to the set
 of all partitions of the training set $\L_t$; the action space coresponds to the
 set of all observed values for each available feature, and the state-value
-function is the Gini impurity index. In this chapter we will define the
-necessary abstractions to implement the method we named \acf{alpbdt} in Julia.
-We use Julia because it allows for an efficient implementation, ease of use, and
-enjoys some of the best ecosystems for optimization problems.
+function is the Gini impurity index. In this chapter we lay the foundations
+necessary for a future implementation of \acf{alpbdt} in Julia.  We use Julia
+because it allows for an efficient implementation, ease of use, and enjoys some
+of the best ecosystems for optimization problems.
 
-To represent \iac{mdp}, we define a some types. Using the code in
+To represent \iac{mdp}, we define some types. Using the code in
 \cite{kochenderfer2022} as inspiration, listing \ref{lst:structs} presents the
 code needed to represent \iac{mdp}. The state and action spaces are represented
-using \lstinline{Vector}s, which in Julia are arrays allocated contiguously. The
-probability transition function is represented as a 3-dimensional
-\lstinline{Matrix}, since it aims to capture $p(s \mid s', a)$, a function of
-three arguments. This is represented as a \lstinline{Union} of a 3-d
+using the \lstinline{Vector} data structure, which in Julia are arrays allocated
+contiguously. The probability transition function is represented as a
+3-dimensional \lstinline{Matrix}, since it aims to capture $p(s \mid s', a)$, a
+function of three arguments. This is represented as a \lstinline{Union} of a 3-d
 \lstinline{Matrix} and \lstinline{Nothing} to allow for problems that have
 determinisitc transitions.
 
@@ -37,9 +37,9 @@ struct DiscreteMDP
 end
 \end{lstlisting}
 
-In listing \ref{lst:basic-funcs} we define implement a lookahead function that
-will be neede later to solve the RL problem, and the definition of a policy
-function.
+In listing \ref{lst:basic-funcs} we implement a lookahead function that will be
+needed later to solve the RL problem. The listing also contains the definition
+of a policy function.
 
 \begin{lstlisting}[
     language=Julia, caption={Basic \ac{mdp} functionality},
@@ -112,17 +112,40 @@ function ELP(p::DiscreteMDP)
 end
 \end{lstlisting}
 
-Using the code presented this chapter, all that is left to implement to finally
-provide a complete implementation of \ac{alpbdt} is to provide an instance of
-the \lstinline{DiscreteMDP} structure that captures the \ac{cart} fitting
-procedure within the confines of \iac{mdp}. This is relatively simple to do once
-we developed the theory of Chapter \ref{chapter:CARTasRLP}. Regretably, we do
-not include that final step in the present work for several reasons. For
-instance, to fully develop the remaining steps we would need to develop in full
-the concepts of cross validation, and introduce the classic hyperparameters used
-in the \ac{cart} fitting procedures such as max depth, and minimum samples per
-leaf, to name a few. That being said, the theoretical groundwork is laid out in
-this thesis. What remains to be done is an engineering problem.
+Using the code presented this chapter, to provide a complete implementation of
+\ac{alpbdt} we would need to provide an instance of the \lstinline{DiscreteMDP}
+structure that describes the \ac{cart} fitting procedure within the confines of
+\iac{mdp}. Even though the framing and justification are fully developed, this
+thesis has avoided analysis of some of the other important parameters and
+considerations that are crucial to a working implementation of \ac{cart}. Some
+crucial concepts that would need to be introduced and developed further are:
+\begin{itemize}
+    \item Cross validation,
+    \item \Ac{cart} hyper parameters and their interpretation,
+    \item Possible evaluation metrics,
+\end{itemize}
+to name a few. Additionally, this thesis has introduced some other important
+pieces that are exclusive to \ac{alpbdt} and thus not contained in the
+literature that serves as guidance for a full implementation of \ac{cart}. Such
+a task extends far beyond the scope of a bachelor's thesis. That being said, the
+remaining tasks are greatly facilitated by having a theoretical background,
+which is what this thesis aims to provide.
 
-Since the implementation is incomplete, we cannot compare the performance of the
-algorithm proposed here with the figures presented by \citeauthor{xiong}.
+\section{Closing thoughts}
+
+The code presented in this chapter aims to illustrate the concepts developed in
+previous chapters and has served to test and gain intuition about classic
+\ac{rl} problems. The code itself is based upon the code presented in
+\cite{kochenderfer2022} and would be useful for solving the \ac{rl} problem via
+Exact Linear Programming without modifications. 
+
+Initially, this chapter aimed to provide a full implementation of \ac{alpbdt}
+with the ultimate goal of comparing its performance against state-of-the-art
+implementations of \ac{cart}. Namely, the implementations in MLJ.jl and the
+\ac{alpbdt} algorithm presented by \citeauthor{xiong}. The \ac{rlbdt} algorithm
+was of particular interest, since the authors claim a sizeable advantage on both
+training cost and performance compared to \ac{cart}. For the reasons outlined
+earlier a working implementation of \ac{alpbdt} could not be included, which
+regrettably means that a direct comparison with \ac{rlbdt} cannot be made. For
+more information on the claimed advantages of \ac{rlbdt} over cart, please refer
+to \cite{xiong}.
