@@ -155,10 +155,11 @@
 	\noindent Typeset by the author in Baskervald X, Nimbus 
 	Sans and Julia Mono by \hologo{XeTeX}.
 
-	\noindent This version is corresponds to commit 
-	\texttt{\gitAbbrevHash{}} on branch: \texttt{\gitBranch{}}, 
-	committed on \textit{\gitAuthorDate{}}. \gitDirty{}
-
+	\noindent This version is corresponds to commit \texttt{\gitAbbrevHash{}} on
+	branch: \texttt{\gitBranch{}}, committed on \textit{\gitAuthorDate{}}. The
+	source code for the document can be found at
+	\url{https://github.com/alonsoC1s/bachelors-thesis}.
+	
 	\newpage
 
 	\thispagestyle{empty}
