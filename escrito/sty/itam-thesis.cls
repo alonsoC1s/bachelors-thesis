@@ -187,6 +187,10 @@
 
 	\vspace{5em}
 
+	\textsc{\@author}
+
+	\vspace{5em}
+
 	\rule[1em]{20em}{0.5pt} % Línea para la fecha
 
 	\textsc{Fecha}
@@ -195,12 +199,13 @@
 
 	\rule[1em]{20em}{0.5pt} % Línea para la firma
 
-	\textsc{\@author}
+	\textsc{Firma}
 
 	\endgroup
 	\vspace*{\fill}
 
 	\newpage
+	\cleardoublepage
 }
 
 %=========================================================%
