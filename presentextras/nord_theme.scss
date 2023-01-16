@@ -1,0 +1,19 @@
+/*-- scss:defaults --*/
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
+
+// fonts
+$font-family-sans-serif: 'Libre Baskerville', serif !default;
+$presentation-font-size-root: 35px !default; 
+
+// colors
+$body-bg: #f0f1eb !default;
+$body-color: #000 !default;
+$link-color: #51483d !default;
+$selection-bg: #26351c !default;
+
+// headings
+$presentation-heading-font: "Libre Baskerville", serif bold !default;
+$presentation-heading-line-height: 1.2 !default;
+$presentation-heading-color: black !default;
+
+/*-- scss:rules --*/

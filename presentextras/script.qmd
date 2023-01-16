@@ -1,0 +1,427 @@
+---
+title: Script
+author: Alonso Martínez
+execute: 
+  echo: false
+  warning: false
+format: html
+---
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+:::{.hidden}
+```{julia}
+using Plots
+using Random
+
+Random.seed!(1)
+include("../codigo/nord.jl")
+theme(:ggnord)
+plotly()
+```
+$$
+\newcommand{\R}{\mathbb{R}}
+$$
+:::
+
+
+Agradecimientos
+
+Puedo decir con seguridad que todos aquí han oido hablar de la Inteligencia
+Artificial al menos una vez en el último mes. Está muy de moda. Lo que llamamos
+Inteligencia Artificial es en realidad una colección diversa de técnicas que nos
+ayudan a resolver problemas que consideramos requieren "inteligencia humana"
+para resolverse. Por ejemplo reconocer objetos en imágenes, interpretar lenguaje
+humano y hacer composición de texto.
+
+Hoy vamos a platicar de dos campos de lo que comunmente llamamos inteligencia
+artificial: el aprendizaje por refuerzo y el aprendizaje supervisado, y las
+mates que subyacen los principios que los hacen funcionar.
+
+(t: < 1 min.)
+
+# Les presento: el aprendizaje de máquina
+
+## Intro express a árboles de clasificación
+
+Como los nombres sugieren, ambos campos difieren en las técnicas que usan. El
+aprendizaje supervisado se basa principalmente en la estadística. Hoy nos vamos
+a concentrar en la clasificación, que es un subcampo del aprendizaje
+supervisado. Nuestra tarea entonces es tomar muchos ejemplos de "instancias" que
+pertenecen a ciertos grupos junto con otras características de estas instancias
+para poder extraer un patrón y en un futuro poder clasificar nuevas instancias
+sin equivocarnos. 
+
+Por ejemplo, si medimos presión arterial, edad, triglicéridos, etc... para un
+grupo de pacientes de los cuales algunos sufrieron un ataque cardiaco, nos
+encantaría en el futuro poder saber si un paciente tiene riesgo de infarto tan
+solo midiendo las mismas variables. Es decir, queremos clasificar entre
+pacientes en riesgo y con bajo riesgo de problemas cardiacos.
+
+Una de las técnicas más socorridas en el campo son los árboles de clasificación.
+En la versión más común y la que nos intresa hoy, hacemos una serie de preguntas
+sencillas para encasillar al paciente en un grupo particular, y decidimos si
+está en riesgo viendo que tan común es un infarto entre los colegas de grupo del
+paciente. Las preguntas suelen ser del estilo "tiene menos de 65 años el
+paciente?" o "la cantidad de colesterol en sangres es menor a x porcentaje?".
+
+Cómo sabemos qué preguntas hacer, y en qué orden?
+
+Los patrones se extraen mediante un proceso que llamamos ajuste, porque
+conceptualmente hacen justo eso. Tomar la estructura de arbol binario que
+pensamos como las preguntas, y ajusta los detalles como qué variables son
+importantes y que valores definen puntos de corte para lograr el objetivo de
+clasificar bien.
+
+Vamos a pensar un poco más en abstracto. A las variables de medición como
+presión arterial y edad les vamos a llamar X y un número. Las variables que
+medimos son continuas, entonces vamos a representar a cada individuo como un
+punto en un espacio donde las coordenadas son precisamente los valores medidos
+para cada variable. Podemos ver que cada punto corresponde a un individuo, los
+que tienen un marcador de rombo son los que tuvieron un infarto.
+
+----
+
+```{julia}
+X = rand(300, 2)
+y = (X[:, 1] .> 0.25) .& (X[:, 1] .< 0.75) .& (X[:, 2] .> 0.25) .& (X[:, 2] .< 0.75)
+
+# Randomly flip some labels
+mask = shuffle(1:size(X, 1))[end-8:end]
+y[mask] .= .~y[mask]
+
+shapes = fill(:circle, size(y))
+shapes[y] .= :diamond
+
+push!(y, true)
+
+scatter(X[:, 1], X[:, 2],
+    zcolor = Float64.(y),
+    markershape = shapes,
+    legend = :none,
+    xlabel = "Variable 1",
+    ylabel = "Variable 2"
+)
+```
+
+
+Para encontrar las preguntas que nos permiten dividir este espacio en regiones
+de "riesgo" y "no riesgo" primero notamos que hacer una pregunta como "la
+variable X_1 es mayor a 0.5?" divide todo el espacio en 2 partes. Nuestro
+objetivo entonces es encontrar los cortes de este estilo que nos permitan
+encerrar en este caso a los rombos.
+
+La técnica tradicional elije una de las variables medidas, digamos X_1, y
+empieza a probar puntos de corte de tal manera que en las regiones resultantes
+sean tan puras como se pueda, es decir que solo contengan observaciones de la
+misma categoría. Pero quien nos asegura que un corte que ahora parece ventajoso
+no va a arruinar un corte todavía mejor a futuro? La respuesta es, no lo
+sabemos. Para hacer el mejor posible corte tenemos que encontrar los dos mejores
+cortes sobre las subregiones que definiría ese corte, que a su vez dependen de
+los 4 cortes óptimos, y asi sucesivamente. Este proceso es **muy** costoso
+computacionalmente, el número de operaciones crece literalmente
+exponencialmente.
+
+La idea a guardar aqui es, que no podemos ver el futuro. No tenemos manera de
+saber si una decisión que parece ventajosa ahora resulta ser mala a futuro. Las
+decisiones que tomamos en el corte actual van a afectar no solo la calidad de
+nuestro árbol, sino que también cambian por completo el universo de decisiones
+que podemos tomar a futuro. Con estas limitaciones lo que hacemos en la práctica
+es tomar la mejor decisión en el presente y esperar que sea ventajosa a futuro.
+A esta estrategia se le llama optimización "miope" o "voraz".
+
+![](img/ctree.svg)
+
+Este es el arbol que obtenemos. Los nodos azules representan dónde termina la
+línea de preguntas y podemos hacer una predicción. Pero a pesar de que esta es
+la técnica dominante hoy en día, buscamos soluciones todavía mejores. Para eso
+nos vamos a apoyar de otra rama, el aprendizaje por refuerzo.
+
+(t: ≈ 4.5 min.)
+
+## Aprendizaje por refuerzo
+
+Una de las principales diferencias de esta técnica contra el aprendizaje
+supervisado es que aqui no tenemos el lujo de tener muchos ejemplos ya
+clasificados sobre los cuales extraer patrones, solo podemos interactuar con un
+entorno y aprender sobre la marcha.
+
+![](img/board.svg)
+
+Utilicemos un ejemplo. Imaginemos que le quiero enseñar a una máquina a ser la
+mejor en monolopy (asumo conocen las reglas). Si yo quiero enseñarle a jugar,
+dificilmente lo conseguiría dándole millones de ejemplos de "jugadas buenas" y
+esperando que entienda que hace a la estrategia buena. En su lugar, vamos a
+dejarla jugar millones de juegos con el objetivo de ganar la mayor cantidad de
+dinero posible juego a juego.
+
+La máquina no tiene idea de la mecánica del juego, ni la necesita. Tomar
+decisiones como comprar o no comprar cuadros a la larga tiene la consecuencia de
+hacerle ganar o perder dinero.
+
+![](img/diagram-start.svg)
+
+![](img/transicion-markov.svg)
+
+La manera en la que lo conceptualizamos es pensando en las posibles transiciones
+que puede sufrir un jugador en el juego como el navegar un diagrama como el de
+abajo. Por ejemplo, por la mecánica del juego lo más lejos que se puede llegar
+en un turno es a la casilla 5. La máquina no sabe porqué y tampoco cuales son
+los cuadros más visitados, que sería una estrategia buena para comprar.
+
+La máquina decide qué comprar con base en una _política_, una regla de decidir
+que acción tomar dado el panorama actual. Ese panorama puede ser por ejemplo, en
+que casilla estamos, cuanto dinero tenemos, y si alguien más ya compró la
+casilla. Por ejemplo, si antes decidimos no comprar una casilla puede ser que la
+siguiente vez que la visitemos ya haya sido comprada. Entonces es imposible
+comprarla ahora, una decisión anterior cambió el universo de posibles decisiones
+en el presente.
+
+Mediante los estímulos de refuerzo, que en este caso son el ganar o perder
+dinero, la máquina _ajusta_ su forma de jugar en cada nueva partida para
+conseguir acercarse al objetivo de ganar más dinero por partida. Este ajuste lo
+logra cambiado su _política_. A este proceso es a lo que nos referimos de
+aprendizaje en este contexto, una máquina tomando su "experiencia" para cambiar
+su manera de jugar y mejorar sucesivamente. El aprendizaje se da mediante los
+_refuerzos_ o _retroalimentaciones_ que da este sistema al jugador; no hace
+falta conocer ni las reglas ni la dinámica.
+
+(t: ≈ 6 min.)
+
+## Haciendo conexiones
+
+Ahora bien, qué magia permite al jugador saber qué comportamiento cambiar para
+moverse en la dirección correcta de ganar más dinero? En el caso de miniopoly
+podemos tratar de observar los patrones "a mano". Si guardamos registro de cada
+estado y el monto total de dinero que se movió como resultado de haber comprado
+o no comprado dicho estado podemos hacer una imágen como esta, que captura la
+relación entre estados y el valor que tiene tomar una acción en ellos.
+
+![](img/hist-miniopoly.svg)
+
+Explicar la figura.
+
+En ejemplos más complejos este análisis directo se vuelve imposible.
+
+Tanto para el aprendizaje por refuerzo como el aprendizaje supervisado, la magia
+está en encontrar procesos iterativos que nos muevan más cerca del
+comportamiento "óptimo" que esperamos, ya se clasificar pacientes o aprender a
+jugar ajedrez.
+
+Para poder optimizar tenemos que sentar ciertas bases. En nuestro ejemplo
+anterior ya conocimos a quienes serán nuestros personajes principales:
+
+- Estados
+- Políticas
+- Funciones estado-valor
+
+Nuestros protagonistas son la función estado-valor y acción valor. 
+
+$$
+\begin{align*}
+v_{\pi} (s) &\coloneqq \mathbb{E}_{\pi} \left[\sum_{k=0}^{\infty} \gamma^{k}
+R_{t+k+1} \, \middle\vert \, S_{t} = s\right], \\
+q_\pi (s, a) &\coloneqq \mathbb{E}_{\pi} \left[ \sum_{k=0}^{\infty} \gamma^{k}
+R_{t+k+1} \,\middle\vert\, S_t = s, A_t = a \right].
+\end{align*}
+$$
+
+Estas ayuda a _entender_ que tanto valor esperamos obtener de tomar cierta
+acción (por eso se apellida $\pi$) en un estado $s$ hasta el final de la tarea.
+Uno de nuestros grandes problemas es que no podemos conocer perfectamente a esta
+función, solo podemos estimarla. Nuestro objetivo entonces consiste en encontrar
+el valor más grande que la función estado-valor puede tomar en cada uno de los
+estados. O con símbolos queremos $v_*$:
+
+$$
+v_{*}(s) = \max_{a} q_\pi (s, a)
+$$
+
+(t: ≈ 9.5 min.)
+
+# La optimización como un problema geométrico de búsqueda
+
+Encontrar los puntos maximos de funciones es relativamente fácil con las
+funciones $f: \mathbb{R}^{m} \to \mathbb{R}^{n}$, que suelen ser las más comunes
+en la práctica.
+
+Nuestras funciones de interés son _muy_ diferentes, incluso visualizarlas es
+complicado o imposible. Ni siquiera es obvio _cómo_ identificamos qué puntos son
+los que buscamos, a diferencia de las funciones comunes no basta con "encontrar
+el punto más alto". Quién garantiza que existen?
+
+Las funciones que nos interesan viven en espacios difíciles de visualizar y
+explorar, vamos a llevarlos a espacios más amigables.
+
+
+```{julia}
+Plots.surface(-10:10, -10:10, (x, y) -> x^2 - y^2, colorbar=:none)
+```
+
+
+Esta es una función "clásica" entre $\R^2$ y $\R$. Nuestras funciones **no** son
+como esta, pero la vamos a tomar de ejemplo. Una de las primeras distinciones
+importantes es que esta función tiene un valor para cada elemento en el plano,
+mientras que las nuestras solo tienen sentido sobre un conjunto numerable de
+estados. Vamos a suponer que nuestros estados son los puntos marcados sobre el
+dominio de la función.
+
+```{julia}
+paraboloid(x, y) = x^2 - y^2
+Plots.surface(-10:10, -10:10, paraboloid, colorbar=:none, camera=(45,30))
+scatter!([(5, 0, 0), (0, 5, 0)], markersize=2)
+```
+
+En estos puntos la función toma estos valores.
+
+```{julia}
+Plots.surface(-10:10, -10:10, paraboloid, colorbar=:none, camera=(45,30))
+points_on_surf = [(p[1], p[2], paraboloid(p[1], p[2])) for p in [(5, 0), (0, 5)]]
+scatter!(
+    points_on_surf,
+    markersize=2
+)
+```
+
+Dado que los puntos sobre los cuales tomamos muestra no cambian, podemos
+representar a esta función como a lista de valores que toma en cada uno de estos
+puntos. Asi podemos comprar dos funciones comparando puntos en un espacio en vez
+de comparar toda el rango e imágen. 
+
+```{julia}
+scatter(
+    [(points_on_surf[1][3], points_on_surf[2][3])],
+    xlim = (0,50),
+    ylim = (-50, 0),
+    legend = :none,
+)
+```
+
+
+Aplicamos este mismo principio a nuestras funciones estado-valor, que es nuestro
+objetivo de optimización, para pasar de explorar un espacio de funciones a uno
+mucho más sencillo.
+
+Aún no estamos seguros de si los puntos óptimos siquiera existen.
+Afortunadamente gracias a las ecuaciones de optimalidad de Bellman sabemos que
+si existen y además son únicos, lo cual es una propiedad muy bonita. La
+condición de optimalidad establece lo siguiente:
+
+$$
+v_\pi (s) = \sum_{a} \pi(a \mid s) \left[ r(s,a) + \gamma \sum_{s'} p(s' \mid s, a) v_\pi (s') \right].
+$$
+
+Lo interesante es la recurrencia.
+
+Pensando en la función estado valor como vector, podemos escribir la condición
+de optimalidad de Bellman de manera cómoda, solo nos falta introducir una de las
+herramientas más importantes: el operador de Bellman.
+
+$$
+T_\pi \vec{v} = \vec{R}_\pi + \gamma \vec{P}_\pi \vec{v}.
+$$
+
+(Notar cómo es igual a cómo definimos la función estado-valor desde el inicio)
+
+Podemos pensar en $T_\pi$ como una transformación que actua sobre los vectores
+que representan a las funciones. Vamos a ver qué nos dice eso sobre los puntos
+óptimos que buscamos.
+
+La relación de optimalidad entonces se ve asi:
+
+$$
+T_\pi \vec{v}_\pi = \vec{v}_\pi.
+$$
+
+Eso no es más que un sistema de ecuaciones lineales que podemos resolver directamente como las computadoras hacen millones de veces por hora. (Ahora cuando te pregunten en la secundaria de que sirven los sistemas lineales ya sabes qué decir). El problema es que este sistema es demasiado grande incluso para nuestras mejores computadoras. No podemos obtener la solución exacta, tenemos que aproximar.
+
+Es decir, el punto que buscamos tiene la propiedad de que cuando es transformado
+por $T_\pi$, no se mueve. Este es un resultado precioso que viene del teorema de
+punto fijo de Banach... lo imporante de este teorema es que al utilizarlo vemos
+que el operador $T_\pi$ es una contracción!! Cuando se transforman 2 puntos
+cualquiera, los puntos transformados están más cerca entre sí de lo que estaban
+antres de la transformación!
+
+Aqui viene el momento del foco encendido: si sabemos hacia dónde se están
+encogiendo los puntos, no tenemos que explorar todo el espacio (que es
+**masivo** en número de dimensiones) para encontrar el óptimo, podemos
+*establecer fronteras dentro de las
+cuales _tiene_ que estar el óptimo.
+
+```{julia}
+using Polyhedra
+h = HalfSpace([1, 0], 10) ∩
+    HalfSpace([0, 1], 10) ∩
+    HalfSpace([1, 1], 13) ∩
+    HalfSpace([-1, 0], 0) ∩
+    HalfSpace([0, -1], 0)
+
+p = polyhedron(h)
+
+plot(p, ratio=:equal,
+    xlabel = "Estado 1",
+    ylabel = "Estado 2",
+    xlims = (-1, 11),
+    ylims = (-1, 11),
+    alpha = 0.6,
+)
+```
+
+
+Las regiones de este estilo se llaman polítopos, y tienen la propiedad de ser
+convexos, que hace los problemas de optimización increíblemente más fáciles. Si
+además tuviésemos la propiedad de que la función a optimizar sea también lineal,
+tenemos garantizado que la solución se tiene que encontrar en las esquinas de
+este polítopo. En espacios de dimensiones altas esto aún así podría significar
+una cantidad enorme de puntos, pero ciertamente menos de la infinidad que se
+encuentra tan solo dentro del polítopo.
+
+El paso final para asegurar esta última condición y terminar con lo que llamamos
+un problema de programación lineal, aprovechamos la estructura de vector que
+tiene nuestra función, y definimos el valor a maximizar como la suma pesada del
+valor de la función en cada estado. El peso asignado a cada estado se decide
+como función de que tan frecuentemente se visita (recordar ejemplo de
+miniopoly). Este problema tiene tantas variables como estados, y el espacio
+tiene número de estados x número de acciones de caras, lo cual resulta en que el
+número de vértices crece exponencialmente con el número de estados. Sigue siendo
+demasiado grande para resolver rápido.
+
+Prometimos soluciones aproximadas.
+
+El último paso consiste en reemplazar nuestra función por una representación "de
+baja resolución" que reduce el problema bajando mucho el número de dimensiones.
+La calidad de nuestra aproximación depende totalmente de qué dimensiones
+seleccionemos. Si tenemos suerte podemos encontrar la solución exacta. Aún
+cuando no logremos contenerla en nuestra aproximación, el trabajo de Pucci et.
+al. nos da cotas superiores del error de nuestras aproximaciones.
+
+(t: ≈ 16 min.)
+
+# La conexión prometida
+
+Los ejemplos de miniopoly y el ajuste de árboles tienen estructuras similares.
+Ambos son problemas secuenciales en los que tenemos que tomar decisiones,
+estamos sujetos a cambiar de estados de maneras que no son deterministas, y nos
+enfrentamos a un espacio de acción que cambia a medida que interactuamos con el
+entorno.
+
+Una de las ideas semi-originales de esta tesis es tratar al proceso de ajuste de
+árboles de decisión como un problema de aprendizaje por refuerzo. Esta idea ya
+habia sido explorada por ejemplo por Xiong et. al. Pero en dichas exploraciones
+se ignora un poco la estructura y se utilizan técnicas como redes neuronales
+recurrentes para modelar la función de estado-valor. En este caso recupero la
+estructura inherente al problema para proponer el proceso de aprender a ajustar
+árboles como un problema de aprendizaje por refuerzo.
+
+# Conclusiones y trabajo a futuro
+
+Por consideraciones de tiempo no fue posible completar una solución industrial
+al problema propuesto, solo pude sentar las bases. Hay buenas razones para
+pensar que esta técnica podría tener ventajas en las aplicaciones industriales,
+lo cual hace que valga la pena tenerle en mente.
+
+La idea de esta presentación es mostrar cómo nos vamos encontrando ideas
+simétricas en lugares que no sería obvio, y cómo podemos explotar estas
+similaridades para aplicar lo que ya sabemos hacia lugares que no se pensaría se
+hubiera podido.
