@@ -22,9 +22,13 @@ profits_prime(x) = exp(-x) * (-29 + 54x - 15x^2)
 plot(profits, 1, 10,
     xlabel = L"Cardboard area in $cm^2$",
     ylabel = "Profit",
+    guidefont = font(9, "Computer Modern"),
+    tickfont = font(7, "Computer Modern"),
 )
 
 savefig("escrito/img/1d-profits.tikz")
+gr()
+savefig("escrito/img/1d-profits.svg")
 
 
 # fig:gd-points
@@ -76,6 +80,7 @@ scatter(log_x, zeros(size(log_x)),
 )
 
 savefig("escrito/img/gd-points.pdf")
+savefig("escrito/img/gd-points.svg")
 
 # fig:feasible-region
 h = HalfSpace([1, 0], 10) ∩
@@ -87,6 +92,8 @@ h = HalfSpace([1, 0], 10) ∩
 p = polyhedron(h)
 
 plot(p, ratio=:equal,
+    guidefont = font(9, "Computer Modern"),
+    tickfont = font(7, "Computer Modern"),
     xlabel = L"Cardboard for boxes ($m^2$)",
     ylabel = "Thousands of envelopes",
     xlims = (-1, 11),
@@ -94,4 +101,7 @@ plot(p, ratio=:equal,
     alpha = 0.6,
 )
 
+pgfplotsx()
 savefig("escrito/img/feasible-region.tikz")
+gr()
+savefig("escrito/img/feasible-region.svg")

@@ -28,6 +28,8 @@ const aurora = [
 	colorant"#B48EAD"
 ]
 
+const nord_to_aurora = [aurora[1:3]; frost]
+
 const _nord = PlotThemes.PlotTheme(Dict([:bg => colorant"#363D46"]))
 
 # Modfied from PlotThemes.jl source code
@@ -42,7 +44,7 @@ const _ggplot_colors = Dict(
 
 const _ggnord = PlotThemes.PlotTheme(Dict([
     ## Background etc
-    :bg => :white,
+    :bg => :transparent,
     :bginside => _ggplot_colors[:gray92],
     :bglegend => _ggplot_colors[:gray92],
     :fglegend => :white,
@@ -50,7 +52,8 @@ const _ggnord = PlotThemes.PlotTheme(Dict([
     :widen=>true,
     ## Palette
     :palette => vcat(frost[end], aurora),
-    :colorgradient => cgrad(blues),
+    # :colorgradient => cgrad(blues),
+    :colorgradient => cgrad(nord_to_aurora[end:-1:1]),
     ## Axes / Ticks
     #framestyle => :grid,
     #foreground_color_tick => _ggplot_colors[:gray20], # tick color not yet implemented
@@ -59,6 +62,7 @@ const _ggnord = PlotThemes.PlotTheme(Dict([
     :foreground_color_border =>:white, # axis color
     :foreground_color_text => _ggplot_colors[:gray30], # tick labels
     :gridlinewidth => 1,
+    :guidefont => font(10, "Libre Baskerville"),
     #tick label size => *0.8,
     ### Grid
     :foreground_color_grid => :white,

@@ -19,6 +19,7 @@ shapes[y] .= :diamond
 push!(y, true)
 
 scatter(X[:, 1], X[:, 2],
+    bg = :white,
     zcolor = Float64.(y),
     markershape = shapes,
     legend = :none,
@@ -30,6 +31,7 @@ scatter(X[:, 1], X[:, 2],
 )
 
 savefig("escrito/img/tree_obs.pdf")
+savefig("escrito/img/tree_obs.svg")
 
 # model = DecisionTreeClassifier(max_depth=4)
 # fit!(model, X, y)

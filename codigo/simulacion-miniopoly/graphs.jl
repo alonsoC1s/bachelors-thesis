@@ -1,15 +1,13 @@
 using CSV, DataFrames, DataFramesMeta
 using Statistics, StatsPlots
-using OhMyREPL
 
 using PGFPlotsX
 
-cd("../simulacion-miniopoly/")
+# cd("../simulacion-miniopoly/")
 
 include("../nord.jl")
 
 theme(:ggnord)
-pgfplotsx()
 
 data = CSV.read("simulacion-20k.csv", DataFrame)
 @subset!(data, :square .!= 0)
@@ -32,6 +30,9 @@ gd = groupby(data, :mine)
 )
 
 fis = @df gd[2] violin!(:square, :reward,
+    guidefont = font(9, "Computer Modern"),
+    tickfont = font(7, "Computer Modern"),
+    legendcolor = :black,
     linewidth=1,
     xlabel="Square",
     ylabel="Average reward",
@@ -41,4 +42,6 @@ fis = @df gd[2] violin!(:square, :reward,
 )
 
 
-savefig("hist-miniopoly.tikz")
+savefig("escrito/img/hist-miniopoly.svg")
+pgfplotsx()
+# savefig("escrito/img/hist-miniopoly.tikz")

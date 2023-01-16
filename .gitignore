@@ -18,3 +18,4 @@ escrito/Literate
 *.fls
 *.out
 codigo/ALPBDT/DecisionMakingProblems.jl
+fases_ITAM/
