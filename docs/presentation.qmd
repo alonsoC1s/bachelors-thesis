@@ -9,6 +9,7 @@ execute:
   warning: false
 format:
   revealjs:
+    output-file: index.html
     theme: nord_theme.scss
     logo: img/logo_ITAM.png
     incremental: true
